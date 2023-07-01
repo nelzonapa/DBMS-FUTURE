@@ -1,22 +1,35 @@
-#ifndef BLOCK_H
-#define BLOCK_H
+#ifndef BLOQUE_H
+#define BLOQUE_H
 
 #include <iostream>
 
 using namespace std;
 
-class Block
+class Bloque
 {
 protected:
-    int id_Block;
-    int direc_Block;
-    int peso_Block;
-
+    int id_bloque;
+    string route_fin_bloque;
+    string route_inicio_bloque;
+    int capacidad_bloque;
 public:
-    Block();
-    Block(int _id_Block,int _direcBlock, int peso_Block);
-    ~Block();
-    void print_data_Block();
+    Bloque();
+    ~Bloque();
+
+    //-------------get---------------------
+    int get_id_bloque();
+    string get_route_fin_bloque();
+    string get_route_inicio_bloque();
+    int get_capacidad_bloque();
+
+    //---------------set-------------------
+    void set_id_bloque(int input);
+    void set_route_fin_bloque(string);
+    void set_route_inicio_bloque(string);
+    void set_capacidad_bloque(int input);
+
+    //------------------others-------------
+    void print_data_bloque();
 };
 
 #endif

@@ -4,6 +4,21 @@
 #include "MagneticDisk.h"
 #include "MagneticDisk.cpp"
 
+#include "Plato.h"
+#include "Plato.cpp"
+
+#include "Superficie.h"
+#include "Superficie.cpp"
+
+#include "Pista.h"
+#include "Pista.h"
+
+#include "Sector.h"
+#include "Sector.h"
+
+#include "Bloque.h"
+#include "Bloque.cpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -19,11 +34,11 @@ public:
 
     //-------------------------cCREATE--------------------------
     void crear_disco(MagneticDisk &disco_magnetic); 
-    void crear_platos(int _num_platos);
-    void crear_superficies(int _num_superficies);
-    void crear_pistas(int _num_pistas);
-    void crear_sectores(int _num_sectores);
-    void crear_bloques(int _num_bloques);
+    void crear_platos(MagneticDisk &disco_magnetic);
+    void crear_superficies(MagneticDisk &disco_magnetic);
+    void crear_pistas(MagneticDisk &disco_magnetic);
+    void crear_sectores(MagneticDisk &disco_magnetic);
+    void crear_bloques(MagneticDisk &disco_magnetic);
    
 
     //-------------------------WRITE_INFO--------------------------
@@ -36,11 +51,11 @@ public:
 
     //-------------------------READ_INFO--------------------------
     void read_disco_info();
-    void read_platos_info();
-    void read_superficies_info();
-    void read_pistas_info();
-    void read_sectores_info();
-    void read_bloques_info();
+    void read_plato_info(int _num_plato);
+    void read_superficie_info();
+    void read_pista_info();
+    void read_sectore_info();
+    void read_bloque_info();
 
 };
 
