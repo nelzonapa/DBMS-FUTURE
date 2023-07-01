@@ -76,9 +76,9 @@ void Sistema_Operativo::crear_disco(){
     //Ahora llamamos a brazo
     BrazoDisco brazo_disk;
     brazo_disk.crear_disco(*ptr_MagneticDisk);
-    // cout<<"Disco creado correctamente..."<<endl;
-    // cout<<"Mostrando info de disco guardado..."<<endl;
-    // brazo_disk.read_disco_info();
+    cout<<"Disco creado correctamente..."<<endl;
+    cout<<"Mostrando info de disco guardado..."<<endl;
+    brazo_disk.read_disco_info();
 
 }
 
