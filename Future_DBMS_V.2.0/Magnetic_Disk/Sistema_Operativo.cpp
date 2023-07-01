@@ -75,12 +75,32 @@ void Sistema_Operativo::crear_disco(){
 
     //Ahora llamamos a brazo
     BrazoDisco brazo_disk;
-    // brazo_disk.crear_disco(*ptr_MagneticDisk);
-    // cout<<"Disco creado correctamente..."<<endl;
+    brazo_disk.crear_disco(*ptr_MagneticDisk);
+    cout<<"Disco creado correctamente..."<<endl;
     cout<<"Mostrando info de disco guardado..."<<endl;
     brazo_disk.read_disco_info();
-    cout<<"Mostrando info de plato 1 guardado..."<<endl;
+    cout<<"-------------------------"<<endl;
     brazo_disk.read_plato_info(1);
+    brazo_disk.read_plato_info(2);
+    cout<<"-------------------------"<<endl;
+    brazo_disk.read_superficie_info(1);
+    brazo_disk.read_superficie_info(2);
+    brazo_disk.read_superficie_info(3);
+    brazo_disk.read_superficie_info(4);
+    cout<<"-------------------------"<<endl;
+    brazo_disk.read_pista_info(1);
+    brazo_disk.read_pista_info(2);
+    brazo_disk.read_pista_info(3);
+    brazo_disk.read_pista_info(6);
+    brazo_disk.read_pista_info(7);
+    brazo_disk.read_pista_info(8);
+    cout<<"-------------------------"<<endl;
+    brazo_disk.read_sector_info(1);
+    brazo_disk.read_sector_info(2);
+    brazo_disk.read_sector_info(3);
+    brazo_disk.read_sector_info(14);
+    brazo_disk.read_sector_info(15);
+    brazo_disk.read_sector_info(16);
 
 }
 

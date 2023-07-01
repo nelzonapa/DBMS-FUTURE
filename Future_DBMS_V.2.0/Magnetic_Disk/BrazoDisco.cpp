@@ -32,14 +32,14 @@ void BrazoDisco::crear_platos(MagneticDisk &disco_magnetic){
     int _num_platos=disco_magnetic.get_num_platos();
     int _num_superficies=disco_magnetic.get_num_superficies();
     int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
-    Plato platito;
     for (int i = 0; i < _num_platos; i++)
     {
+        Plato platito;
         //para crear el archivo bin
         string num="_"+to_string(i+1)+".bin";
         string route_plato="Magnetic_Disk/Disco/Platos/plato";
         string final_route_plato=route_plato+num;
-        cout<<"Route platos: "<<final_route_plato<<endl;
+        cout<<"Route platos: "<<final_route_plato<<endl;//Route platos: Magnetic_Disk/Disco/Platos/plato_1.bin
 
         //Ingresaremos datos del plato
         platito.set_id_plato(i+1);
@@ -48,16 +48,17 @@ void BrazoDisco::crear_platos(MagneticDisk &disco_magnetic){
         //id final de superficie
         int n=(_num_superficies/_num_platos);
         int id_fin_superficie=(i+1)*n;
-        int id_inicio_superficie=(i+1)*n-(n-1);
+        int id_inicio_superficie=((i+1)*n)-(n-1);
         string route_reference_superficie="Magnetic_Disk/Disco/Platos/Superficies/superficie_";
         string route_fin_superficie=route_reference_superficie+to_string(id_fin_superficie)+".bin";
         string route_inicio_superficie=route_reference_superficie+to_string(id_inicio_superficie)+".bin";
+        
         //los demás set del PLATO;
         platito.set_route_fin_plato(route_fin_superficie);
         platito.set_route_inicio_plato(route_inicio_superficie);
         platito.set_capacidad_plato(_capacidad_disco_total/_num_platos);
 
-        //Abrimos, creamos y escribimos
+        cout<<"Abrimos, creamos y escribimos: "<<i<<endl;
         ofstream archivo(final_route_plato,ios::binary);
         if (archivo.is_open()){
             archivo.write(reinterpret_cast<const char*>(&platito), sizeof(Plato));
@@ -76,14 +77,15 @@ void BrazoDisco::crear_superficies(MagneticDisk &disco_magnetic){
     int _num_superficies=disco_magnetic.get_num_superficies();      //
     int _num_pistas=disco_magnetic.get_num_pistas();
     int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
-    Superficie superficie;//REEMPLAZAR
+
     for (int i = 0; i < _num_superficies; i++)      //
     {
+        Superficie superficie;
         //para crear el archivo bin
         string num="_"+to_string(i+1)+".bin";
         string route_superficie="Magnetic_Disk/Disco/Platos/Superficies/superficie";
         string final_route_superficie=route_superficie+num;
-        cout<<"Route platos: "<<final_route_superficie<<endl;
+        cout<<"Route superficie: "<<final_route_superficie<<endl;
 
         //Ingresaremos datos del superficie
         superficie.set_id_superficie(i+1);
@@ -119,9 +121,10 @@ void BrazoDisco::crear_pistas(MagneticDisk &disco_magnetic){
     int _num_pistas=disco_magnetic.get_num_pistas();      //
     int _num_sectores=disco_magnetic.get_num_sectores();
     int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
-    Pista pista;//REEMPLAZAR
+    
     for (int i = 0; i < _num_pistas; i++)      //
     {
+        Pista pista;
         //para crear el archivo bin
         string num="_"+to_string(i+1)+".bin";
         string route_superficie="Magnetic_Disk/Disco/Platos/Superficies/Pistas/pista";
@@ -162,9 +165,10 @@ void BrazoDisco::crear_sectores(MagneticDisk &disco_magnetic){
     int _num_sectores=disco_magnetic.get_num_sectores();      //
     int _num_bloques=disco_magnetic.get_num_bloques();
     int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
-    Sector sector;//REEMPLAZAR
+    
     for (int i = 0; i < _num_sectores; i++)      //
     {
+        Sector sector;
         //para crear el archivo bin
         string num="_"+to_string(i+1)+".bin";
         string route_superficie="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/sector";
@@ -203,15 +207,22 @@ void BrazoDisco::crear_sectores(MagneticDisk &disco_magnetic){
 
 void BrazoDisco::crear_bloques(MagneticDisk &disco_magnetic){
     int _num_bloques=disco_magnetic.get_num_bloques();
+    int _capacidad_total_disco=disco_magnetic.get_capacidad_total_magneticDisk();
+    int _capacidad_por_bloque=_capacidad_total_disco/_num_bloques;
     for (int i = 0; i < _num_bloques; i++)
     {
+        //Nos ubicamos:
         string num="_"+to_string(i+1)+".bin";
         string route_bloque="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque";
         string final_route_bloque=route_bloque+num;
+        //Abrimos,creamos
         ofstream archivo(final_route_bloque,ios::binary);
         if (archivo.is_open()){
             cout<<"Archivo binario creado: "<<final_route_bloque<<endl;
-        } 
+            archivo.seekp(_capacidad_por_bloque-1);
+            archivo.write("", 1);
+            //Para que se cree con la capacidad correcta
+        }
         else{
             cout<<"Error al crear el archivo binario: "<<final_route_bloque<<endl;
         }
@@ -243,7 +254,6 @@ void BrazoDisco::write_disco_info(MagneticDisk &disco_magnetic){
 }
 
 void BrazoDisco::write_platos_info(){
-
 }
 
 void BrazoDisco::write_superficies_info(){
@@ -280,36 +290,97 @@ void BrazoDisco::read_disco_info(){
 
 void BrazoDisco::read_plato_info(int _num_plato){
     int ubication_read_bin=0;
-    string route_disc="Magnetic_Disk/Disco/Platos/plato_"+to_string(_num_plato)+".bin";
+    string route_plato="Magnetic_Disk/Disco/Platos/plato_"+to_string(_num_plato)+".bin";
 
-    ifstream archivo(route_disc, ios::binary);
+    ifstream archivo(route_plato, ios::binary);
     archivo.seekg(ubication_read_bin);
 
     Plato platito;
     if (archivo.is_open()) {
         archivo.read(reinterpret_cast<char*>(&platito), sizeof(Plato));
-        cout<<"Datos leidos del archivo: "<<route_disc<<endl;
+        cout<<"Datos leidos del archivo: "<<route_plato<<endl;
     } else {
-        cout<<"Error al abrir el archivo binario para lectura."<<endl;
+        cout<<"Error al abrir el archivo binario para lectura."<<route_plato<<endl;
     }
     platito.print_data_Plato();
     archivo.close();
     platito.~Plato();
 }
 
-void BrazoDisco::read_superficie_info(){
+void BrazoDisco::read_superficie_info(int _num_superficie){
+    int ubication_read_bin=0;
+    string route_superficie="Magnetic_Disk/Disco/Platos/Superficies/superficie_"+to_string(_num_superficie)+".bin";
 
+    ifstream archivo(route_superficie, ios::binary);
+    archivo.seekg(ubication_read_bin);
+
+    Superficie superficie;
+    if (archivo.is_open()) {
+        archivo.read(reinterpret_cast<char*>(&superficie), sizeof(Superficie));
+        cout<<"Datos leidos del archivo: "<<route_superficie<<endl;
+    } else {
+        cout<<"Error al abrir el archivo binario para lectura."<<route_superficie<<endl;
+    }
+    superficie.print_data_superficie();
+    archivo.close();
+    superficie.~Superficie();
 }
 
-void BrazoDisco::read_pista_info(){
+void BrazoDisco::read_pista_info(int _num_pista){
+    int ubication_read_bin=0;
+    string route_pista="Magnetic_Disk/Disco/Platos/Superficies/Pistas/pista_"+to_string(_num_pista)+".bin";
 
+    ifstream archivo(route_pista, ios::binary);
+    archivo.seekg(ubication_read_bin);
+
+    Pista pista;
+    if (archivo.is_open()) {
+        archivo.read(reinterpret_cast<char*>(&pista), sizeof(Pista));
+        cout<<"Datos leidos del archivo: "<<route_pista<<endl;
+    } else {
+        cout<<"Error al abrir el archivo binario para lectura."<<route_pista<<endl;
+    }
+    pista.print_data_pista();
+    archivo.close();
+    pista.~Pista();
 }
 
-void BrazoDisco::read_sectore_info(){
+void BrazoDisco::read_sector_info(int _num_sector){
+    int ubication_read_bin=0;
+    string route_sector="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/sector_"+to_string(_num_sector)+".bin";
 
+    ifstream archivo(route_sector, ios::binary);
+    archivo.seekg(ubication_read_bin);
+
+    Sector sector;
+    if (archivo.is_open()) {
+        archivo.read(reinterpret_cast<char*>(&sector), sizeof(Sector));
+        cout<<"Datos leidos del archivo: "<<route_sector<<endl;
+    } else {
+        cout<<"Error al abrir el archivo binario para lectura."<<route_sector<<endl;
+    }
+    sector.print_data_sector();
+    archivo.close();
+    sector.~Sector();
 }
 
-void BrazoDisco::read_bloque_info(){
+void BrazoDisco::read_bloque_info(int _num_bloque){
+    int ubication_read_bin=0;
+    string route_sector="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
 
+    ifstream archivo(route_sector, ios::binary);
+    archivo.seekg(ubication_read_bin);
+
+    //Estilo de lectura, puede ser FIXED AND VARIABLE LENGTH
+    Sector sector;
+    if (archivo.is_open()) {
+        archivo.read(reinterpret_cast<char*>(&sector), sizeof(Sector));
+        cout<<"Datos leidos del archivo: "<<route_sector<<endl;
+    } else {
+        cout<<"Error al abrir el archivo binario para lectura."<<route_sector<<endl;
+    }
+    sector.print_data_sector();
+    archivo.close();
+    sector.~Sector();
 }
 

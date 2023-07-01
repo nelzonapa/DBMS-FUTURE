@@ -11,10 +11,10 @@
 #include "Superficie.cpp"
 
 #include "Pista.h"
-#include "Pista.h"
+#include "Pista.cpp"
 
 #include "Sector.h"
-#include "Sector.h"
+#include "Sector.cpp"
 
 #include "Bloque.h"
 #include "Bloque.cpp"
@@ -52,10 +52,10 @@ public:
     //-------------------------READ_INFO--------------------------
     void read_disco_info();
     void read_plato_info(int _num_plato);
-    void read_superficie_info();
-    void read_pista_info();
-    void read_sectore_info();
-    void read_bloque_info();
+    void read_superficie_info(int _num_superficie);
+    void read_pista_info(int _num_pista);
+    void read_sector_info(int _num_sector);
+    void read_bloque_info(int _num_bloque);
 
 };
 
