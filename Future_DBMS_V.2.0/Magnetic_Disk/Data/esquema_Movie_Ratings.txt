@@ -1,0 +1,8 @@
+NombreTabla
+Movie_Ratings
+Atributos
+Movie "Patrick C" "Heather" "Bryan" "Patrick T" "Thomas" "aaron" "vanessa" "greg" "brian" "ben" "Katherine" "Jonathan" "Zwe" "Erin" "Chris" "Zak" "Matt" "Chris" "Josh" "Amy" "Valerie" "Gary" "Stephen" "Jessica" "Jeff" 
+TiposData
+string int int int int int int int int int int int int int int int int int int int int int int int int int 
+SizeData
+14 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 

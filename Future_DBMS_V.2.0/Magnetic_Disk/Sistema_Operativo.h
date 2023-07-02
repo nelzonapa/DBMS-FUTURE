@@ -28,6 +28,9 @@ public:
 
     void mostrar_info_de_bloque(int num_bloque);
 
+    //----------------- WRITE DATA ------------------
+    void crear_esquema_tabla(string _name_archivo);//solo el nombre del archivo
+    
     //----------------- WRITE FIXED LENGTH ------------------
     void escribir_disk_from_archivo(string _name_tabla);
     string decidir_tipo_dato(string &value);
