@@ -222,6 +222,16 @@ void BrazoDisco::crear_bloques(MagneticDisk &disco_magnetic){
             archivo.seekp(_capacidad_por_bloque-1);
             archivo.write("", 1);
             //Para que se cree con la capacidad correcta
+            //Agregamos el HEADER DEL BLOQUE
+            Header_Bloque header_bloque;
+            header_bloque.set_cant_bytes_bloque(_capacidad_por_bloque);
+            header_bloque.set_cant_bytes_restantes_bloque(_capacidad_por_bloque-sizeof(Header_Bloque));
+            header_bloque.set_cant_bytes_usados_bloque(sizeof(Header_Bloque));
+            header_bloque.set_direc_end_fixed_bloque(sizeof(Header_Bloque));
+            header_bloque.set_direc_free_space_variable_bloque(_capacidad_por_bloque);
+            archivo.seekp(0);
+            archivo.write(reinterpret_cast<const char*>(&header_bloque), sizeof(Header_Bloque));
+            cout<<"Header del Bloque "<<i+1<<" insertado"<<endl;
         }
         else{
             cout<<"Error al crear el archivo binario: "<<final_route_bloque<<endl;
@@ -365,6 +375,29 @@ void BrazoDisco::read_sector_info(int _num_sector){
 }
 
 void BrazoDisco::read_bloque_info(int _num_bloque){
+    // int ubication_read_bin=0;
+    // string route_sector="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
+
+    // ifstream archivo(route_sector, ios::binary);
+    // archivo.seekg(ubication_read_bin);
+
+    // //Estilo de lectura, puede ser FIXED AND VARIABLE LENGTH
+    // Sector sector;
+    // if (archivo.is_open()) {
+    //     archivo.read(reinterpret_cast<char*>(&sector), sizeof(Sector));
+    //     cout<<"Datos leidos del archivo: "<<route_sector<<endl;
+    // } else {
+    //     cout<<"Error al abrir el archivo binario para lectura."<<route_sector<<endl;
+    // }
+    // sector.print_data_sector();
+    // archivo.close();
+    // sector.~Sector();
+    cout<<"read_bloque_info() En proceso..."<<endl;
+}
+
+
+//-----------------------Read Others-------------------------
+void BrazoDisco::read_header_bloque(int _num_bloque){
     int ubication_read_bin=0;
     string route_sector="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
 
@@ -372,15 +405,15 @@ void BrazoDisco::read_bloque_info(int _num_bloque){
     archivo.seekg(ubication_read_bin);
 
     //Estilo de lectura, puede ser FIXED AND VARIABLE LENGTH
-    Sector sector;
+    Header_Bloque header_bloque;
     if (archivo.is_open()) {
-        archivo.read(reinterpret_cast<char*>(&sector), sizeof(Sector));
+        archivo.read(reinterpret_cast<char*>(&header_bloque), sizeof(Header_Bloque));
         cout<<"Datos leidos del archivo: "<<route_sector<<endl;
     } else {
         cout<<"Error al abrir el archivo binario para lectura."<<route_sector<<endl;
     }
-    sector.print_data_sector();
+    header_bloque.print_info_header_bloque();
     archivo.close();
-    sector.~Sector();
+    header_bloque.~Header_Bloque();
 }
 

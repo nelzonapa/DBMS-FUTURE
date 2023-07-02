@@ -19,6 +19,9 @@
 #include "Bloque.h"
 #include "Bloque.cpp"
 
+#include "Data/Header_Bloque.h"
+#include "Data/Header_Bloque.cpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -56,6 +59,9 @@ public:
     void read_pista_info(int _num_pista);
     void read_sector_info(int _num_sector);
     void read_bloque_info(int _num_bloque);
+
+    //-------------------------Read Otros-------------------------
+    void read_header_bloque(int _num_bloque);
 
 };
 

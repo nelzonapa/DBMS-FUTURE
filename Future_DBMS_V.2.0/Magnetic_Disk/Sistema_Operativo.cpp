@@ -13,7 +13,10 @@ void Sistema_Operativo::menu(){
         std::cout<<"\t----- MENU -----\n";
         std::cout<<"1. Crear disco"<<endl;
         std::cout<<"2. Recuperar disco"<<endl;
-        std::cout<<"3. Salir"<<endl;
+        std::cout<<"------------"<<endl;
+        std::cout<<"3. Mostrar informacion de un bloque"<<endl;
+        std::cout<<"------------"<<endl;
+        std::cout<<"4. Salir"<<endl;
         std::cout<<"Ingrese opcion: "<<endl;
         cin>>op;
         switch(op)
@@ -22,11 +25,16 @@ void Sistema_Operativo::menu(){
                 cout<<"Creando disco..."<<endl;
                 crear_disco();
                 break;
-            
             case 2:
                 std::cout<<"Recuperando disco..."<<endl;
                 break;
             case 3:
+                std::cout<<"Ingrese el numero del bloque para mostrar su informacion.."<<endl;
+                int num;
+                cin>>num;
+                mostrar_info_de_bloque(num);
+                break;
+            case 4:
                 x=true;
                 break;
 
@@ -77,34 +85,125 @@ void Sistema_Operativo::crear_disco(){
     BrazoDisco brazo_disk;
     brazo_disk.crear_disco(*ptr_MagneticDisk);
     cout<<"Disco creado correctamente..."<<endl;
-    cout<<"Mostrando info de disco guardado..."<<endl;
+    cout<<"Mostrando informacion del disco guardado..."<<endl;
     brazo_disk.read_disco_info();
-    cout<<"-------------------------"<<endl;
-    brazo_disk.read_plato_info(1);
-    brazo_disk.read_plato_info(2);
-    cout<<"-------------------------"<<endl;
-    brazo_disk.read_superficie_info(1);
-    brazo_disk.read_superficie_info(2);
-    brazo_disk.read_superficie_info(3);
-    brazo_disk.read_superficie_info(4);
-    cout<<"-------------------------"<<endl;
-    brazo_disk.read_pista_info(1);
-    brazo_disk.read_pista_info(2);
-    brazo_disk.read_pista_info(3);
-    brazo_disk.read_pista_info(6);
-    brazo_disk.read_pista_info(7);
-    brazo_disk.read_pista_info(8);
-    cout<<"-------------------------"<<endl;
-    brazo_disk.read_sector_info(1);
-    brazo_disk.read_sector_info(2);
-    brazo_disk.read_sector_info(3);
-    brazo_disk.read_sector_info(14);
-    brazo_disk.read_sector_info(15);
-    brazo_disk.read_sector_info(16);
-
 }
 
 void Sistema_Operativo::recuperar_disco(){
     cout<<"recuperando disco..."<<endl;
     
+}
+
+
+void Sistema_Operativo::mostrar_info_de_bloque(int num_bloque){
+    BrazoDisco brazo_disk;
+    brazo_disk.read_header_bloque(num_bloque);
+}
+
+
+//-------------------- WRITE FIXED LENGTH ----------------------
+void Sistema_Operativo::escribir_disk_from_archivo(string _name_file_tabla)
+{
+    ifstream file(_name_file_tabla);
+    if (!file)
+    {
+        cout << "No se pudo abrir el archivo." << endl;
+    }
+    else
+    {
+        int cont_bytes;
+        string linea;
+        unordered_map<string, pair<string, string>> map_atributos;
+        vector<string> vector_orden_atributos;
+        // Leer la primera línea con los nombres de atributos
+        if (getline(file, linea))
+        {
+            istringstream iss(linea);
+            string _atributo;
+            while (getline(iss, _atributo, ',')) // después de cada coma ','
+            {
+                map_atributos[_atributo] = make_pair("", ""); // Inicializar con valores vacíos
+                vector_orden_atributos.push_back(_atributo); // Agregar el atributo al vector de orden
+            }
+        }
+
+        //PASAMOS A LEER LOS REGISTROS Teniendo en cuenta los ATRIBUTOS
+        while (getline(file, linea))//mientras se tenga lineas para leer
+        {
+            istringstream iss(linea);//para leer parte por parte
+            string valor_atributo;
+            string atributo_aux;
+
+            int i = 0;//contador
+            //leeremos toda la linea
+            while (getline(iss, valor_atributo, ','))
+            {
+                if (i < vector_orden_atributos.size())
+                {
+                    //recogemos el atributo en el puesto i
+                    string atributo_aux = vector_orden_atributos[i];
+                    map_atributos[atributo_aux].first=valor_atributo;
+                    map_atributos[atributo_aux].second=decidir_tipo_dato(valor_atributo);
+                    if (map_atributos[atributo_aux].second=="string")
+                    {
+                        const char* atributo=(map_atributos[atributo_aux].first).c_str();
+                        int size_atributo=std::strlen(atributo);
+                        BrazoDisco brazo_disk;
+                        //ME QUEDE EN QUE FALTA QUE LO ESCRIBA EN LOS BLOQUES
+                        // brazo_disk
+                    }
+                                        
+                }
+                i++;
+            }
+        }
+
+        string guarda_atributo;
+        // Imprimir los atributos y sus valores en el orden correspondiente
+        for (size_t i = 0; i < vector_orden_atributos.size(); i++)
+        {
+            guarda_atributo = vector_orden_atributos[i];
+            std::cout<<"Atributo: "<<guarda_atributo<<std::endl;
+            std::cout<<"Valor 1: "<<map_atributos[guarda_atributo].first<<std::endl;
+            std::cout<<"Valor 2: "<<map_atributos[guarda_atributo].second<<std::endl;
+            std::cout<<std::endl;
+        }
+
+        file.close();
+    }
+}
+
+string Sistema_Operativo::decidir_tipo_dato(string &value)
+{
+    // Ver si es de tipo Int
+    bool isInteger = true;
+    for (size_t i = 0; i < value.size(); i++)
+    {
+        if (!isdigit(value[i]))
+        {
+            isInteger = false;
+            break;
+        }
+    }
+    if (isInteger)
+    {
+        return "int";
+    }
+
+    // Revisamos si es float
+    istringstream iss(value);
+    float num;
+    if (iss>>num>>ws && iss.eof())
+    {
+        return "float";
+    }
+
+    // En caso de tener un booleano
+    if (value == "true" || value == "false")
+    {
+        return "bool";
+    }
+
+    // Otros lo ponemos como string
+    return "string";
 }
