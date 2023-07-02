@@ -25,9 +25,15 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
 using namespace std;
 
-//include varios
+#include <sstream>
+#include <unordered_map>
+#include <vector>
+#include <cstring>
+#include <string>
+typedef unordered_map<string, pair<string,int>> MapaPares;
 
 class BrazoDisco
 {
@@ -62,6 +68,16 @@ public:
 
     //-------------------------Read Otros-------------------------
     void read_header_bloque(int _num_bloque);
+
+    //-----------------------GET---------------------------
+    MagneticDisk& get_disco_magnetic_info();
+    Header_Bloque& get_header_bloque(int num_bloque);
+    int get_num_bloque_espacio_libre(int _space_necesitado);
+
+    //--------------WRITE VARIABLE O FIXED LENGTH DATA-----------
+    int calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar);
+    void insert_variable_length_data(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
+    void insert_fixed_length_data(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
 
 };
 

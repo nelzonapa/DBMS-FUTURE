@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <vector>
 #include <cstring>
+#include <string>
+typedef unordered_map<string, pair<string,int>> MapaPares;
 //Para solo detectar nuestro esquema
 
 class Sistema_Operativo
@@ -28,12 +30,19 @@ public:
 
     void mostrar_info_de_bloque(int num_bloque);
 
-    //----------------- WRITE DATA ------------------
+    //----------------- ESQUEMA DATA ------------------
     void crear_esquema_tabla(string _name_archivo);//solo el nombre del archivo
-    
-    //----------------- WRITE FIXED LENGTH ------------------
-    void escribir_disk_from_archivo(string _name_tabla);
+    void leer_esquema_tabla(string _name_tabla);
+    void mostrar_esquema_map(MapaPares& map_atributos,vector<string> &vector_ordenado_atributos);
+    MapaPares& get_esquema_tabla(string _name_tabla);
+    vector<string>& get_vector_atributos(string _name_tabla);
     string decidir_tipo_dato(string &value);
+
+    //----------------- WRITE FIXED OR VARIABLE LENGTH ------------------
+    void escribir_registro();
+    
+    int sacar_codigo_tabla(string _name_tabla);
+    
 };
 
 #endif 

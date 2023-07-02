@@ -417,3 +417,150 @@ void BrazoDisco::read_header_bloque(int _num_bloque){
     header_bloque.~Header_Bloque();
 }
 
+
+//-----------------------GET---------------------------
+
+MagneticDisk& BrazoDisco::get_disco_magnetic_info(){
+    const char* route_disc="Magnetic_Disk/Disco/magnetic_disk_info.bin";
+    ifstream archivo(route_disc, ios::binary);
+    MagneticDisk *ptr_disco_magnetico=new MagneticDisk();
+    if (archivo.is_open()) {
+        archivo.read(reinterpret_cast<char*>(&(*ptr_disco_magnetico)), sizeof(MagneticDisk));
+        cout<<"Datos leidos del archivo: "<<route_disc<<endl;
+    } else {
+        cout<<"Error al abrir el archivo binario para lectura."<<endl;
+    }
+    // disco_magnetico.print_info_magnetic_disk();
+    archivo.close();
+    return (*ptr_disco_magnetico);
+}
+
+Header_Bloque& BrazoDisco::get_header_bloque(int _num_bloque){
+    int ubication_read_bin=0;
+    string route_sector="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
+
+    ifstream archivo(route_sector, ios::binary);
+    archivo.seekg(ubication_read_bin);
+
+    //Estilo de lectura, puede ser FIXED AND VARIABLE LENGTH
+    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    if (archivo.is_open()) 
+    {
+        archivo.read(reinterpret_cast<char*>(&(*ptr_header_bloque)), sizeof(Header_Bloque));
+        // cout<<"Datos leidos del archivo: "<<route_sector<<endl;
+    } 
+    else 
+    {
+        cout<<"Error al abrir el archivo binario para get header bloque."<<route_sector<<endl;
+    }
+    archivo.close();
+    return (*ptr_header_bloque);
+}
+
+int BrazoDisco::get_num_bloque_espacio_libre(int _space_necesitado){
+    //Para leer el header de los bloques
+    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+
+    //Primero quiero saber cuántos bloques hay
+    BrazoDisco brazo;
+    MagneticDisk *ptr_disco_magnetico=new MagneticDisk();
+    (*ptr_disco_magnetico)=brazo.get_disco_magnetic_info();
+    int num_bloques=(*ptr_disco_magnetico).get_num_bloques();
+    for (size_t i = 1; i <=num_bloques; i++)
+    {
+        (*ptr_header_bloque)=brazo.get_header_bloque(i);
+        int space_libre=(*ptr_header_bloque).get_cant_bytes_restantes_bloque();
+        if (_space_necesitado<space_libre)
+        {
+            return i;
+        }
+        
+    }
+    
+    
+}
+
+
+//--------------WRITE VARIABLE O FIXED LENGTH DATA-----------
+
+int BrazoDisco::calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
+    
+    int espacio_ocuparemos=0;
+    string atributo_key;
+    string valor_atributo;
+    for (int i = 0; i < _vec_atributos.size(); i++)
+    {
+        atributo_key=_vec_atributos[i];
+        valor_atributo=_vec_valores_ingresar[i];
+        //Cuenta el tamaño de todos los atributos
+        // cout<<valor_atributo<<" ";
+        if (valor_atributo=="NULL")
+        {
+            continue;//no suma ese espacio, son los 1's del NULLBITMAP
+        }
+        else
+        {
+            espacio_ocuparemos=espacio_ocuparemos+(_map_atributos[atributo_key].second);
+        }
+        
+    }
+    // cout<<"espacio gaaaaaaa: "<<espacio_ocuparemos<<endl;
+
+    int tam_vec_valores_ingresar=_vec_valores_ingresar.size();
+    int tam_vec_atributos=_vec_atributos.size();
+    // cout<<tam_vec_valores_ingresar<<endl;
+
+    for (int i=tam_vec_atributos; i<tam_vec_valores_ingresar; i++)
+    {
+        string valor_aux=_vec_valores_ingresar[i];
+        //CODE TABLA
+        // cout<<valor_aux<<" ";
+        if (i==tam_vec_atributos)
+        {
+            espacio_ocuparemos=espacio_ocuparemos+4;
+        }
+        //BOOL TIPO DE VARIABLE
+        else if (i==tam_vec_atributos+1)
+        {
+            espacio_ocuparemos=espacio_ocuparemos+1;
+        }
+        //EL NULLBITMAP
+        else if (i==tam_vec_atributos+2)
+        {
+            const char* nullbitmap=valor_aux.c_str();
+            espacio_ocuparemos=espacio_ocuparemos+strlen(nullbitmap);
+        }
+        //FINALMENTE EL ID EXTRA
+        else if(i==tam_vec_atributos+3)
+        {
+            espacio_ocuparemos=espacio_ocuparemos+4;
+        }
+    }
+    return espacio_ocuparemos;
+}
+
+void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
+    BrazoDisco brazo;
+    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    int espacio_ocuparemos=brazo.calcular_espacio_necesario(_map_atributos,_vec_atributos,_vec_valores_ingresar);
+    //AHORA
+    // cout<<"obtenemos el bloque con espacio libre"<<endl;
+    cout<<"espacio a ocupar: "<<espacio_ocuparemos<<endl;
+    int num_bloque_space=brazo.get_num_bloque_espacio_libre(espacio_ocuparemos);
+    cout<<"bloque donde se escribira: "<<num_bloque_space<<endl;
+    (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//necesitamos algun bloque
+    (*ptr_header_bloque).print_info_header_bloque();
+    
+}
+
+
+void BrazoDisco::insert_fixed_length_data(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
+    BrazoDisco brazo;
+    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    //primero necesitamos saber cuánto espacio ocuparemos
+    int espacio_ocuparemos;
+    //obtenemos el bloque con espacio libre
+    int num_bloque_space=brazo.get_num_bloque_espacio_libre(espacio_ocuparemos);
+    (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//necesitamos algun bloque
+}
+
