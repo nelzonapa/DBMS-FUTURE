@@ -22,6 +22,9 @@
 #include "Data/Header_Bloque.h"
 #include "Data/Header_Bloque.cpp"
 
+#include "Data/Variable_length/Slot.h"
+#include "Data/Variable_length/Slot.cpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>

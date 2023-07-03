@@ -248,11 +248,6 @@ void BrazoDisco::write_disco_info(MagneticDisk &disco_magnetic){
 
     disco_magnetic.set_route_disk_magnetic(route_disc);
     ofstream archivo(route_disc,ios::binary);
-    // ofstream archivo;
-    // archivo.exceptions(ofstream::failbit | ofstream::badbit);
-    // archivo.open(route_disc,ios::binary| ios::in);
-    //Me quede en llenar el archivo de info del disco que será de ejemplo para lo demás 
-    
     if (archivo.is_open()){
         cout<<"Archivo binario creado: "<<route_disc<<endl;
         archivo.write(reinterpret_cast<const char*>(&disco_magnetic), sizeof(MagneticDisk));
@@ -548,8 +543,96 @@ void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<st
     cout<<"espacio a ocupar: "<<espacio_ocuparemos<<endl;
     int num_bloque_space=brazo.get_num_bloque_espacio_libre(espacio_ocuparemos);
     cout<<"bloque donde se escribira: "<<num_bloque_space<<endl;
-    (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//necesitamos algun bloque
-    (*ptr_header_bloque).print_info_header_bloque();
+
+    //YA TENEMOS EL HEADER DEL BLOQUE
+    (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);
+
+    /*
+    Cómo ya sabemos a qué bloque ingresar, procedemos a ingresar el dato en ese bloque:
+    */
+    string route_sector="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(num_bloque_space)+".bin";
+
+    //Abriremos el archivo:
+    ofstream archivo(route_sector, ios::binary | ios::app);//ios app para no eliminar contenido anterior
+    //ahora verificamos si se abrió:
+    if (archivo.is_open()) 
+    {   
+        /*----------- Comenzamos ESCRITURA -----------*/
+        //
+        int tam_vec_valores_ingresar=_vec_valores_ingresar.size();
+        int tam_vec_atributos=_vec_atributos.size();
+        int cant_slots_atributo=tam_vec_atributos;
+        //escribiremos los datos y su slot:
+        Slot slot_atributo;
+        Slot slot_tupla;
+
+        string atributo_key;
+        string valor_atributo;
+
+        //Ahora debemos ubicarnos donde nos indique el HEADER_DEL_BLOQUE:
+        int ubication_read_bin=(*ptr_header_bloque).get_direc_free_space_variable_bloque();
+        //Ya nos encontramos en la dirección correcta del free space
+        // archivo.seekp(ubication_read_bin);
+        //puntero seekp ubicado para escribir
+
+        //-------------LA TUPLA -----------
+        for (int i=(tam_vec_atributos-1); i>=0; i--)
+        {
+            atributo_key=_vec_atributos[i];
+            valor_atributo=_vec_valores_ingresar[i];
+            int size_atributo=(_map_atributos[atributo_key].second);
+            string tipo_data_atributo=(_map_atributos[atributo_key].first);
+
+            // retrocede la cantidad que debe para escribir data
+            ubication_read_bin = ubication_read_bin - size_atributo;
+            archivo.seekp(ubication_read_bin);
+
+
+            // Para escribir debemos detectar el tipo de dato
+            if (valor_atributo=="NULL")
+            {
+                continue;   //no ingresa el que no tiene dato
+            }
+            else if (tipo_data_atributo == "int")
+            {
+                int number = stoi(valor_atributo);
+                archivo.write(reinterpret_cast<const char *>(&number), size_atributo);
+            }
+            else if (tipo_data_atributo == "float")
+            {
+                float decimal = stof(valor_atributo);
+                archivo.write(reinterpret_cast<const char *>(&decimal), size_atributo);
+            }
+            else if (tipo_data_atributo == "bool")
+            {
+                bool booleano = (valor_atributo == "true");
+                archivo.write(reinterpret_cast<const char *>(&booleano), size_atributo);
+            }
+            else if (tipo_data_atributo == "string")
+            {
+                const char *atributo_string = valor_atributo.c_str();
+                archivo.write(atributo_string, size_atributo);
+            }
+        }
+
+        //-------------AHORA los SLOTS_ATRIBUTO -----------
+
+
+        //-------------AHORA el NULLBITMAP -----------
+
+
+        //-------------AHORA EL SLOT_TUPLA -----------
+
+
+        //-------------ACTUALIZAR HEADER_BLOQUE -----------
+
+
+    } 
+    else 
+    {
+        cout<<"Error al abrir el archivo binario para get header bloque."<<route_sector<<endl;
+    }
+    archivo.close();
     
 }
 
