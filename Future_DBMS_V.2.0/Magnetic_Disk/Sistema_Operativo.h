@@ -29,6 +29,7 @@ public:
     //----------------READ INFO----------------
 
     void mostrar_info_de_bloque(int num_bloque);
+    void mostrar_contenido_variable_length_bloque(int num_bloque);
 
     //----------------- ESQUEMA DATA ------------------
     void crear_esquema_tabla(string _name_archivo);//solo el nombre del archivo

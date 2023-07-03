@@ -37,7 +37,7 @@ void Slot::set_size_length(int _size){
     this->size_length=_size;
 }
 
-void Slot::get_direc_sig_slot(int _direc_sig_slot){
+void Slot::set_direc_sig_slot(int _direc_sig_slot){
     this->direc_sig_slot=_direc_sig_slot;
 }
 

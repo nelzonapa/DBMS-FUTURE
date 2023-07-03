@@ -17,10 +17,13 @@ private:
     unsigned int direc_space_delete_fixed_bloque;
     unsigned int direc_end_fixed_bloque;
     unsigned int num_records_fixed_bloque;
+    unsigned int direc_primer_record_fixed_length;
 
     //variable length
+    unsigned int direc_space_delete_variable_bloque;
     unsigned int num_records_variable_bloque;
     unsigned int direc_free_space_variable_bloque; //apunta a donde inicias las tuplas de variable length
+    unsigned int direc_primer_record_variable_length;
 public:
     Header_Bloque(/* args */);
     ~Header_Bloque();
@@ -36,10 +39,13 @@ public:
     int get_direc_space_delete_fixed_bloque();
     int get_direc_end_fixed_bloque();
     int get_num_records_fixed_bloque();
+    int get_direc_primer_record_fixed_length();
 
     //variable length
+    int get_direc_space_delete_variable_bloque();
     int get_num_records_variable_bloque();
     int get_direc_free_space_variable_bloque();
+    int get_direc_primer_record_variable_length();
 
     //--------------------SET-------------------
     //general
@@ -52,10 +58,13 @@ public:
     void set_direc_space_delete_fixed_bloque(int _input);
     void set_direc_end_fixed_bloque(int _input);
     void set_num_records_fixed_bloque(int _input);
+    void set_direc_primer_record_fixed_length(int _input);
 
     //variable length
+    void set_direc_space_delete_variable_bloque(int _input);
     void set_num_records_variable_bloque(int _input);
     void set_direc_free_space_variable_bloque(int _input);
+    void set_direc_primer_record_variable_length(int _input);
 
     //--------------------Others-------------------
     void print_info_header_bloque();

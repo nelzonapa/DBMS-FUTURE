@@ -76,12 +76,20 @@ public:
     MagneticDisk& get_disco_magnetic_info();
     Header_Bloque& get_header_bloque(int num_bloque);
     int get_num_bloque_espacio_libre(int _space_necesitado);
-
-    //--------------WRITE VARIABLE O FIXED LENGTH DATA-----------
     int calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar);
-    void insert_variable_length_data(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
-    void insert_fixed_length_data(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
 
+    //--------------WRITE VARIABLE DATA-----------
+    void caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_tupla_enviado, int num_bloque, int direc_slot_escrito);
+    void insert_variable_length_data(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
+    
+    //----------------------READ VARIABLE DATA-----------------
+    void read_variable_length_data_per_block(int num_block);
+    void read_variable_length_data(int _id_record);
+
+    //--------------WRITE VARIABLE DATA-----------
+    void insert_fixed_length_data(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
+    //----------------------READ FIXED DATA-----------------
+    void read_fixed_length_data();
 };
 
 #endif

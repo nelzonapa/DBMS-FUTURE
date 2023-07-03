@@ -475,9 +475,6 @@ int BrazoDisco::get_num_bloque_espacio_libre(int _space_necesitado){
     
 }
 
-
-//--------------WRITE VARIABLE O FIXED LENGTH DATA-----------
-
 int BrazoDisco::calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
     
     int espacio_ocuparemos=0;
@@ -534,6 +531,50 @@ int BrazoDisco::calcular_espacio_necesario(MapaPares &_map_atributos,vector<stri
     return espacio_ocuparemos;
 }
 
+//--------------WRITE VARIABLE DATA-----------
+void BrazoDisco::caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_tupla_enviado, int num_bloque, int direc_slot_escrito){
+    // BrazoDisco brazo;
+    // Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    // (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque);//obtenemos info del header del bloque
+
+    Slot slot_ya_escrito;//slot auxiliar
+    string route_bloque="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(num_bloque)+".bin";
+    ifstream archivo(route_bloque, ios::binary);
+    archivo.seekg(direc_slot_escrito);
+    archivo.read(reinterpret_cast<char*>(&slot_ya_escrito), sizeof(Slot));
+    if (slot_ya_escrito.get_direc_sig_slot()!=0)
+    {
+        caminar_por_slots_tupla_variable_data_insertar_slot(slot_tupla_enviado,num_bloque,slot_ya_escrito.get_direc_sig_slot());
+    }
+    else{
+        BrazoDisco brazo;
+        Header_Bloque *ptr_header_bloque=new Header_Bloque();
+        (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque);//obtenemos el header del bloque
+
+        int direccion_slot_nuevo=(*ptr_header_bloque).get_direc_end_fixed_bloque();
+        slot_ya_escrito.set_direc_sig_slot(direccion_slot_nuevo);
+        slot_tupla_enviado.set_direc_sig_slot(0);
+        //ahora si escribimos el slot
+        archivo.close();
+        ofstream archivo_new_write(route_bloque, ios::binary | ios::app);//ios app para no eliminar contenido anterior
+        archivo_new_write.seekp(direccion_slot_nuevo);
+        archivo_new_write.write(reinterpret_cast<const char *>(&slot_tupla_enviado), sizeof(Slot));
+
+        int longitud_tupla_total=slot_tupla_enviado.get_size_length();
+        //-------------ACTUALIZAMOS HEADER_BLOQUE -----------
+        (*ptr_header_bloque).set_cant_bytes_restantes_bloque((*ptr_header_bloque).get_cant_bytes_restantes_bloque()-(longitud_tupla_total+sizeof(Slot)));
+        (*ptr_header_bloque).set_cant_bytes_usados_bloque((*ptr_header_bloque).get_cant_bytes_usados_bloque()+(longitud_tupla_total+sizeof(Slot)));
+        (*ptr_header_bloque).set_direc_end_fixed_bloque((*ptr_header_bloque).get_direc_end_fixed_bloque()+(sizeof(Slot)));
+        (*ptr_header_bloque).set_direc_free_space_variable_bloque((*ptr_header_bloque).get_direc_free_space_variable_bloque()-longitud_tupla_total);
+        (*ptr_header_bloque).set_num_general_records_bloque((*ptr_header_bloque).get_num_general_records_bloque()+1);
+        (*ptr_header_bloque).set_num_records_variable_bloque((*ptr_header_bloque).get_num_records_variable_bloque()+1);
+        
+        archivo_new_write.close();
+    }
+
+    
+}
+
 void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
     BrazoDisco brazo;
     Header_Bloque *ptr_header_bloque=new Header_Bloque();
@@ -550,10 +591,10 @@ void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<st
     /*
     Cómo ya sabemos a qué bloque ingresar, procedemos a ingresar el dato en ese bloque:
     */
-    string route_sector="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(num_bloque_space)+".bin";
+    string route_bloque="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(num_bloque_space)+".bin";
 
     //Abriremos el archivo:
-    ofstream archivo(route_sector, ios::binary | ios::app);//ios app para no eliminar contenido anterior
+    ofstream archivo(route_bloque, ios::binary | ios::app);//ios app para no eliminar contenido anterior
     //ahora verificamos si se abrió:
     if (archivo.is_open()) 
     {   
@@ -562,6 +603,7 @@ void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<st
         int tam_vec_valores_ingresar=_vec_valores_ingresar.size();
         int tam_vec_atributos=_vec_atributos.size();
         int cant_slots_atributo=tam_vec_atributos;
+        vector<Slot> vec_slots_para_ingresar;
         //escribiremos los datos y su slot:
         Slot slot_atributo;
         Slot slot_tupla;
@@ -570,12 +612,10 @@ void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<st
         string valor_atributo;
 
         //Ahora debemos ubicarnos donde nos indique el HEADER_DEL_BLOQUE:
-        int ubication_read_bin=(*ptr_header_bloque).get_direc_free_space_variable_bloque();
-        //Ya nos encontramos en la dirección correcta del free space
-        // archivo.seekp(ubication_read_bin);
-        //puntero seekp ubicado para escribir
+        int ubication_write_bin=(*ptr_header_bloque).get_direc_free_space_variable_bloque();
+        int longitud_tupla_total=0;
 
-        //-------------LA TUPLA -----------
+        //-------------LOS ATRIBUTOS -----------
         for (int i=(tam_vec_atributos-1); i>=0; i--)
         {
             atributo_key=_vec_atributos[i];
@@ -584,58 +624,174 @@ void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<st
             string tipo_data_atributo=(_map_atributos[atributo_key].first);
 
             // retrocede la cantidad que debe para escribir data
-            ubication_read_bin = ubication_read_bin - size_atributo;
-            archivo.seekp(ubication_read_bin);
+            ubication_write_bin = ubication_write_bin - size_atributo;
+            archivo.seekp(ubication_write_bin);
 
 
             // Para escribir debemos detectar el tipo de dato
             if (valor_atributo=="NULL")
             {
                 continue;   //no ingresa el que no tiene dato
+                //pero se tiene que ingresar el slot? NO, porque no tiene nada
+                // slot_atributo.set_offset(ubication_write_bin);
+                // slot_atributo.set_size_length();
+                // vec_slots_para_ingresar.push_back();
             }
             else if (tipo_data_atributo == "int")
             {
                 int number = stoi(valor_atributo);
                 archivo.write(reinterpret_cast<const char *>(&number), size_atributo);
+                longitud_tupla_total=longitud_tupla_total+size_atributo;
+
+                //Ahora guardamos su Slot:
+                slot_atributo.set_offset(ubication_write_bin);
+                slot_atributo.set_size_length(size_atributo);
+                vec_slots_para_ingresar.push_back(slot_atributo);
+
+
             }
             else if (tipo_data_atributo == "float")
             {
                 float decimal = stof(valor_atributo);
                 archivo.write(reinterpret_cast<const char *>(&decimal), size_atributo);
+                longitud_tupla_total=longitud_tupla_total+size_atributo;
+
+                //Ahora guardamos su Slot:
+                slot_atributo.set_offset(ubication_write_bin);
+                slot_atributo.set_size_length(size_atributo);
+                vec_slots_para_ingresar.push_back(slot_atributo);
             }
             else if (tipo_data_atributo == "bool")
             {
                 bool booleano = (valor_atributo == "true");
                 archivo.write(reinterpret_cast<const char *>(&booleano), size_atributo);
+                longitud_tupla_total=longitud_tupla_total+size_atributo;
+
+                //Ahora guardamos su Slot:
+                slot_atributo.set_offset(ubication_write_bin);
+                slot_atributo.set_size_length(size_atributo);
+                vec_slots_para_ingresar.push_back(slot_atributo);
             }
             else if (tipo_data_atributo == "string")
             {
                 const char *atributo_string = valor_atributo.c_str();
                 archivo.write(atributo_string, size_atributo);
+                longitud_tupla_total=longitud_tupla_total+size_atributo;
+
+                //Ahora guardamos su Slot:
+                slot_atributo.set_offset(ubication_write_bin);
+                slot_atributo.set_size_length(size_atributo);
+                vec_slots_para_ingresar.push_back(slot_atributo);
             }
         }
 
-        //-------------AHORA los SLOTS_ATRIBUTO -----------
+        int num_slots=vec_slots_para_ingresar.size();
 
+        //-------------AHORA ingresamos los SLOTS_ATRIBUTO -----------
+        for (int i=(num_slots-1); i>=0; i--)
+        {
+            ubication_write_bin=ubication_write_bin-sizeof(Slot);
+            archivo.seekp(ubication_write_bin);
+            Slot *ptr_slot_vec=&vec_slots_para_ingresar[i];
+
+            //escribe el slot
+            archivo.write(reinterpret_cast<const char *>(&(*ptr_slot_vec)), sizeof(Slot));
+            longitud_tupla_total=longitud_tupla_total+sizeof(Slot);
+
+        }
 
         //-------------AHORA el NULLBITMAP -----------
+        //el nullbitmap esta guardado al final del vector de valores:
+        const char* nullbitmap=_vec_valores_ingresar[tam_vec_valores_ingresar-1].c_str();
+        //ahora ingresamos el nullbitmap
+        ubication_write_bin=ubication_write_bin-strlen(nullbitmap);
+        archivo.seekp(ubication_write_bin);
+        archivo.write(nullbitmap, strlen(nullbitmap));
 
+        longitud_tupla_total=longitud_tupla_total+strlen(nullbitmap);
 
         //-------------AHORA EL SLOT_TUPLA -----------
+        //dirección de donde comienza
+        slot_tupla.set_offset(ubication_write_bin);
+        //Damos la longitud total de la tupla
+        slot_tupla.set_size_length(longitud_tupla_total);
+        //Ahora vemos la dirección que guarda del siguiente SLOT_TUPLA:
+        //Caso en el que puede llegar a ser el primer registro de tipo variable:
+        if ((*ptr_header_bloque).get_num_records_variable_bloque()==0)
+        {
+            //ESCRIBIMOS EL SLOT_TUPLA
+            ubication_write_bin= (*ptr_header_bloque).get_direc_end_fixed_bloque();
+            (*ptr_header_bloque).set_direc_primer_record_variable_length(ubication_write_bin);//en si el primer slot
+            slot_atributo.set_direc_sig_slot(0);
 
+            //escribimos el primer slot
+            archivo.seekp(ubication_write_bin);
+            archivo.write(reinterpret_cast<const char *>(&slot_tupla), sizeof(Slot));
+            
+            //-------------ACTUALIZAR HEADER_BLOQUE -----------
+            (*ptr_header_bloque).set_cant_bytes_restantes_bloque((*ptr_header_bloque).get_cant_bytes_restantes_bloque()-(longitud_tupla_total+sizeof(Slot)));
+            (*ptr_header_bloque).set_cant_bytes_usados_bloque((*ptr_header_bloque).get_cant_bytes_usados_bloque()+(longitud_tupla_total+sizeof(Slot)));
+            (*ptr_header_bloque).set_direc_end_fixed_bloque((*ptr_header_bloque).get_direc_end_fixed_bloque()+(sizeof(Slot)));
+            (*ptr_header_bloque).set_direc_free_space_variable_bloque((*ptr_header_bloque).get_direc_free_space_variable_bloque()-longitud_tupla_total);
+            (*ptr_header_bloque).set_num_general_records_bloque((*ptr_header_bloque).get_num_general_records_bloque()+1);
+            (*ptr_header_bloque).set_num_records_variable_bloque((*ptr_header_bloque).get_num_records_variable_bloque()+1);
+        }
+        else    //caso de no ser el primer variable data
+        {
+            //En este caso el slot tupla que queremos ingresar es el H2
+            BrazoDisco brazo;
+            Header_Bloque *ptr_header_bloque=new Header_Bloque();
+            (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//obtenemos el header del bloque
+            int direc_primer_record_variable_length=ptr_header_bloque->get_direc_primer_record_variable_length();
 
-        //-------------ACTUALIZAR HEADER_BLOQUE -----------
-
-
+            caminar_por_slots_tupla_variable_data_insertar_slot(slot_tupla,num_bloque_space,direc_primer_record_variable_length);
+        }
+        
     } 
     else 
     {
-        cout<<"Error al abrir el archivo binario para get header bloque."<<route_sector<<endl;
+        cout<<"Error al abrir el archivo binario para get header bloque en insert variable length: "<<route_bloque<<endl;
     }
     archivo.close();
     
 }
 
+//----------------------READ VARIABLE DATA-----------------
+
+void caminar_por_slots_tupla_variable_data_imprimir(int num_bloque,int direc_slot_escrito){
+    Slot slot_ya_escrito;//slot auxiliar
+    string route_bloque="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(num_bloque)+".bin";
+    ifstream archivo(route_bloque, ios::binary);
+    archivo.seekg(direc_slot_escrito);
+    archivo.read(reinterpret_cast<char*>(&slot_ya_escrito), sizeof(Slot));
+    if (slot_ya_escrito.get_direc_sig_slot()!=0)
+    {
+        slot_ya_escrito.print_data_slot();
+        cout<<endl;
+        caminar_por_slots_tupla_variable_data_imprimir(num_bloque,slot_ya_escrito.get_direc_sig_slot());
+    }
+    else{
+        cout<<"Ya no se tienen mas registros"<<endl;
+    }
+}
+
+void BrazoDisco::read_variable_length_data_per_block(int num_block){
+    BrazoDisco brazo;
+    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    (*ptr_header_bloque)=brazo.get_header_bloque(num_block);
+
+    int direccion_primer_slot=(*ptr_header_bloque).get_direc_primer_record_variable_length();
+    caminar_por_slots_tupla_variable_data_imprimir(num_block,direccion_primer_slot);
+}
+
+void BrazoDisco::read_variable_length_data(int _id_record){
+    // int ubication_read;
+    // BrazoDisco brazo;
+    // Header_Bloque *ptr_header_bloque=new Header_Bloque();
+
+}
+
+//----------------------WRITE FIXED DATA---------------------
 
 void BrazoDisco::insert_fixed_length_data(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
     BrazoDisco brazo;
@@ -646,4 +802,11 @@ void BrazoDisco::insert_fixed_length_data(MapaPares &_map_atributos,vector<strin
     int num_bloque_space=brazo.get_num_bloque_espacio_libre(espacio_ocuparemos);
     (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//necesitamos algun bloque
 }
+
+//----------------------READ FIXED DATA-----------------
+
+
+
+
+
 

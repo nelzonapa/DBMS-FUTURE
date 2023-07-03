@@ -11,10 +11,13 @@ Header_Bloque::Header_Bloque(){
     this->direc_space_delete_fixed_bloque=0;
     this->direc_end_fixed_bloque=0;
     this->num_records_fixed_bloque=0;
+    this->direc_primer_record_fixed_length=0;
 
     //variable length
+    this->direc_space_delete_variable_bloque=0;
     this->num_records_variable_bloque=0;
     this->direc_free_space_variable_bloque=0;
+    this->direc_primer_record_variable_length=0;
 }
 
 Header_Bloque::~Header_Bloque(){}
@@ -34,7 +37,7 @@ int Header_Bloque::get_num_general_records_bloque(){
     return this->num_general_records_bloque;
 }
 
-//fixed length
+//-------------------------fixed length
 int Header_Bloque::get_direc_space_delete_fixed_bloque(){
     return this->direc_space_delete_fixed_bloque;
 }
@@ -45,12 +48,25 @@ int Header_Bloque::get_num_records_fixed_bloque(){
     return this->num_records_fixed_bloque;
 }
 
-//variable length
+int Header_Bloque::get_direc_primer_record_fixed_length(){
+    return this->direc_primer_record_fixed_length;
+}
+
+//--------------------------variable length
+
+int Header_Bloque::get_direc_space_delete_variable_bloque(){
+    return this->direc_space_delete_variable_bloque;
+}
+
 int Header_Bloque::get_num_records_variable_bloque(){
     return this->num_records_variable_bloque;
 }
 int Header_Bloque::get_direc_free_space_variable_bloque(){
     return this->direc_free_space_variable_bloque;
+}
+
+int Header_Bloque::get_direc_primer_record_variable_length(){
+    return this->direc_primer_record_variable_length;
 }
 
 
@@ -81,12 +97,25 @@ void Header_Bloque::set_num_records_fixed_bloque(int _input){
     this->num_records_fixed_bloque=_input;
 }
 
+void Header_Bloque::set_direc_primer_record_fixed_length(int _input){
+    this->direc_primer_record_fixed_length=_input;
+}
+
 //variable length
+
+void Header_Bloque::set_direc_space_delete_variable_bloque(int _input){
+    this->direc_space_delete_variable_bloque=_input;
+}
+
 void Header_Bloque::set_num_records_variable_bloque(int _input){
     this->num_records_variable_bloque=_input;
 }
 void Header_Bloque::set_direc_free_space_variable_bloque(int _input){
     this->direc_free_space_variable_bloque=_input;
+}
+
+void Header_Bloque::set_direc_primer_record_variable_length(int _input){
+    this->direc_primer_record_variable_length=_input;
 }
 
 //--------------------Others-------------------

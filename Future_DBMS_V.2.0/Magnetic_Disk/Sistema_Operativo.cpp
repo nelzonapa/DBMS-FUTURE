@@ -20,8 +20,9 @@ void Sistema_Operativo::menu(){
         std::cout<<"4. Escribir nuevo registro: "<<endl;
         std::cout<<"------------"<<endl;
         std::cout<<"5. Mostrar informacion de un bloque"<<endl;
+        std::cout<<"6. Mostrar registros variables de un bloque"<<endl;
         std::cout<<"------------"<<endl;
-        std::cout<<"6. Salir"<<endl;
+        std::cout<<"7. Salir"<<endl;
         std::cout<<"Ingrese opcion: "<<endl;
         cin>>op;
         switch(op)
@@ -46,11 +47,17 @@ void Sistema_Operativo::menu(){
                 break;
             case 5:
                 std::cout<<"Ingrese el numero del bloque para mostrar su informacion.."<<endl;
-                int num;
-                cin>>num;
-                mostrar_info_de_bloque(num);
+                int num2;
+                cin>>num2;
+                mostrar_info_de_bloque(num2);
                 break;
             case 6:
+                std::cout<<"Ingrese el numero del bloque para mostrar los registros variables.."<<endl;
+                int num;
+                cin>>num;
+                mostrar_contenido_variable_length_bloque(num);
+                break;
+            case 7:
                 x=true;
                 break;
 
@@ -117,6 +124,11 @@ void Sistema_Operativo::recuperar_disco(){
 void Sistema_Operativo::mostrar_info_de_bloque(int num_bloque){
     BrazoDisco brazo_disk;
     brazo_disk.read_header_bloque(num_bloque);
+}
+
+void Sistema_Operativo::mostrar_contenido_variable_length_bloque(int num_bloque){
+    BrazoDisco brazo_disk;
+    brazo_disk.read_variable_length_data_per_block(num_bloque);
 }
 
 //----------------- ESQUEMA DATA ------------------
@@ -358,8 +370,20 @@ MapaPares& Sistema_Operativo::get_esquema_tabla(string _name_tabla){
                 getline(file_open, linea);
                 istringstream iss(linea);
                 string _atributo;
+                // int cont_detector_first_atributo=1;
+                
                 while (getline(iss,_atributo,',')) // después de cada espacio ' '
                 {
+                    // if (cont_detector_first_atributo==1)
+                    // {
+                    //     if (tolower(_atributo)==)
+                    //     {
+                    //         /* code */
+                    //     }
+                        
+                    // }
+                    // cont_detector_first_atributo++;
+                    
                     (*ptr_map_atributos)[_atributo] = make_pair("", 0); // Inicializar con valores vacíos
                     vector_ordenado_atributos.push_back(_atributo); // Agregar el atributo al vector de orden
                 }  
@@ -555,10 +579,12 @@ void Sistema_Operativo::escribir_registro()
 
         //agregamos la clave de la tabla
         (*ptr_vec_valores_ingresar).push_back(to_string(sacar_codigo_tabla(name_table)));
-        //ahora el nullbitmap solo porque es de VARIABLE LENGTH
-        (*ptr_vec_valores_ingresar).push_back(nullbitmap);
+
         //agregamos el FALSE de VARIABLE LENGTH
         (*ptr_vec_valores_ingresar).push_back("false");
+
+        //ahora el nullbitmap solo porque es de VARIABLE LENGTH
+        (*ptr_vec_valores_ingresar).push_back(nullbitmap);
 
         brazo_escritor.insert_variable_length_data((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
     }

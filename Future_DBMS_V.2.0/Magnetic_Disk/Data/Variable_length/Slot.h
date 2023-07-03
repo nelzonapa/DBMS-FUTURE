@@ -23,7 +23,7 @@ public:
     //---------- SET --------------
     void set_offset(int _offset);
     void set_size_length(int _size_length);
-    void get_direc_sig_slot(int _direc_sig_slot);
+    void set_direc_sig_slot(int _direc_sig_slot);
 
     //------------- OTHERS --------------
     void print_data_slot();
