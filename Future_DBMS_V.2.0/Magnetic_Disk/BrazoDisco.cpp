@@ -8,6 +8,7 @@ BrazoDisco::~BrazoDisco(){}
 //-------------------------PARTE_CREATE--------------------------
 void BrazoDisco::crear_disco(MagneticDisk &disco_magnetic){
     BrazoDisco brazo_crea_disco;
+
     brazo_crea_disco.write_disco_info(disco_magnetic);
 
     brazo_crea_disco.crear_platos(disco_magnetic);
@@ -34,7 +35,7 @@ void BrazoDisco::crear_platos(MagneticDisk &disco_magnetic){
     int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
     for (int i = 0; i < _num_platos; i++)
     {
-        Plato platito;
+        Plato plato;
         //para crear el archivo bin
         string num="_"+to_string(i+1)+".bin";
         string route_plato="Magnetic_Disk/Disco/Platos/plato";
@@ -42,7 +43,7 @@ void BrazoDisco::crear_platos(MagneticDisk &disco_magnetic){
         cout<<"Route platos: "<<final_route_plato<<endl;//Route platos: Magnetic_Disk/Disco/Platos/plato_1.bin
 
         //Ingresaremos datos del plato
-        platito.set_id_plato(i+1);
+        plato.set_id_plato(i+1);
         //para los punteros direcciones de los archivos a leer
         //id inicial de superficie
         //id final de superficie
@@ -54,21 +55,20 @@ void BrazoDisco::crear_platos(MagneticDisk &disco_magnetic){
         string route_inicio_superficie=route_reference_superficie+to_string(id_inicio_superficie)+".bin";
         
         //los demás set del PLATO;
-        platito.set_route_fin_plato(route_fin_superficie);
-        platito.set_route_inicio_plato(route_inicio_superficie);
-        platito.set_capacidad_plato(_capacidad_disco_total/_num_platos);
+        plato.set_route_fin_plato(route_fin_superficie);
+        plato.set_route_inicio_plato(route_inicio_superficie);
+        plato.set_capacidad_plato(_capacidad_disco_total/_num_platos);
 
         cout<<"Abrimos, creamos y escribimos: "<<i<<endl;
         ofstream archivo(final_route_plato,ios::binary);
         if (archivo.is_open()){
-            archivo.write(reinterpret_cast<const char*>(&platito), sizeof(Plato));
+            archivo.write(reinterpret_cast<const char*>(&plato), sizeof(Plato));
             cout<<"Archivo binario creado: "<<final_route_plato<<" ..."<<endl;
         }
         else{
             cout<<"Error al crear el archivo binario: "<<final_route_plato<<endl;
         }
         archivo.close();
-        platito.~Plato();
     }
     
 }
@@ -113,7 +113,6 @@ void BrazoDisco::crear_superficies(MagneticDisk &disco_magnetic){
             cout<<"Error al crear el archivo binario: "<<final_route_superficie<<endl;
         }
         archivo.close();
-        superficie.~Superficie();
     }
 }
 
@@ -127,8 +126,8 @@ void BrazoDisco::crear_pistas(MagneticDisk &disco_magnetic){
         Pista pista;
         //para crear el archivo bin
         string num="_"+to_string(i+1)+".bin";
-        string route_superficie="Magnetic_Disk/Disco/Platos/Superficies/Pistas/pista";
-        string final_route_pista=route_superficie+num;
+        string route_pista="Magnetic_Disk/Disco/Platos/Superficies/Pistas/pista";
+        string final_route_pista=route_pista+num;
         cout<<"Route platos: "<<final_route_pista<<endl;
 
         //Ingresaremos datos del pista
@@ -157,7 +156,6 @@ void BrazoDisco::crear_pistas(MagneticDisk &disco_magnetic){
             cout<<"Error al crear el archivo binario: "<<final_route_pista<<endl;
         }
         archivo.close();
-        pista.~Pista();
     }
 }
 
@@ -171,8 +169,8 @@ void BrazoDisco::crear_sectores(MagneticDisk &disco_magnetic){
         Sector sector;
         //para crear el archivo bin
         string num="_"+to_string(i+1)+".bin";
-        string route_superficie="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/sector";
-        string final_route_sector=route_superficie+num;
+        string route_sector="Magnetic_Disk/Disco/Platos/Superficies/Pistas/Sectores/sector";
+        string final_route_sector=route_sector+num;
         cout<<"Route platos: "<<final_route_sector<<endl;
 
         //Ingresaremos datos de sector
@@ -201,7 +199,6 @@ void BrazoDisco::crear_sectores(MagneticDisk &disco_magnetic){
             cout<<"Error al crear el archivo binario: "<<final_route_sector<<endl;
         }
         archivo.close();
-        sector.~Sector();
     }
 }
 
