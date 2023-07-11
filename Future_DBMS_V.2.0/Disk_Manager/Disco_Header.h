@@ -10,11 +10,11 @@ protected:
     const char* route_disk_magnetic;
     int id_disk_magnetic;
 
-    int num_platos;
-    int num_superficies;
-    int num_pistas;
-    int num_sectores;
-    int num_bloques;
+    int num_platos_total;
+    int num_superficies_total;
+    int num_pistas_total;
+    int num_sectores_total;
+    int num_bloques_total;
 
     int capacidad_total_magneticDisk;
     int capacidad_usada_magneticDisk;
@@ -29,11 +29,11 @@ public:
     void set_route_disk_magnetic(const char* route);
     void set_id_disk_magnetic(int _input);
 
-    void set_num_platos(int _input);
-    void set_num_superficies(int _input);
-    void set_num_pistas(int _input);
-    void set_num_sectores(int _input);
-    void set_num_bloques(int _input);
+    void set_num_platos_total(int _input);
+    void set_num_superficies_total(int _input);
+    void set_num_pistas_total(int _input);
+    void set_num_sectores_total(int _input);
+    void set_num_bloques_total(int _input);
 
     void set_capacidad_total_magneticDisk(int _input);
     void set_capacidad_usada_magneticDisk(int _input);
@@ -43,11 +43,11 @@ public:
     const char* get_route_disk_magnetic();
     int get_id_disk_magnetic();
 
-    int get_num_platos();
-    int get_num_superficies();
-    int get_num_pistas();
-    int get_num_sectores();
-    int get_num_bloques();
+    int get_num_platos_total();
+    int get_num_superficies_total();
+    int get_num_pistas_total();
+    int get_num_sectores_total();
+    int get_num_bloques_total();
 
     int get_capacidad_total_magneticDisk();
     int get_capacidad_usada_magneticDisk();

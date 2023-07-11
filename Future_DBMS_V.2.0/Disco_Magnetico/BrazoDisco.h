@@ -1,8 +1,11 @@
 #ifndef BRAZODISCO_H
 #define BRAZODISCO_H
 
-// #include "Disco_Magnetico.h"
-// #include "Disco_Magnetico.cpp"
+#include "Disco_Magnetico.h"
+#include "Disco_Magnetico.cpp"
+
+#include "../Disk_Manager/Sistema_Operativo.h"
+#include "../Disk_Manager/Sistema_Operativo.cpp"
 
 #include <iostream>
 #include <fstream>
@@ -27,6 +30,7 @@ public:
     /*
     -------------------- COMPROBAMOS EXISTENCIA DEL DISCO ----------------
     */
+    string conseguir_disco(const string &disco_name);
     bool comprobar_existencia_file(const string& filePath);
     bool Crear_leer_file_discos(const string& filePath, const string& word_buscar);
 

@@ -6,76 +6,127 @@ Sistema_Operativo::~Sistema_Operativo(){}
 
 
 //-------------------------PARTE_CREATE--------------------------
-void Sistema_Operativo::crear_disco(Disco_Header &disco_magnetic){
-    Sistema_Operativo brazo_crea_disco;
 
-    brazo_crea_disco.write_disco_info(disco_magnetic);
+void Sistema_Operativo::crear_ubicacion_disco_header(Disco_Magnetico &disco_magnetic,const string &direccion_ruta_disco)
+{
 
-    brazo_crea_disco.crear_platos(disco_magnetic);
-    // brazo_crea_disco.write_platos_info();//Header de platos en mantenimiento
-
-    brazo_crea_disco.crear_superficies(disco_magnetic);
-    // brazo_crea_disco.write_superficies_info();//Header de superficies en mantenimiento
-
-    brazo_crea_disco.crear_pistas(disco_magnetic);
-    // brazo_crea_disco.write_pistas_info();//Header de pistas en mantenimiento
-
-    brazo_crea_disco.crear_sectores(disco_magnetic);
-    // brazo_crea_disco.write_sectores_info();//Header de sectores en mantenimiento
-
-    brazo_crea_disco.crear_bloques(disco_magnetic);
-    // brazo_crea_disco.write_bloques_info();//Header de platos en mantenimiento
-
-    std::cout<<"disc-created"<<endl;
-}
-
-void Sistema_Operativo::crear_platos(Disco_Header &disco_magnetic){
-    int _num_platos=disco_magnetic.get_num_platos();
-    int _num_superficies=disco_magnetic.get_num_superficies();
-    int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
-    for (int i = 0; i < _num_platos; i++)
+    Disco_index *ptr_disco;
+    *ptr_disco=get_disco_header(disco_magnetic.get_id_disk_magnetic());
+    if ((ptr_disco)==nullptr)//en caso no existiera
     {
-        Plato_Index plato;
-        //para crear el archivo bin
-        string num="_"+to_string(i+1)+".bin";
-        string route_plato="Disk_Manager/Disco/Platos/plato";
-        string final_route_plato=route_plato+num;
-        cout<<"Route platos: "<<final_route_plato<<endl;//Route platos: Disk_Manager/Disco/Platos/plato_1.bin
+        ptr_disco->set_capacidad_disco(disco_magnetic.get_capacidad_sector()*disco_magnetic.get_num_sectores());
+        ptr_disco->set_id_disco(disco_magnetic.get_id_disk_magnetic());
+        ptr_disco->set_route_inicio_disco(direccion_ruta_disco);
+        ptr_disco->set_route_fin_disco(direccion_ruta_disco);
 
-        //Ingresaremos datos del plato
-        plato.set_id_plato(i+1);
-        //para los punteros direcciones de los archivos a leer
-        //id inicial de superficie
-        //id final de superficie
-        int n=(_num_superficies/_num_platos);
-        int id_fin_superficie=(i+1)*n;
-        int id_inicio_superficie=((i+1)*n)-(n-1);
-        string route_reference_superficie="Disk_Manager/Disco/Platos/Superficies/superficie_";
-        string route_fin_superficie=route_reference_superficie+to_string(id_fin_superficie)+".bin";
-        string route_inicio_superficie=route_reference_superficie+to_string(id_inicio_superficie)+".bin";
-        
-        //los demás set del PLATO;
-        plato.set_route_fin_plato(route_fin_superficie);
-        plato.set_route_inicio_plato(route_inicio_superficie);
-        plato.set_capacidad_plato(_capacidad_disco_total/_num_platos);
-
-        cout<<"Abrimos, creamos y escribimos: "<<i<<endl;
-        ofstream archivo(final_route_plato,ios::binary);
+        string id_disk=to_string(disco_magnetic.get_id_disk_magnetic());
+        // string name_disco_index="/Disco_index"+id_disk+".bin";
+        string final_ruta=direccion_ruta_disco+"/Disco_header"+id_disk+".bin";
+        //Escribimos, creamos el archivo de disco index
+        ofstream archivo(final_ruta,ios::app);
         if (archivo.is_open()){
-            archivo.write(reinterpret_cast<const char*>(&plato), sizeof(Plato_Index));
-            cout<<"Archivo binario creado: "<<final_route_plato<<" ..."<<endl;
+                archivo.write(reinterpret_cast<const char*>(&(*ptr_disco)), sizeof(Disco_index));
+                cout<<"Archivo binario creado: "<<final_ruta<<" ..."<<endl;
         }
         else{
-            cout<<"Error al crear el archivo binario: "<<final_route_plato<<endl;
+            cout<<"Error al crear el archivo binario: "<<final_ruta<<endl;
         }
         archivo.close();
+    }
+    else//en caso ya existiera
+    {
+        return;
     }
     
 }
 
-void Sistema_Operativo::crear_superficies(Disco_Header &disco_magnetic){
-    int _num_superficies=disco_magnetic.get_num_superficies();      //
-    int _num_pistas=disco_magnetic.get_num_pistas();
+void Sistema_Operativo::crear_disco_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta_plato, bool final_inicio){
+    
+    int id_disco=disco_magnetic.get_id_disk_magnetic();
+    string disco_name="Disco_"+to_string(id_disco);
+
+    Disco_index *ptr_disco;
+    
+    *ptr_disco=get_disco_index(disco_magnetic.get_id_disk_magnetic());
+    if ((ptr_disco)==nullptr)//en caso no existiera
+    {   
+        ptr_disco->set_capacidad_disco(disco_magnetic.get_capacidad_sector()*disco_magnetic.get_num_sectores());
+        ptr_disco->set_id_disco(disco_magnetic.get_id_disk_magnetic());
+        if (final_inicio==true)//Plato del inicio
+        {
+            ptr_disco->set_route_inicio_disco(direccion_ruta_plato);
+        }
+        else if (final_inicio==false)
+        {
+            ptr_disco->set_route_fin_disco(direccion_ruta_plato);
+        }
+        
+        string id_disk=to_string(disco_magnetic.get_id_disk_magnetic());
+        // string name_disco_index="/Disco_index"+id_disk+".bin";
+        string route_disco_index="Disk_Manager/Data_Index/"+disco_name+"_index";
+        string final_ruta=route_disco_index+"/Disco_index"+id_disk+".bin";
+        //Escribimos, creamos el archivo de disco index
+        ofstream archivo(final_ruta,ios::app);
+        if (archivo.is_open()){
+                archivo.write(reinterpret_cast<const char*>(&(*ptr_disco)), sizeof(Disco_index));
+                cout<<"Archivo binario creado: "<<final_ruta<<" ..."<<endl;
+        }
+        else{
+            cout<<"Error al crear el archivo binario: "<<final_ruta<<endl;
+        }
+        archivo.close();
+    }
+    else//en caso ya existiera
+    {
+        return;
+    }
+}
+
+void Sistema_Operativo::crear_platos_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta_superficie, bool final_inicio){
+    int id_disco=disco_magnetic.get_id_disk_magnetic();
+    string disco_name="Disco_"+to_string(id_disco);
+
+    Plato_Index *ptr_plato;
+    
+    *ptr_plato=get_plato_index(disco_magnetic.get_id_disk_magnetic());
+    if ((ptr_plato)==nullptr)//en caso no existiera
+    {   
+        ptr_plato->set_capacidad_disco(disco_magnetic.get_capacidad_sector()*disco_magnetic.get_num_sectores());
+        ptr_plato->set_id_disco(disco_magnetic.get_id_disk_magnetic());
+        if (final_inicio==true)//Plato del inicio
+        {
+            ptr_plato->set_route_inicio_disco(direccion_ruta_superficie);
+        }
+        else if (final_inicio==false)
+        {
+            ptr_plato->set_route_fin_disco(direccion_ruta_superficie);
+        }
+        
+        string id_disk=to_string(disco_magnetic.get_id_disk_magnetic());
+        // string name_disco_index="/Disco_index"+id_disk+".bin";
+        string route_disco_index="Disk_Manager/Data_Index/"+disco_name+"_index";
+        string final_ruta=route_disco_index+"/Disco_index"+id_disk+".bin";
+        //Escribimos, creamos el archivo de disco index
+        ofstream archivo(final_ruta,ios::app);
+        if (archivo.is_open()){
+                archivo.write(reinterpret_cast<const char*>(&(*ptr_plato)), sizeof(Disco_index));
+                cout<<"Archivo binario creado: "<<final_ruta<<" ..."<<endl;
+        }
+        else{
+            cout<<"Error al crear el archivo binario: "<<final_ruta<<endl;
+        }
+        archivo.close();
+    }
+    else//en caso ya existiera
+    {
+        return;
+    }
+    
+}
+
+void Sistema_Operativo::crear_superficies_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio){
+    int _num_superficies=disco_magnetic.get_num_superficies_total();      //
+    int _num_pistas=disco_magnetic.get_num_pistas_total();
     int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
 
     for (int i = 0; i < _num_superficies; i++)      //
@@ -116,9 +167,9 @@ void Sistema_Operativo::crear_superficies(Disco_Header &disco_magnetic){
     }
 }
 
-void Sistema_Operativo::crear_pistas(Disco_Header &disco_magnetic){
-    int _num_pistas=disco_magnetic.get_num_pistas();      //
-    int _num_sectores=disco_magnetic.get_num_sectores();
+void Sistema_Operativo::crear_pistas_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio){
+    int _num_pistas=disco_magnetic.get_num_pistas_total();      //
+    int _num_sectores=disco_magnetic.get_num_sectores_total();
     int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
     
     for (int i = 0; i < _num_pistas; i++)      //
@@ -159,9 +210,9 @@ void Sistema_Operativo::crear_pistas(Disco_Header &disco_magnetic){
     }
 }
 
-void Sistema_Operativo::crear_sectores(Disco_Header &disco_magnetic){
-    int _num_sectores=disco_magnetic.get_num_sectores();      //
-    int _num_bloques=disco_magnetic.get_num_bloques();
+void Sistema_Operativo::crear_sectores_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio){
+    int _num_sectores=disco_magnetic.get_num_sectores_total();      //
+    int _num_bloques=disco_magnetic.get_num_bloques_total();
     int _capacidad_disco_total=disco_magnetic.get_capacidad_total_magneticDisk();
     
     for (int i = 0; i < _num_sectores; i++)      //
@@ -202,8 +253,8 @@ void Sistema_Operativo::crear_sectores(Disco_Header &disco_magnetic){
     }
 }
 
-void Sistema_Operativo::crear_bloques(Disco_Header &disco_magnetic){
-    int _num_bloques=disco_magnetic.get_num_bloques();
+void Sistema_Operativo::crear_bloques_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio){
+    int _num_bloques=disco_magnetic.get_num_bloques_total();
     int _capacidad_total_disco=disco_magnetic.get_capacidad_total_magneticDisk();
     int _capacidad_por_bloque=_capacidad_total_disco/_num_bloques;
     for (int i = 0; i < _num_bloques; i++)
@@ -240,6 +291,21 @@ void Sistema_Operativo::crear_bloques(Disco_Header &disco_magnetic){
 
 
 //-------------------------WRITE_INFO--------------------------
+void write_disco_general_info(Disco_Header &disco_magnetic){
+    const char* route_disc="Disk_Manager/Disco/magnetic_disk_info.bin";
+
+    disco_magnetic.set_route_disk_magnetic(route_disc);
+    ofstream archivo(route_disc,ios::binary);
+    if (archivo.is_open()){
+        cout<<"Archivo binario creado: "<<route_disc<<endl;
+        archivo.write(reinterpret_cast<const char*>(&disco_magnetic), sizeof(Disco_Header));
+    } 
+    else{
+        cout<<"Error al crear el archivo binario: "<<route_disc<<endl;
+    }
+    archivo.close();
+}
+
 void Sistema_Operativo::write_disco_info(Disco_Header &disco_magnetic){
     const char* route_disc="Disk_Manager/Disco/magnetic_disk_info.bin";
 
@@ -275,41 +341,58 @@ void Sistema_Operativo::write_bloques_info(){
 }
 
 //-------------------------READ_INFO--------------------------
-void Sistema_Operativo::read_disco_info(){
-    const char* route_disc="Disk_Manager/Disco/magnetic_disk_info.bin";
-    ifstream archivo(route_disc, ios::binary);
-    Disco_Header disco_magnetico;
+Disco_index& Sistema_Operativo::get_disco_header(int num_id_disco){
+    Disco_index *disco_h=new Disco_index();
+    string disco_name="Disco_"+to_string(num_id_disco);
+    string final_route_disco="Disk_Manager/Data_Index/"+disco_name+"_index/Disco_header"+to_string(num_id_disco)+".bin";
+    ifstream archivo(final_route_disco, ios::binary);
+    archivo.seekg(0);
     if (archivo.is_open()) {
-        archivo.read(reinterpret_cast<char*>(&disco_magnetico), sizeof(Disco_Header));
-        cout<<"Datos leidos del archivo: "<<route_disc<<endl;
-    } else {
-        cout<<"Error al abrir el archivo binario para lectura."<<endl;
+        archivo.read(reinterpret_cast<char*>(&(*disco_h)), sizeof(Disco_index));
+        cout<<"Datos leidos del archivo: "<<final_route_disco<<endl;
+        return (*disco_h);
+    } 
+    else 
+    {
+        cout<<"Error al abrir el archivo binario para lectura."<<final_route_disco<<endl;
     }
-    disco_magnetico.print_info_magnetic_disk();
-    archivo.close();
-    disco_magnetico.~Disco_Header();
 }
 
-void Sistema_Operativo::read_plato_info(int _num_plato){
-    int ubication_read_bin=0;
-    string route_plato="Disk_Manager/Disco/Platos/plato_"+to_string(_num_plato)+".bin";
-
-    ifstream archivo(route_plato, ios::binary);
-    archivo.seekg(ubication_read_bin);
-
-    Plato_Index platito;
+Disco_index& Sistema_Operativo::get_disco_index(int num_id_disco){
+    Disco_index *disco_index=new Disco_index();
+    string disco_name="Disco_"+to_string(num_id_disco);
+    string final_route_disco="Disk_Manager/Data_Index/"+disco_name+"_index/Disco_index_"+to_string(num_id_disco)+".bin";
+    ifstream archivo(final_route_disco, ios::binary);
+    archivo.seekg(0);
     if (archivo.is_open()) {
-        archivo.read(reinterpret_cast<char*>(&platito), sizeof(Plato_Index));
-        cout<<"Datos leidos del archivo: "<<route_plato<<endl;
-    } else {
-        cout<<"Error al abrir el archivo binario para lectura."<<route_plato<<endl;
+        archivo.read(reinterpret_cast<char*>(&(*disco_index)), sizeof(Disco_index));
+        cout<<"Datos leidos del archivo: "<<final_route_disco<<endl;
+        return (*disco_index);
+    } 
+    else 
+    {
+        cout<<"Error al abrir el archivo binario para lectura."<<final_route_disco<<endl;
     }
-    platito.print_data_Plato();
-    archivo.close();
-    platito.~Plato_Index();
 }
 
-void Sistema_Operativo::read_superficie_info(int _num_superficie){
+Plato_Index& Sistema_Operativo::get_plato_index(int _num_plato){
+    Plato_Index *plato_index=new Plato_Index();
+    string disco_name="Disco_"+to_string(1);
+    string final_route_plato="Disk_Manager/Data_Index/"+disco_name+"_index/Plato_index_"+to_string(_num_plato)+".bin";
+    ifstream archivo(final_route_plato, ios::binary);
+    archivo.seekg(0);
+    if (archivo.is_open()) {
+        archivo.read(reinterpret_cast<char*>(&(*plato_index)), sizeof(Plato_Index));
+        cout<<"Datos leidos del archivo: "<<final_route_plato<<endl;
+        return (*plato_index);
+    } 
+    else 
+    {
+        cout<<"Error al abrir el archivo binario para lectura."<<final_route_plato<<endl;
+    }
+}
+
+Superficie_Index& Sistema_Operativo::get_superficie_index(int _num_superficie){
     int ubication_read_bin=0;
     string route_superficie="Disk_Manager/Disco/Platos/Superficies/superficie_"+to_string(_num_superficie)+".bin";
 
@@ -328,7 +411,7 @@ void Sistema_Operativo::read_superficie_info(int _num_superficie){
     superficie.~Superficie_Index();
 }
 
-void Sistema_Operativo::read_pista_info(int _num_pista){
+Pista_Index& Sistema_Operativo::get_pista_index(int _num_pista){
     int ubication_read_bin=0;
     string route_pista="Disk_Manager/Disco/Platos/Superficies/Pistas/pista_"+to_string(_num_pista)+".bin";
 
@@ -347,7 +430,7 @@ void Sistema_Operativo::read_pista_info(int _num_pista){
     pista.~Pista_Index();
 }
 
-void Sistema_Operativo::read_sector_info(int _num_sector){
+Sector_Index& Sistema_Operativo::get_sector_index(int _num_sector){
     int ubication_read_bin=0;
     string route_sector="Disk_Manager/Disco/Platos/Superficies/Pistas/Sectores/sector_"+to_string(_num_sector)+".bin";
 
@@ -366,7 +449,7 @@ void Sistema_Operativo::read_sector_info(int _num_sector){
     sector.~Sector_Index();
 }
 
-void Sistema_Operativo::read_bloque_info(int _num_bloque){
+Bloque& Sistema_Operativo::get_bloque_index(int _num_bloque){
     // int ubication_read_bin=0;
     // string route_sector="Disk_Manager/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
 
@@ -457,7 +540,7 @@ int Sistema_Operativo::get_num_bloque_espacio_libre(int _space_necesitado){
     Sistema_Operativo brazo;
     Disco_Header *ptr_disco_magnetico=new Disco_Header();
     (*ptr_disco_magnetico)=brazo.get_disco_magnetic_info();
-    int num_bloques=(*ptr_disco_magnetico).get_num_bloques();
+    int num_bloques=(*ptr_disco_magnetico).get_num_bloques_total();
     for (size_t i = 1; i <=num_bloques; i++)
     {
         (*ptr_header_bloque)=brazo.get_header_bloque(i);

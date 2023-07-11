@@ -82,7 +82,7 @@ void Disk_Manager::menu(){
 void Disk_Manager::crear_disco(){
     cout<<"Creando disco..."<<endl;
     Disco_Magnetico *ptr_disco_magnetico=new Disco_Magnetico();
-    // Disco_Header* ptr_MagneticDisk=new Disco_Header();
+    Disco_Header* ptr_disk_header=new Disco_Header();
     //recolectaremos_información:
     cout<<"Para proceder complete lo siguiente: "<<endl;
     int id_disco,cantidad_platos,capacidad_sector, cant_sectores, cant_pistas,cant_bloques;
@@ -90,35 +90,44 @@ void Disk_Manager::crear_disco(){
     std::cout<<"Ingrese el ID de su disco: "<<endl;
     cin>>id_disco;    //recibe el id del disco
     ptr_disco_magnetico->set_id_disk_magnetic(id_disco);
+    ptr_disk_header->set_id_disk_magnetic(id_disco);
 
     std::cout<<"Ingrese la cantidad de PLATOS a tener: "<<endl;
     cin>>cantidad_platos;    //recibe cantidad de platos, recordemos que cada plato tiene sus 2 superficies
     ptr_disco_magnetico->set_num_platos(cantidad_platos);
+    ptr_disk_header->set_num_platos_total(cantidad_platos);
+
     ptr_disco_magnetico->set_num_superficies(2);
+    ptr_disk_header->set_num_superficies_total(cantidad_platos*2);
 
     std::cout<<"Ingrese la cantidad de PISTAS por Superficie a tener: "<<endl;
     cin>>cant_pistas;       //recibe la cantidad de pistas a tener
     ptr_disco_magnetico->set_num_pistas(cant_pistas);
+    ptr_disk_header->set_num_pistas_total(cantidad_platos*2*cant_pistas);
     
     std::cout<<"Ingrese la cantidad de SECTORES por Pista a tener: "<<endl;
     cin>>cant_sectores;     //recibe la cantidad de sectores a tener
     ptr_disco_magnetico->set_num_sectores(cant_sectores);
+    ptr_disk_header->set_num_sectores_total(cantidad_platos*2*cant_pistas*cant_sectores);
 
     std::cout<<"Ingrese la cantidad de BLOQUES por Sector a tener: "<<endl;
     cin>>cant_bloques;     //recibe la cantidad de sectores a tener
     ptr_disco_magnetico->set_num_bloques(cant_bloques);
+    ptr_disk_header->set_num_bloques_total(cantidad_platos*2*cant_pistas*cant_sectores*cant_bloques);
 
     std::cout<<"Ingrese la capacidad del sector: "<<endl;
     cin>>capacidad_sector;    //1024 -> 1 KB
     ptr_disco_magnetico->set_capacidad_sector(capacidad_sector);
+    ptr_disk_header->set_capacidad_total_magneticDisk(capacidad_sector*(ptr_disk_header->get_num_sectores_total()));
 
     cout<<"Informacion del disco llenada correctamente"<<endl;
     cout<<"Creando su disco"<<endl;
-    // ptr_MagneticDisk->print_info_magnetic_disk();
 
     //Ahora llamamos a brazo
     BrazoDisco brazo_disk;
     brazo_disk.crear_disco(*ptr_disco_magnetico);
+    // brazo_disk.comprobar_existencia_file();
+    
     // cout<<"Disco creado correctamente..."<<endl;
     // cout<<"Mostrando informacion del disco guardado..."<<endl;
     // brazo_disk.read_disco_info();
@@ -130,8 +139,8 @@ void Disk_Manager::recuperar_disco(){
 }
 
 void Disk_Manager::mostrar_informacion_disco(){
-    Sistema_Operativo sis_operat;
-    sis_operat.read_disco_info();
+    // Sistema_Operativo sis_operat;
+    // sis_operat.read_disco_index_info();
 }
 //----------------READ INFO----------------
 

@@ -4,11 +4,11 @@ Disco_Header::Disco_Header()
 {
     this->id_disk_magnetic=0;
 
-    this->num_platos=0;
-    this->num_superficies=0;
-    this->num_pistas=0;
-    this->num_sectores=0;
-    this->num_bloques=0;
+    this->num_platos_total=0;
+    this->num_superficies_total=0;
+    this->num_pistas_total=0;
+    this->num_sectores_total=0;
+    this->num_bloques_total=0;
 
     this->capacidad_total_magneticDisk=0;
     this->capacidad_usada_magneticDisk=0;
@@ -26,20 +26,20 @@ void Disco_Header::set_id_disk_magnetic(int _input){
     this->id_disk_magnetic=_input;
 }
 
-void Disco_Header::set_num_platos(int _input){
-    this->num_platos=_input;
+void Disco_Header::set_num_platos_total(int _input){
+    this->num_platos_total=_input;
 }
-void Disco_Header::set_num_superficies(int _input){
-    this->num_superficies=_input;
+void Disco_Header::set_num_superficies_total(int _input){
+    this->num_superficies_total=_input;
 }
-void Disco_Header::set_num_pistas(int _input){
-    this->num_pistas=_input;
+void Disco_Header::set_num_pistas_total(int _input){
+    this->num_pistas_total=_input;
 }
-void Disco_Header::set_num_sectores(int _input){
-    this->num_sectores=_input;
+void Disco_Header::set_num_sectores_total(int _input){
+    this->num_sectores_total=_input;
 }
-void Disco_Header::set_num_bloques(int _input){
-    this->num_bloques=_input;
+void Disco_Header::set_num_bloques_total(int _input){
+    this->num_bloques_total=_input;
 }
 
 void Disco_Header::set_capacidad_total_magneticDisk(int _input){
@@ -61,20 +61,20 @@ int Disco_Header::get_id_disk_magnetic(){
     return this->id_disk_magnetic;
 }
 
-int Disco_Header::get_num_platos(){
-    return this->num_platos;
+int Disco_Header::get_num_platos_total(){
+    return this->num_platos_total;
 }
-int Disco_Header::get_num_superficies(){
-    return this->num_superficies;
+int Disco_Header::get_num_superficies_total(){
+    return this->num_superficies_total;
 }
-int Disco_Header::get_num_pistas(){
-    return this->num_pistas;
+int Disco_Header::get_num_pistas_total(){
+    return this->num_pistas_total;
 }
-int Disco_Header::get_num_sectores(){
-    return this->num_sectores;
+int Disco_Header::get_num_sectores_total(){
+    return this->num_sectores_total;
 }
-int Disco_Header::get_num_bloques(){
-    return this->num_bloques;
+int Disco_Header::get_num_bloques_total(){
+    return this->num_bloques_total;
 }
 
 int Disco_Header::get_capacidad_total_magneticDisk(){
@@ -93,11 +93,11 @@ void Disco_Header::print_info_magnetic_disk(){
     cout<<"Direccion/ruta: "<<this->route_disk_magnetic<<endl;
     // cout<<"id disco"<<this->id_disk_magnetic<<endl;
 
-    cout<<"Numero de platos: "<<this->num_platos<<endl;
-    cout<<"Numero de superficies: "<<this->num_superficies<<endl;
-    cout<<"Numero de pistas: "<<this->num_pistas<<endl;
-    cout<<"Numero de sectores: "<<this->num_sectores<<endl;
-    cout<<"Numero de bloques: "<<this->num_bloques<<endl;
+    cout<<"Numero de platos: "<<this->num_platos_total<<endl;
+    cout<<"Numero de superficies: "<<this->num_superficies_total<<endl;
+    cout<<"Numero de pistas: "<<this->num_pistas_total<<endl;
+    cout<<"Numero de sectores: "<<this->num_sectores_total<<endl;
+    cout<<"Numero de bloques: "<<this->num_bloques_total<<endl;
 
     cout<<"Capacidad Total del Disco: "<<this->capacidad_total_magneticDisk<<endl;
     cout<<"Capacidad Usada del Disco: "<<this->capacidad_usada_magneticDisk<<endl;

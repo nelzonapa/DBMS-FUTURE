@@ -8,6 +8,20 @@ BrazoDisco::~BrazoDisco(){}
 -------------------- COMPROBAMOS EXISTENCIA DEL DISCO ----------------
 */
 
+string BrazoDisco::conseguir_disco(const string &disco_name){
+    bool disco_existe=Crear_leer_file_discos("Disk_Manager/Discos_almacenados.txt",disco_name);
+    if (disco_existe==false)
+    {
+        cout<<"Su disco no existe - Data Index - no procede"<<endl;
+    }
+    else
+    {
+        cout<<"El disco "<<disco_name<<" si existe - Data Index - procede"<<endl;
+        string ruta_disco_index="Disk_Manager/Data_Index/"+disco_name;
+        return ruta_disco_index;
+    }
+}
+
 bool BrazoDisco::comprobar_existencia_file(const string& filePath) {
     ifstream file(filePath);
     return file.good();
@@ -65,6 +79,31 @@ void BrazoDisco::crear_disco(Disco_Magnetico &disco_magnetic){
         if (success) 
         {
             cout<<"Carpeta Disco creada exitosamente."<<endl;
+            /*
+            Ahora mandamos a crear la carpeta en Disk_Manager/Data_Index, con el nombre
+            del disco correspondiente, pero agregado "Index"
+            
+            Luego enviar función de crear index de disco: RECIBE disco_magnetic y final_route_disco
+                - dentro de esta función, usará los datos que le da disco_magnetic
+                - establecerá la ruta o direccion a dónde dirigirse para encontrar el disco
+                - también la capacidad y todo ello, mientras va creando todo
+        
+            */
+            string route_disco_index="Disk_Manager/Data_Index/"+disco_name+"_index";
+            LPCSTR folderPath=route_disco_index.c_str();
+            BOOL success = CreateDirectoryA(folderPath, NULL);
+            if (success)
+            {
+                //CREAMOS SOLO LA CARPETA DE INDEX DEL DISCO
+                Sistema_Operativo sis_operativo;
+                sis_operativo.crear_ubicacion_disco_header(disco_magnetic,route_disco_index);
+            }
+            else
+            {
+                cout<<"Error al crear carpeta disco - data index"<<endl;
+            }          
+
+            //Ahora procedemos con los platos
             brazo_crea_disco.crear_platos(disco_magnetic,final_route_disco);
 
             std::cout<<"disc-created"<<endl;
@@ -94,6 +133,18 @@ void BrazoDisco::crear_platos(Disco_Magnetico &disco_magnetic,const string &fina
         if (success) 
         {
             std::cout << "Carpeta plato creada exitosamente." << std::endl;
+
+            //procedemos a crear el index:
+            Sistema_Operativo sis_operativo;
+            if (i=0)//plato del inicio
+            {
+                sis_operativo.crear_disco_index(disco_magnetic,final_route_plato,true);
+            }
+            else if (i==(_num_platos-1))//plato final
+            {
+                sis_operativo.crear_disco_index(disco_magnetic,final_route_plato,false);
+            }
+            //pasamos con las superficies
             crear_superficies(disco_magnetic,final_route_plato);//crear superficies, para el plato i
         } 
         else 
@@ -119,6 +170,19 @@ void BrazoDisco::crear_superficies(Disco_Magnetico &disco_magnetic, const string
         BOOL success = CreateDirectoryA(folderPath, NULL);
         if (success) {
             std::cout << "Carpeta superficie creada exitosamente." << std::endl;
+
+            //procedemos a crear el index:
+            Sistema_Operativo sis_operativo;
+            if (i=0)//superficie del inicio
+            {
+                sis_operativo.crear_platos_index(disco_magnetic,final_route_superficie,true);
+            }
+            else if (i==(_num_superficies-1))//superficie final
+            {
+                sis_operativo.crear_platos_index(disco_magnetic,final_route_superficie,false);
+            }
+
+            //pasamos con las pistas
             crear_pistas(disco_magnetic,final_route_superficie);
 
         } else {

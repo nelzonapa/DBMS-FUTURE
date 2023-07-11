@@ -1,6 +1,9 @@
 #ifndef SISTEMA_OPERATIVO_H
 #define SISTEMA_OPERATIVO_H
 
+#include "Disco_index.h"
+#include "Disco_index.cpp"
+
 #include "Plato_index.h"
 #include "Plato_index.cpp"
 
@@ -26,6 +29,9 @@
 #include "Data/Variable_length/Slot.h"
 #include "Data/Variable_length/Slot.cpp"
 
+#include "../Disco_Magnetico/Disco_Magnetico.h"
+#include "../Disco_Magnetico/Disco_Magnetico.cpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -46,12 +52,13 @@ public:
     ~Sistema_Operativo();
 
     //-------------------------cCREATE--------------------------
-    void crear_disco(Disco_Header &disco_magnetic); 
-    void crear_platos(Disco_Header &disco_magnetic);
-    void crear_superficies(Disco_Header &disco_magnetic);
-    void crear_pistas(Disco_Header &disco_magnetic);
-    void crear_sectores(Disco_Header &disco_magnetic);
-    void crear_bloques(Disco_Header &disco_magnetic);
+    void crear_ubicacion_disco_header(Disco_Magnetico &disco_magnetic,const string &direccion_ruta);
+    void crear_disco_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio);
+    void crear_platos_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio);
+    void crear_superficies_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio);
+    void crear_pistas_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio);
+    void crear_sectores_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio);
+    void crear_bloques_index(Disco_Magnetico &disco_magnetic,const string &direccion_ruta, bool final_inicio);
    
 
     //-------------------------WRITE_INFO--------------------------
@@ -62,13 +69,14 @@ public:
     void write_sectores_info();
     void write_bloques_info();
 
-    //-------------------------READ_INFO--------------------------
-    void read_disco_info();
-    void read_plato_info(int _num_plato);
-    void read_superficie_info(int _num_superficie);
-    void read_pista_info(int _num_pista);
-    void read_sector_info(int _num_sector);
-    void read_bloque_info(int _num_bloque);
+    //-------------------------GET--------------------------
+    Disco_index& get_disco_header(int num_id_disco);
+    Disco_index& get_disco_index(int num_id_disco);
+    Plato_Index& get_plato_index(int _num_plato);
+    Superficie_Index& get_superficie_index(int _num_superficie);
+    Pista_Index& get_pista_index(int _num_pista);
+    Sector_Index& get_sector_index(int _num_sector);
+    Bloque& get_bloque_index(int _num_bloque);
 
     //-------------------------Read Otros-------------------------
     void read_header_bloque(int _num_bloque);
