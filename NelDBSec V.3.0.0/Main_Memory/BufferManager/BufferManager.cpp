@@ -2,9 +2,15 @@
 
 BufferManager::BufferManager(int input){
     this->num_frames=input;
+
 }
 
 BufferManager::~BufferManager(){}
+
+BufferManager::BufferManager(){
+    this->num_frames=0;
+
+}
 
 
 void BufferManager::set_num_frames(int input){
@@ -14,44 +20,39 @@ void BufferManager::set_num_frames(int input){
 
 void BufferManager::apuntar_buffPool(){
     BufferPool buffPool(this->num_frames);
-    (*this->bufferPool)=buffPool;
+    (this->bufferPool)=buffPool;
 }
 
 void BufferManager::apuntar_tablaMetadata(){
     TablaMetadata tablaMetadata(this->num_frames);
-    (*this->tablaMetadata)=tablaMetadata;
+    (this->tablaMetadata)=tablaMetadata;
 }
 
 void BufferManager::apuntar_diskManager(){
     DiskManager diskManager;
-    (*this->diskManager)=diskManager;
+    (this->diskManager)=diskManager;
 }
 
 void BufferManager::agregarPagina_BuffPool_tablaMetadata(int id_pag){
-    // (*this->tablaMetadata).
-    bool tabla_vacia=(*this->tablaMetadata).tabla_vacia();
-    if (tabla_vacia==false)//en caso de estar vacía
+    // (this->tablaMetadata).
+    bool tabla_vacia=(this->tablaMetadata).tabla_vacia();
+    if (tabla_vacia==true)//en caso de estar vacía
     {
         
-        Pagina *ptr_pagina_aux;
-        Pagina pagina;
-        (*ptr_pagina_aux)=pagina;
-        (*ptr_pagina_aux).insert_aux_dataPagina();
+        (paginaRetornar).insert_aux_dataPagina();
         // (*ptr_pagina_aux).print_info_pagina();
 
-
-        (this->paginaRetornar)=ptr_pagina_aux;
         //digamos que ya se recibió esta pagina del DISK MANAGER
-        (*this->tablaMetadata).agregar_pagina_tabla_metadata(id_pag);
+        (this->tablaMetadata).agregar_pagina_tabla_metadata(id_pag);
         cout<<"____________-"<<endl;
-        // (*this->tablaMetadata).imprimir_toda_tabla_metadata();
+        // (this->tablaMetadata).imprimir_toda_tabla_metadata();
         //Ahora agregamos al buffer pool:
-        // (*this->bufferPool).agregar_pagina((*ptr_pagina_aux),(*this->paginaRetornar).get_id_pagina());
+        // (this->bufferPool).agregar_pagina((*ptr_pagina_aux),(this->paginaRetornar).get_id_pagina());
     }
     else
     {
-        bool existe_pagina=(*this->tablaMetadata).comprobar_existe_pagina(id_pag);
-        if (existe_pagina == true)
+        bool existe_pagina=(this->tablaMetadata).comprobar_existe_pagina(id_pag);
+        if (existe_pagina == false)
         {
             cout<<"BuffManager: Su pagina ya existe en memoria"<<endl;
         }
@@ -61,23 +62,23 @@ void BufferManager::agregarPagina_BuffPool_tablaMetadata(int id_pag){
             // this->diskManager.
             Pagina pagina_aux;
             pagina_aux.insert_aux_dataPagina();
-            (*this->paginaRetornar)=pagina_aux;
+            (this->paginaRetornar)=pagina_aux;
             //digamos que ya se recibió esta pagina del DISK MANAGER
-            (this->tablaMetadata)->agregar_pagina_tabla_metadata((*this->paginaRetornar).get_id_pagina());
+            // (this->tablaMetadata)->agregar_pagina_tabla_metadata((this->paginaRetornar).get_id_pagina());
 
             //Ahora agregamos al buffer pool:
-            (this->bufferPool)->agregar_pagina((*this->paginaRetornar),(*this->paginaRetornar).get_id_pagina());
+            // (this->bufferPool)->agregar_pagina((this->paginaRetornar),(this->paginaRetornar).get_id_pagina());
         }
     }
     
 }
 
 Pagina& BufferManager::get_pagina_retornar(){
-    return (*this->paginaRetornar);
+    return (this->paginaRetornar);
 }
 
 void BufferManager::mostrar_tabla_metadata(){
-    this->tablaMetadata->imprimir_toda_tabla_metadata();
+    this->tablaMetadata.imprimir_toda_tabla_metadata();
 }
 
 

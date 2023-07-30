@@ -8,8 +8,8 @@
 class Programa
 {
 private:
-    BufferManager *ptr_buffManager;
-    Pagina *ptr_pagina_recibir;
+    BufferManager buffManagerPrograma;
+    Pagina paginaRecibir;
 public:
     Programa();
     ~Programa();

@@ -2,19 +2,18 @@
 
 BufferPool::BufferPool(int _num_frames){
     this->num_frames=_num_frames;
-    this->ptrMapFramesBufPool=new map<int,Pagina>();
 }
 BufferPool::BufferPool(){
-    this->ptrMapFramesBufPool=new map<int,Pagina>();
+    this->num_frames=0;
 }
 
 BufferPool::~BufferPool(){}
 
 Pagina& BufferPool::get_pagina(int id_pag){
     Pagina *ptr_pagina;
-    if ((*this->ptrMapFramesBufPool).find(id_pag) != ((*this->ptrMapFramesBufPool).end())) 
+    if ((this->MapFramesBufPool).find(id_pag) != ((this->MapFramesBufPool).end())) 
     {
-        (*ptr_pagina)=(*this->ptrMapFramesBufPool)[id_pag];
+        (*ptr_pagina)=(this->MapFramesBufPool)[id_pag];
         cout<<"El segundo valor para "<<id_pag<<" es: "<<endl;
         (*ptr_pagina).print_info_pagina();
     } 
@@ -39,22 +38,16 @@ void BufferPool::agregar_pagina(Pagina &pagina,int id_pag){
         std::cout << std::endl;
     }
     
-    std::map<int,Pagina> *ptrMapAux=new std::map<int,Pagina>();
-    cout<<"buyaa"<<endl;
-    (*ptrMapAux)[id_pag]=pagina;
-    cout<<"buyaa"<<endl;
-    mostrarBufferPool();
-
-    (this->ptrMapFramesBufPool)=(ptrMapAux);
+    this->MapFramesBufPool[id_pag]=pagina;
 
     cout<<"Pagina agregada en el Buffer Pool..."<<id_pag<<endl;
 }
 
 void BufferPool::eliminar_pagina(int id_pag){
-    auto iter = (*this->ptrMapFramesBufPool).find(id_pag);
-    if (iter != ((*this->ptrMapFramesBufPool).end())) 
+    auto iter = (this->MapFramesBufPool).find(id_pag);
+    if (iter != ((this->MapFramesBufPool).end())) 
     {
-        (*this->ptrMapFramesBufPool).erase(iter);
+        (this->MapFramesBufPool).erase(iter);
         cout<<"Se elimino la pagina con clave "<<id_pag<<endl;
     } 
     else
@@ -70,7 +63,7 @@ void BufferPool::replace_pagina(Pagina &pagina,int id_pag){
 }
 
 void BufferPool::mostrarBufferPool(){
-    for (auto elemento : (*this->ptrMapFramesBufPool)) {
+    for (auto elemento : (this->MapFramesBufPool)) {
         int clave = elemento.first;
         Pagina pagina = elemento.second;
         std::cout << "Clave: " << clave << ", ";

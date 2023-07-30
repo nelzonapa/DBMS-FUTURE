@@ -31,6 +31,7 @@ private:
     DiskManager diskManager;
 public:
     BufferManager(int input);
+    BufferManager();
     ~BufferManager();
 
     void set_num_frames(int input);

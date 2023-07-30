@@ -1,12 +1,7 @@
 #include "Pagina.h"
 
 Pagina::Pagina(){
-    cout<<"gaaaa"<<endl;
     this->id_pagina=0;
-    cout<<"gaaaa"<<endl;
-    map <int,vector<string>> mapita;
-    (this->mapPagina)=mapita;
-    cout<<"gaaaa"<<endl;
 }
 
 Pagina::~Pagina(){}

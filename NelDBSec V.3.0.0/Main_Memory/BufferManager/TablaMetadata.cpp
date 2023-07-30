@@ -25,8 +25,8 @@ bool TablaMetadata::tabla_vacia(){
 }
 
 void TablaMetadata::agregar_frame_tabla(InfoFrameVector& vect_metadata,int id_frame){
-    bool existeTabla=tabla_vacia();
-    if (existeTabla==false)
+    bool tablaVacia=tabla_vacia();
+    if (tablaVacia==true)
     {
         this->mapFramesTabla[id_frame]=vect_metadata;
         imprimir_toda_tabla_metadata();
@@ -133,7 +133,7 @@ bool TablaMetadata::comprobar_existe_pagina(int idPagina){
 
 void TablaMetadata::agregar_pagina_tabla_metadata(int id_pag){
     bool _tabla_vacia=tabla_vacia();
-    if (_tabla_vacia==false)//en caso este vacía
+    if (_tabla_vacia==true)//en caso este vacía
     {
         InfoFrameVector *ptr_objeto_vector=new InfoFrameVector();
         (*ptr_objeto_vector).set_page_id(id_pag);

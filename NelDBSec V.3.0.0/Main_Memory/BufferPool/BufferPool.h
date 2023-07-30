@@ -13,7 +13,7 @@ class BufferPool
 {
 private:
     int num_frames;
-    map<int,Pagina> *ptrMapFramesBufPool;
+    map<int,Pagina> MapFramesBufPool;
 public:
     BufferPool(int num_frames);
     BufferPool();
