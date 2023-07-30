@@ -15,9 +15,10 @@ class TablaMetadata
 private:
     int num_frames_tabla;
     bool full_frames;   //para avisarnos si está lleno
-    map<int,InfoFrameVector> *ptr_map_frames_tabla;
+    map<int,InfoFrameVector> mapFramesTabla;
 public:
     TablaMetadata(int num_frames);
+    TablaMetadata();
     ~TablaMetadata();
 
     //Otras funciones

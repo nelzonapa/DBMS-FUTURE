@@ -2,8 +2,43 @@
 #include "Programa.h"
 #include "Programa.cpp"
 
+void menu_program(Programa &programa){
+    cout<<"Bienvenido al nuevo DBMS Future"<<endl;
+    bool x=false;//para detectar si sale del programa
+    int op;
+    int num_pagina;
+
+    while (x==false)
+    {
+        std::cout<<"\t----- MENU -----\n";
+        std::cout<<"1. Obtener Pagina"<<endl;
+        std::cout<<"2. Salir"<<endl;
+        std::cout<<"Ingrese opcion: "<<endl;
+        cin>>op;
+        switch(op)
+        {
+            case 1:
+                cout<<"Ingrese el numero de la pagina a obtener"<<endl;
+                cin>>num_pagina;
+                programa.setPtrPaginaRecibir(programa.obtenerPagina(num_pagina));
+                break;
+            case 2:
+                x=true;
+                break;
+
+            default:
+                std::cout<<"Error, escoja entre las opciones dadas"<<endl;
+                break;
+        }
+
+    }
+    std::cout<<"Usted ha sido expulsado/expulsada del programa"<<endl;
+    
+    return;
+}
+
 int main(){
-    Programa programa;
+    Programa *ptr_programa=new Programa();
     Pagina *ptr_pagina;
-    (*ptr_pagina)=programa.obtenerPagina(1);
+    menu_program(*ptr_programa);
 }

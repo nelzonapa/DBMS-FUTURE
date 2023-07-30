@@ -4,13 +4,18 @@ TablaMetadata::TablaMetadata(int num_frames)
 {
     this->num_frames_tabla=num_frames;
     this->full_frames=false;
-    // this->ptr_map_frames_tabla=new map<int,InfoFrameVector>();
 }
+
+TablaMetadata::TablaMetadata(){
+    this->num_frames_tabla=0;
+    this->full_frames=false;
+}
+
 
 TablaMetadata::~TablaMetadata(){}
 
 bool TablaMetadata::tabla_vacia(){
-    if ((*this->ptr_map_frames_tabla).empty()==true) {
+    if ((this->mapFramesTabla).empty()==true) {
         return true;
     } 
     else 
@@ -23,10 +28,7 @@ void TablaMetadata::agregar_frame_tabla(InfoFrameVector& vect_metadata,int id_fr
     bool existeTabla=tabla_vacia();
     if (existeTabla==false)
     {
-        map<int,InfoFrameVector> *ptrMapAux=new map<int,InfoFrameVector>();
-        (*ptrMapAux)[id_frame]=vect_metadata;
-
-        (this->ptr_map_frames_tabla)=(ptrMapAux);
+        this->mapFramesTabla[id_frame]=vect_metadata;
         imprimir_toda_tabla_metadata();
         return;
     }
@@ -36,7 +38,7 @@ void TablaMetadata::agregar_frame_tabla(InfoFrameVector& vect_metadata,int id_fr
         {
             if (id_frame <= this->num_frames_tabla)
             {
-                (*this->ptr_map_frames_tabla)[id_frame]=vect_metadata;
+                (this->mapFramesTabla)[id_frame]=vect_metadata;
             }
             else
             {
@@ -49,7 +51,7 @@ void TablaMetadata::agregar_frame_tabla(InfoFrameVector& vect_metadata,int id_fr
 
 void TablaMetadata::imprimir_toda_tabla_metadata(){
     // Recorremos el mapa e imprimimos los elementos
-    for (auto elemento : (*this->ptr_map_frames_tabla)) {
+    for (auto elemento : (this->mapFramesTabla)) {
         int clave = elemento.first;
         InfoFrameVector objeto = elemento.second;
         std::cout << "Clave: " << clave << ", ";
@@ -60,8 +62,8 @@ void TablaMetadata::imprimir_toda_tabla_metadata(){
 
 void TablaMetadata::imprimir_un_frame(int id_frame){
     // Buscar el id_frame en el mapa
-    auto it = (*this->ptr_map_frames_tabla).find(id_frame);
-    if (it != (*this->ptr_map_frames_tabla).end()) {
+    auto it = (this->mapFramesTabla).find(id_frame);
+    if (it != (this->mapFramesTabla).end()) {
         int clave = it->first; // clave es el frame
         cout << "Frame: " << clave << ", ";
         InfoFrameVector& objeto = it->second;
@@ -76,8 +78,8 @@ void TablaMetadata::increment_pinCount_pagina(int  idPagina){
     bool pagina_existe=comprobar_existe_pagina(idPagina);
     if (pagina_existe==true)
     {
-        for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+        for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
         {
             int clave = it->first;//clave es el frame
             InfoFrameVector& objeto = it->second;
@@ -94,8 +96,8 @@ void TablaMetadata::increment_pinCount_pagina(int  idPagina){
 
 bool TablaMetadata::comprobar_existe_frame(int id_frame){
     // Recorremos el mapa e imprimimos los elementos
-    for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+    for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
     {
         int clave = it->first;//clave es el frame
         if (clave==id_frame)
@@ -112,8 +114,8 @@ bool TablaMetadata::comprobar_existe_frame(int id_frame){
 }
 
 bool TablaMetadata::comprobar_existe_pagina(int idPagina){
-    for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+    for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
     {
         int clave = it->first;//clave es el frame
         InfoFrameVector& objeto = it->second;
@@ -131,7 +133,7 @@ bool TablaMetadata::comprobar_existe_pagina(int idPagina){
 
 void TablaMetadata::agregar_pagina_tabla_metadata(int id_pag){
     bool _tabla_vacia=tabla_vacia();
-    if (_tabla_vacia==false)
+    if (_tabla_vacia==false)//en caso este vacía
     {
         InfoFrameVector *ptr_objeto_vector=new InfoFrameVector();
         (*ptr_objeto_vector).set_page_id(id_pag);
@@ -146,8 +148,8 @@ void TablaMetadata::agregar_pagina_tabla_metadata(int id_pag){
         {
             for (int i = 1; i <= this->num_frames_tabla; i++)
             {
-                auto it = (*this->ptr_map_frames_tabla).find(i);
-                if (it != (*this->ptr_map_frames_tabla).end()) 
+                auto it = (this->mapFramesTabla).find(i);
+                if (it != (this->mapFramesTabla).end()) 
                 {
                     cout<<"La pagina_id existe en el frame: "<<i<<endl;
                     break;
@@ -177,8 +179,8 @@ void TablaMetadata::agregar_pagina_tabla_metadata(int id_pag){
 }
 
 void TablaMetadata::decrement_pinCount_pagina(int idPagina){
-    for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+    for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
     {
         int clave = it->first;//clave es el frame
         InfoFrameVector& objeto = it->second;
@@ -196,8 +198,8 @@ int TablaMetadata::get_id_frame_segun_idPagina(int idPagina){
     bool pagina_existe=comprobar_existe_pagina(idPagina);
     if (pagina_existe==true)
     {
-        for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+        for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
         {
             int clave = it->first;//clave es el frame
             InfoFrameVector& objeto = it->second;
@@ -220,8 +222,8 @@ bool TablaMetadata::dirtyBit_clean(int idPagina){
     bool pagina_existe=comprobar_existe_pagina(idPagina);
     if (pagina_existe==true)
     {
-        for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+        for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
         {
             int clave = it->first;//clave es el frame
             InfoFrameVector& objeto = it->second;
@@ -245,8 +247,8 @@ bool TablaMetadata::pinCount_clean(int idPagina){
     bool pagina_existe=comprobar_existe_pagina(idPagina);
     if (pagina_existe==true)
     {
-        for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+        for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
         {
             int clave = it->first;//clave es el frame
             InfoFrameVector& objeto = it->second;
@@ -269,8 +271,8 @@ bool TablaMetadata::refBit_clean(int idPagina){
     bool pagina_existe=comprobar_existe_pagina(idPagina);
     if (pagina_existe==true)
     {
-        for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+        for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
         {
             int clave = it->first;//clave es el frame
             InfoFrameVector& objeto = it->second;
@@ -297,10 +299,10 @@ void TablaMetadata::eliminar_pagina_metadata(int idPagina){
     {
         int id_frame_dePagina_a_eliminar=get_id_frame_segun_idPagina(idPagina);
 
-        if ((*ptr_map_frames_tabla).find(id_frame_dePagina_a_eliminar) != (*ptr_map_frames_tabla).end()) 
+        if ((mapFramesTabla).find(id_frame_dePagina_a_eliminar) != (mapFramesTabla).end()) 
         {
             // Eliminar el elemento con la clave especificada
-            (*ptr_map_frames_tabla).erase(id_frame_dePagina_a_eliminar);
+            (mapFramesTabla).erase(id_frame_dePagina_a_eliminar);
             cout << "Se elimino el elemento con clave " << id_frame_dePagina_a_eliminar << " del mapa." << endl;
         } 
         else 
@@ -320,8 +322,8 @@ void TablaMetadata::reemplazar_pagina_metadata(int idPaginaOld, int idPaginaNew)
     bool paginaOld_existe=comprobar_existe_pagina(idPaginaOld);
     if (paginaOld_existe==true)
     {
-        for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+        for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
         {
             int clave = it->first;//clave es el frame
             InfoFrameVector& objeto = it->second;
@@ -344,8 +346,8 @@ void TablaMetadata::update_dirtyBit(int idPagina){
     bool pagina_existe=comprobar_existe_pagina(idPagina);
     if (pagina_existe==true)
     {
-        for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+        for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
         {
             int clave = it->first;//clave es el frame
             InfoFrameVector& objeto = it->second;
@@ -365,8 +367,8 @@ void TablaMetadata::update_refBit(int idPagina){
     bool pagina_existe=comprobar_existe_pagina(idPagina);
     if (pagina_existe==true)
     {
-        for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+        for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
         {
             int clave = it->first;//clave es el frame
             InfoFrameVector& objeto = it->second;
@@ -389,9 +391,9 @@ int TablaMetadata::CLOCK()
     bool alguna_paginaPor_liberar=false;
     for (int i = 1; i <= cantidadFrames; i++)
     {
-        map<int, InfoFrameVector>::iterator manecilla_ptr_frames = (*this->ptr_map_frames_tabla).find(i);
+        map<int, InfoFrameVector>::iterator manecilla_ptr_frames = (this->mapFramesTabla).find(i);
         // Verificar si la clave existe antes de acceder
-        if (manecilla_ptr_frames != (*ptr_map_frames_tabla).end()) {
+        if (manecilla_ptr_frames != (mapFramesTabla).end()) {
             // Acceder al valor asociado a la clave deseada utilizando el puntero al iterador
             InfoFrameVector& objeto = manecilla_ptr_frames->second;
             if (objeto.get_ref_bit()==false && objeto.get_pin_count()==0)
@@ -434,8 +436,8 @@ int TablaMetadata::CLOCK()
 
 void TablaMetadata::Reset_allRefBit_tablaMetadata(){
     // Recorremos el mapa e imprimimos los elementos
-    for (map<int, InfoFrameVector>::iterator it = ((*this->ptr_map_frames_tabla)).begin(); 
-            it != ((*this->ptr_map_frames_tabla)).end(); ++it) 
+    for (map<int, InfoFrameVector>::iterator it = ((this->mapFramesTabla)).begin(); 
+            it != ((this->mapFramesTabla)).end(); ++it) 
     {
         int clave = it->first;//clave es el frame
         // cout << "Frame: " << clave << ", ";

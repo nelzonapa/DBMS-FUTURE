@@ -13,6 +13,8 @@ private:
 public:
     Programa();
     ~Programa();
+
+    void setPtrPaginaRecibir(Pagina &pagina);
     
     Pagina& obtenerPagina(int id_pagina);
 };

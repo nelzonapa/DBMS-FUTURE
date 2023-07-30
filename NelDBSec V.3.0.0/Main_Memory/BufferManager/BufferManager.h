@@ -24,11 +24,11 @@ using namespace std;
 class BufferManager
 {
 private:
-    BufferPool *ptr_buffer_pool;
-    TablaMetadata *ptr_tabla_metadata;
-    Pagina *ptr_pagina_retornar;
+    BufferPool bufferPool;
+    TablaMetadata tablaMetadata;
+    Pagina paginaRetornar;
     int num_frames; // Tamaño máximo del Buffer Pool
-    DiskManager *ptr_diskManager;
+    DiskManager diskManager;
 public:
     BufferManager(int input);
     ~BufferManager();

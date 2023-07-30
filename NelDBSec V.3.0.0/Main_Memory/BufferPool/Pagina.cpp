@@ -1,14 +1,18 @@
 #include "Pagina.h"
 
 Pagina::Pagina(){
+    cout<<"gaaaa"<<endl;
     this->id_pagina=0;
-    this->ptrMapRegistrosPagina=new map<int,vector<string>>();
+    cout<<"gaaaa"<<endl;
+    map <int,vector<string>> mapita;
+    (this->mapPagina)=mapita;
+    cout<<"gaaaa"<<endl;
 }
 
 Pagina::~Pagina(){}
 
 bool Pagina::vacioPtrMapRegistros(){
-    if (this->ptrMapRegistrosPagina==nullptr)
+    if (this->mapPagina.empty())
     {
         return true;
     }
@@ -20,7 +24,7 @@ bool Pagina::vacioPtrMapRegistros(){
 }
 
 void Pagina::print_info_pagina(){
-    for (auto it = ((*this->ptrMapRegistrosPagina).begin()); it != ((*this->ptrMapRegistrosPagina).end()); ++it) 
+    for (auto it = ((this->mapPagina).begin()); it != ((this->mapPagina).end()); ++it) 
     {
         cout<<"Clave: "<<it->first<<", Valores: ";
         vector<string>& vector_valores = it->second;

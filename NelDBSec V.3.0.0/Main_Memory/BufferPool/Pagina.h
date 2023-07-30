@@ -13,7 +13,7 @@ using namespace std;
 class Pagina
 {
 protected:
-    map<int,vector<string>> *ptrMapRegistrosPagina;
+    map <int,vector<string>> mapPagina;
     int id_pagina;
 public:
     Pagina();
@@ -24,9 +24,9 @@ public:
     int get_id_pagina();
     void print_info_pagina();
     void insert_aux_dataPagina(){
-        (*this->ptrMapRegistrosPagina)[1].push_back("nelzon, Elemento 1");
-        (*this->ptrMapRegistrosPagina)[2].push_back("jorge, Elemento 2");
-        (*this->ptrMapRegistrosPagina)[3].push_back("apaza, Elemento 3");
+        (this->mapPagina)[1].push_back("nelzon, Elemento 1");
+        (this->mapPagina)[2].push_back("jorge, Elemento 2");
+        (this->mapPagina)[3].push_back("apaza, Elemento 3");
         this->id_pagina=1;
     }
 
