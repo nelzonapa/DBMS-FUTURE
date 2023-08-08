@@ -12,7 +12,8 @@ void menu_program(Programa &programa){
     {
         std::cout<<"\t----- MENU -----\n";
         std::cout<<"1. Obtener Pagina"<<endl;
-        std::cout<<"2. Salir"<<endl;
+        std::cout<<"2. Mostrar la tabla metadata"<<endl;
+        std::cout<<"3. Salir"<<endl;
         std::cout<<"Ingrese opcion: "<<endl;
         cin>>op;
         switch(op)
@@ -23,6 +24,10 @@ void menu_program(Programa &programa){
                 programa.setPtrPaginaRecibir(programa.obtenerPagina(num_pagina));
                 break;
             case 2:
+                cout<<"Estado de la tabla metadata: ...."<<endl;
+                mostrarTablaMetadata();
+                break;
+            case 3:
                 x=true;
                 break;
 

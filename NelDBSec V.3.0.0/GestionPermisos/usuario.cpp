@@ -1,9 +1,9 @@
 #include "usuario.h"
 Usuario::Usuario(/* args */)
 {
-    this->id=0; 
-    this->nombre="nombre"; 
-    this->contrasenia="contrasenia";
+    this->id=1; 
+    this->nombre="Nelzon"; 
+    this->contrasenia="12345";
 }
 
 Usuario::Usuario(int _id,  string& _nombre,  string& _contrasenia)
@@ -41,4 +41,17 @@ void Usuario::setNombre( string& _nombre) {
 
 void Usuario::setContrasenia( string& _contrasenia) {
     this->contrasenia = _contrasenia;
+}
+
+
+void Usuario::ejecutarPrograma(){
+    if (this->permisoRol.getNamePermiso()=="Administrador" && this->permisoRol.getNameRol()=="Administrador")
+    {
+        this->permisoRol.ejecutarBufferManager();
+    }
+    else
+    {
+        cout<<"Usted no tiene permiso para ingresar al sistema"<<endl;
+    }
+    
 }

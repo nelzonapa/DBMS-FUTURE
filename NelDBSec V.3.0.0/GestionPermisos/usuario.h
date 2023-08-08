@@ -1,6 +1,8 @@
 #ifndef USUARIO_H
 #define USUARIO_H
 
+#include "../ProgramaPrincipal/Programa.cpp"
+#include "permisoRol.cpp"
 #include "string"
 using namespace std;
 
@@ -10,6 +12,8 @@ private:
     int id;
     string nombre;
     string contrasenia;
+    PermisoRol permisoRol;
+    Programa programa;
 public:
     Usuario(/* args */);
     Usuario(int _id,  string& _nombre,  string& _contrasenia);
@@ -24,6 +28,9 @@ public:
     void setId(int _id);
     void setNombre( string& _nombre);
     void setContrasenia( string& _contrasenia);
+
+    //others
+    void ejecutarPrograma();
 
 };
 

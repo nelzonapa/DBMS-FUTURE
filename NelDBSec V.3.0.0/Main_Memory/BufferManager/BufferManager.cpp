@@ -87,9 +87,6 @@ void BufferManager::mostrar_tabla_metadata(){
 
 
 
-
-
-
 /*-----------------------------------LRU----------------------------------*/
 
 // void BufferManager::inicializar_buffer_pool(vector<Pagina> &_Buffer_pool_vect){
