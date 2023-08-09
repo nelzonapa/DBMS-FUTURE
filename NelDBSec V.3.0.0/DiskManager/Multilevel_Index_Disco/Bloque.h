@@ -12,17 +12,17 @@ protected:
     int direccion_inicio_bloque;
     int capacidad_bloque;
     //general
-    unsigned int num_records_general;
-    unsigned int cant_bytes_usados;
+    int num_records_general;
+    int cant_bytes_usados;
     
     //fixed length
-    unsigned int ptr_delete_fixed_space;
-    unsigned int ptr_direc_end_fixed;
-    unsigned int num_records_fixed;
+    int ptr_delete_fixed_space;
+    int ptr_direc_end_fixed;
+    int num_records_fixed;
 
     //variable length
-    unsigned int num_records_variable;
-    unsigned int direc_free_space_variable; //apunta a donde inicias las tuplas de variable length
+    int num_records_variable;
+    int direc_free_space_variable; //apunta a donde inicias las tuplas de variable length
 
 public:
     Bloque();

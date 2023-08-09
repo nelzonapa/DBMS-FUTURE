@@ -7,67 +7,78 @@ using namespace std;
 class headerSector
 {
 private:
-    //general
-    unsigned int cant_bytes_bloque;
-    unsigned int cant_bytes_usados_bloque;
-    unsigned int cant_bytes_restantes_bloque;
-    unsigned int num_general_records_bloque;
+    //general info del sector
+    int pesoBytesSector;
+    int cantBytesUsadosSector;
+    int cantBytesRestantesBloque;
+    int numGeneralRecordsBloque;
     
-    //fixed length
-    unsigned int direc_space_delete_fixed_bloque;
-    unsigned int direc_end_fixed_bloque;
-    unsigned int num_records_fixed_bloque;
-    unsigned int direc_primer_record_fixed_length;
+    //fixed length info
+    int direcDeleteSpacesFixedData;
+    int direcEndFixedData;
+    int numRecordsFixedSector;
+    int direcFirstFixedRecord;
 
-    //variable length
-    unsigned int direc_space_delete_variable_bloque;
-    unsigned int num_records_variable_bloque;
-    unsigned int direc_free_space_variable_bloque; //apunta a donde inicias las tuplas de variable length
-    unsigned int direc_primer_record_variable_length;
+    //variable length info
+    int direcDeleteSpacesVariableData;
+    int numRecordsVariableSector;
+    int direcFreeSpaceVariableSector; //apunta a donde inicias las tuplas de variable length
+    int direcFirstVariableRecord;
+
+    //Data B+Tree
+    int numberBPlusTrees;
+    int directFirstBPlusTree;
+    int directEndBPlusTrees;
+    
 public:
     headerSector(/* args */);
     ~headerSector();
 
     //--------------------GET-------------------
-    //general
-    int get_cant_bytes_bloque();
-    int get_cant_bytes_usados_bloque();
-    int get_cant_bytes_restantes_bloque();
-    int get_num_general_records_bloque();
     
-    //fixed length
-    int get_direc_space_delete_fixed_bloque();
-    int get_direc_end_fixed_bloque();
-    int get_num_records_fixed_bloque();
-    int get_direc_primer_record_fixed_length();
+    int getPesoBytesSector();
+    int getCantBytesUsadosSector();
+    int getCantBytesRestantesBloque();
+    int getNumGeneralRecordsBloque();
 
-    //variable length
-    int get_direc_space_delete_variable_bloque();
-    int get_num_records_variable_bloque();
-    int get_direc_free_space_variable_bloque();
-    int get_direc_primer_record_variable_length();
-
+    int getDirecDeleteSpacesFixedData();
+    int getDirecEndFixedData();
+    int getNumRecordsFixedSector();
+    int getDirecFirstFixedRecord();
+    
+    int getDirecDeleteSpacesVariableData();
+    int getNumRecordsVariableSector();
+    int getDirecFreeSpaceVariableSector();
+    int getDirecFirstVariableRecord();
+    
+    int getNumberBPlusTrees();
+    int getDirectFirstBPlusTree();
+    int getDirectEndBPlusTrees();
+    
     //--------------------SET-------------------
-    //general
-    void set_cant_bytes_bloque(int _input);
-    void set_cant_bytes_usados_bloque(int _input);
-    void set_cant_bytes_restantes_bloque(int _input);
-    void set_num_general_records_bloque(int _input);
-    
-    //fixed length
-    void set_direc_space_delete_fixed_bloque(int _input);
-    void set_direc_end_fixed_bloque(int _input);
-    void set_num_records_fixed_bloque(int _input);
-    void set_direc_primer_record_fixed_length(int _input);
 
-    //variable length
-    void set_direc_space_delete_variable_bloque(int _input);
-    void set_num_records_variable_bloque(int _input);
-    void set_direc_free_space_variable_bloque(int _input);
-    void set_direc_primer_record_variable_length(int _input);
+    void setPesoBytesSector(int peso);
+    void setCantBytesUsadosSector(int cant);
+    void setCantBytesRestantesBloque(int cant);
+    void setNumGeneralRecordsBloque(int num);
+    
+    void setDirecDeleteSpacesFixedData(int direc);
+    void setDirecEndFixedData(int direc);
+    void setNumRecordsFixedSector(int num);
+    void setDirecFirstFixedRecord(int direc);
+    
+    void setDirecDeleteSpacesVariableData(int direc);
+    void setNumRecordsVariableSector(int num);
+    void setDirecFreeSpaceVariableSector(int direc);
+    void setDirecFirstVariableRecord(int direc);
+    
+    void setNumberBPlusTrees(int num);
+    void setDirectFirstBPlusTree(int direc);
+    void setDirectEndBPlusTrees(int direc);
+
 
     //--------------------Others-------------------
-    void print_info_header_bloque();
+    void printInfoSectorHeader();
 };
 
 #endif

@@ -676,7 +676,7 @@ void SistemaOperativo::read_header_bloque(int _num_bloque){
     } else {
         cout<<"Error al abrir el archivo binario para lectura."<<route_sector<<endl;
     }
-    header_bloque.print_info_header_bloque();
+    header_bloque.printInfoSectorHeader();
     archivo.close();
     header_bloque.~headerSector();
 }
@@ -1011,9 +1011,9 @@ void SistemaOperativo::insert_variable_length_data(MapaPares &_map_atributos,vec
             SistemaOperativo brazo;
             headerSector *ptr_header_bloque=new headerSector();
             (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//obtenemos el header del bloque
-            int direc_primer_record_variable_length=ptr_header_bloque->get_direc_primer_record_variable_length();
+            int direcFirstVariableRecord=ptr_header_bloque->get_direc_primer_record_variable_length();
 
-            caminar_por_slots_tupla_variable_data_insertar_slot(slot_tupla,num_bloque_space,direc_primer_record_variable_length);
+            caminar_por_slots_tupla_variable_data_insertar_slot(slot_tupla,num_bloque_space,direcFirstVariableRecord);
         }
         
     } 
