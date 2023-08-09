@@ -23,8 +23,8 @@
 #include "Multilevel_Index_Disco/Disco_Header.cpp"
 
 
-#include "Data/Header_Bloque.h"
-#include "Data/Header_Bloque.cpp"
+#include "Data/headerSector.h"
+#include "Data/headerSector.cpp"
 
 #include "Data/Variable_length/Slot.h"
 #include "Data/Variable_length/Slot.cpp"
@@ -100,7 +100,7 @@ public:
 
     //-----------------------GET---------------------------
     Disco_Header& get_disco_magnetic_info();
-    Header_Bloque& get_header_bloque(int num_bloque);
+    headerSector& get_header_bloque(int num_bloque);
     int get_num_bloque_espacio_libre(int _space_necesitado);
     int calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar);
 

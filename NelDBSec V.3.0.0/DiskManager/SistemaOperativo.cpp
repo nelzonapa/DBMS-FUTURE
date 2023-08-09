@@ -669,16 +669,16 @@ void SistemaOperativo::read_header_bloque(int _num_bloque){
     archivo.seekg(ubication_read_bin);
 
     //Estilo de lectura, puede ser FIXED AND VARIABLE LENGTH
-    Header_Bloque header_bloque;
+    headerSector header_bloque;
     if (archivo.is_open()) {
-        archivo.read(reinterpret_cast<char*>(&header_bloque), sizeof(Header_Bloque));
+        archivo.read(reinterpret_cast<char*>(&header_bloque), sizeof(headerSector));
         cout<<"Datos leidos del archivo: "<<route_sector<<endl;
     } else {
         cout<<"Error al abrir el archivo binario para lectura."<<route_sector<<endl;
     }
     header_bloque.print_info_header_bloque();
     archivo.close();
-    header_bloque.~Header_Bloque();
+    header_bloque.~headerSector();
 }
 
 
@@ -699,7 +699,7 @@ Disco_Header& SistemaOperativo::get_disco_magnetic_info(){
     return (*ptr_disco_magnetico);
 }
 
-Header_Bloque& SistemaOperativo::get_header_bloque(int _num_bloque){
+headerSector& SistemaOperativo::get_header_bloque(int _num_bloque){
     int ubication_read_bin=0;
     string route_sector="DiskManager/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
 
@@ -707,10 +707,10 @@ Header_Bloque& SistemaOperativo::get_header_bloque(int _num_bloque){
     archivo.seekg(ubication_read_bin);
 
     //Estilo de lectura, puede ser FIXED AND VARIABLE LENGTH
-    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    headerSector *ptr_header_bloque=new headerSector();
     if (archivo.is_open()) 
     {
-        archivo.read(reinterpret_cast<char*>(&(*ptr_header_bloque)), sizeof(Header_Bloque));
+        archivo.read(reinterpret_cast<char*>(&(*ptr_header_bloque)), sizeof(headerSector));
         // cout<<"Datos leidos del archivo: "<<route_sector<<endl;
     } 
     else 
@@ -723,7 +723,7 @@ Header_Bloque& SistemaOperativo::get_header_bloque(int _num_bloque){
 
 int SistemaOperativo::get_num_bloque_espacio_libre(int _space_necesitado){
     //Para leer el header de los bloques
-    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    headerSector *ptr_header_bloque=new headerSector();
 
     //Primero quiero saber cuántos bloques hay
     SistemaOperativo brazo;
@@ -803,7 +803,7 @@ int SistemaOperativo::calcular_espacio_necesario(MapaPares &_map_atributos,vecto
 //--------------WRITE VARIABLE DATA-----------
 void SistemaOperativo::caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_tupla_enviado, int num_bloque, int direc_slot_escrito){
     // SistemaOperativo brazo;
-    // Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    // headerSector *ptr_header_bloque=new headerSector();
     // (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque);//obtenemos info del header del bloque
 
     Slot slot_ya_escrito;//slot auxiliar
@@ -817,7 +817,7 @@ void SistemaOperativo::caminar_por_slots_tupla_variable_data_insertar_slot(Slot 
     }
     else{
         SistemaOperativo brazo;
-        Header_Bloque *ptr_header_bloque=new Header_Bloque();
+        headerSector *ptr_header_bloque=new headerSector();
         (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque);//obtenemos el header del bloque
 
         int direccion_slot_nuevo=(*ptr_header_bloque).get_direc_end_fixed_bloque();
@@ -846,7 +846,7 @@ void SistemaOperativo::caminar_por_slots_tupla_variable_data_insertar_slot(Slot 
 
 void SistemaOperativo::insert_variable_length_data(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
     SistemaOperativo brazo;
-    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    headerSector *ptr_header_bloque=new headerSector();
     int espacio_ocuparemos=brazo.calcular_espacio_necesario(_map_atributos,_vec_atributos,_vec_valores_ingresar);
     //AHORA
     // cout<<"obtenemos el bloque con espacio libre"<<endl;
@@ -1009,7 +1009,7 @@ void SistemaOperativo::insert_variable_length_data(MapaPares &_map_atributos,vec
         {
             //En este caso el slot tupla que queremos ingresar es el H2
             SistemaOperativo brazo;
-            Header_Bloque *ptr_header_bloque=new Header_Bloque();
+            headerSector *ptr_header_bloque=new headerSector();
             (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//obtenemos el header del bloque
             int direc_primer_record_variable_length=ptr_header_bloque->get_direc_primer_record_variable_length();
 
@@ -1067,7 +1067,7 @@ void SistemaOperativo::caminar_por_slots_tupla_variable_data_imprimir(int num_bl
 
 void SistemaOperativo::read_variable_length_data_per_block(int num_block){
     SistemaOperativo brazo;
-    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    headerSector *ptr_header_bloque=new headerSector();
     (*ptr_header_bloque)=brazo.get_header_bloque(num_block);
 
     int direccion_primer_slot=(*ptr_header_bloque).get_direc_primer_record_variable_length();
@@ -1077,7 +1077,7 @@ void SistemaOperativo::read_variable_length_data_per_block(int num_block){
 void SistemaOperativo::read_variable_length_data(int _id_record){
     // int ubication_read;
     // SistemaOperativo brazo;
-    // Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    // headerSector *ptr_header_bloque=new headerSector();
 
 }
 
@@ -1085,7 +1085,7 @@ void SistemaOperativo::read_variable_length_data(int _id_record){
 
 void SistemaOperativo::insertFixedLengthData(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
     SistemaOperativo brazo;
-    Header_Bloque *ptr_header_bloque=new Header_Bloque();
+    headerSector *ptr_header_bloque=new headerSector();
     //primero necesitamos saber cuánto espacio ocuparemos
     int espacio_ocuparemos;
     //obtenemos el bloque con espacio libre
@@ -1099,7 +1099,7 @@ void SistemaOperativo::insertFixedLengthData(MapaPares &_map_atributos,vector<st
 //--------------- WriteData ------------------
 void SistemaOperativo::ingresarTablaDesdeArchivoCSV(string nombreArchivo){
     this->brazoDiscoMagnetico;
-    
+
 }
 
 

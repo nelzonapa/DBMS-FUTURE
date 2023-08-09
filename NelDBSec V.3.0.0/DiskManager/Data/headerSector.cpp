@@ -1,6 +1,6 @@
-#include "Header_Bloque.h"
+#include "headerSector.h"
 
-Header_Bloque::Header_Bloque(){
+headerSector::headerSector(){
     //general
     this->cant_bytes_bloque=0;
     this->cant_bytes_usados_bloque=0;
@@ -20,52 +20,52 @@ Header_Bloque::Header_Bloque(){
     this->direc_primer_record_variable_length=0;
 }
 
-Header_Bloque::~Header_Bloque(){}
+headerSector::~headerSector(){}
 
 //--------------------GET-------------------
 //general
-int Header_Bloque::get_cant_bytes_bloque(){
+int headerSector::get_cant_bytes_bloque(){
     return this->cant_bytes_bloque;
 }
-int Header_Bloque::get_cant_bytes_usados_bloque(){
+int headerSector::get_cant_bytes_usados_bloque(){
     return this->cant_bytes_usados_bloque;
 }
-int Header_Bloque::get_cant_bytes_restantes_bloque(){
+int headerSector::get_cant_bytes_restantes_bloque(){
     return this->cant_bytes_restantes_bloque;
 }
-int Header_Bloque::get_num_general_records_bloque(){
+int headerSector::get_num_general_records_bloque(){
     return this->num_general_records_bloque;
 }
 
 //-------------------------fixed length
-int Header_Bloque::get_direc_space_delete_fixed_bloque(){
+int headerSector::get_direc_space_delete_fixed_bloque(){
     return this->direc_space_delete_fixed_bloque;
 }
-int Header_Bloque::get_direc_end_fixed_bloque(){
+int headerSector::get_direc_end_fixed_bloque(){
     return this->direc_end_fixed_bloque;
 }
-int Header_Bloque::get_num_records_fixed_bloque(){
+int headerSector::get_num_records_fixed_bloque(){
     return this->num_records_fixed_bloque;
 }
 
-int Header_Bloque::get_direc_primer_record_fixed_length(){
+int headerSector::get_direc_primer_record_fixed_length(){
     return this->direc_primer_record_fixed_length;
 }
 
 //--------------------------variable length
 
-int Header_Bloque::get_direc_space_delete_variable_bloque(){
+int headerSector::get_direc_space_delete_variable_bloque(){
     return this->direc_space_delete_variable_bloque;
 }
 
-int Header_Bloque::get_num_records_variable_bloque(){
+int headerSector::get_num_records_variable_bloque(){
     return this->num_records_variable_bloque;
 }
-int Header_Bloque::get_direc_free_space_variable_bloque(){
+int headerSector::get_direc_free_space_variable_bloque(){
     return this->direc_free_space_variable_bloque;
 }
 
-int Header_Bloque::get_direc_primer_record_variable_length(){
+int headerSector::get_direc_primer_record_variable_length(){
     return this->direc_primer_record_variable_length;
 }
 
@@ -73,56 +73,56 @@ int Header_Bloque::get_direc_primer_record_variable_length(){
 
 //--------------------SET-------------------
 //general
-void Header_Bloque::set_cant_bytes_bloque(int _input){
+void headerSector::set_cant_bytes_bloque(int _input){
     this->cant_bytes_bloque=_input;
 }
-void Header_Bloque::set_cant_bytes_usados_bloque(int _input){
+void headerSector::set_cant_bytes_usados_bloque(int _input){
     this->cant_bytes_usados_bloque=_input;
 }
-void Header_Bloque::set_cant_bytes_restantes_bloque(int _input){
+void headerSector::set_cant_bytes_restantes_bloque(int _input){
     this->cant_bytes_restantes_bloque=_input;
 }
-void Header_Bloque::set_num_general_records_bloque(int _input){
+void headerSector::set_num_general_records_bloque(int _input){
     this->num_general_records_bloque=_input;
 }
 
 //fixed length
-void Header_Bloque::set_direc_space_delete_fixed_bloque(int _input){
+void headerSector::set_direc_space_delete_fixed_bloque(int _input){
     this->direc_space_delete_fixed_bloque=_input;
 }
-void Header_Bloque::set_direc_end_fixed_bloque(int _input){
+void headerSector::set_direc_end_fixed_bloque(int _input){
     this->direc_end_fixed_bloque=_input;
 }
-void Header_Bloque::set_num_records_fixed_bloque(int _input){
+void headerSector::set_num_records_fixed_bloque(int _input){
     this->num_records_fixed_bloque=_input;
 }
 
-void Header_Bloque::set_direc_primer_record_fixed_length(int _input){
+void headerSector::set_direc_primer_record_fixed_length(int _input){
     this->direc_primer_record_fixed_length=_input;
 }
 
 //variable length
 
-void Header_Bloque::set_direc_space_delete_variable_bloque(int _input){
+void headerSector::set_direc_space_delete_variable_bloque(int _input){
     this->direc_space_delete_variable_bloque=_input;
 }
 
-void Header_Bloque::set_num_records_variable_bloque(int _input){
+void headerSector::set_num_records_variable_bloque(int _input){
     this->num_records_variable_bloque=_input;
 }
-void Header_Bloque::set_direc_free_space_variable_bloque(int _input){
+void headerSector::set_direc_free_space_variable_bloque(int _input){
     this->direc_free_space_variable_bloque=_input;
 }
 
-void Header_Bloque::set_direc_primer_record_variable_length(int _input){
+void headerSector::set_direc_primer_record_variable_length(int _input){
     this->direc_primer_record_variable_length=_input;
 }
 
 //--------------------Others-------------------
 
-void Header_Bloque::print_info_header_bloque(){
+void headerSector::print_info_header_bloque(){
     //general
-    cout<<"Mostrando informacion que almacena el Header_Bloque"<<endl;
+    cout<<"Mostrando informacion que almacena el headerSector"<<endl;
     cout<<"- cant_bytes_bloque: "<<this->cant_bytes_bloque<<endl;
     cout<<"- cant_bytes_usados_bloque: "<<this->cant_bytes_usados_bloque<<endl;
     cout<<"- cant_bytes_restantes_bloque: "<<this->cant_bytes_restantes_bloque<<endl;

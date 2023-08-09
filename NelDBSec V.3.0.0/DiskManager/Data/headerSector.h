@@ -1,10 +1,10 @@
-#ifndef HEADER_BLOQUE_H
-#define HEADER_BLOQUE_H
+#ifndef HEADERSECTOR_H
+#define HEADERSECTOR_H
 
 #include <iostream>
 using namespace std;
 
-class Header_Bloque
+class headerSector
 {
 private:
     //general
@@ -25,8 +25,8 @@ private:
     unsigned int direc_free_space_variable_bloque; //apunta a donde inicias las tuplas de variable length
     unsigned int direc_primer_record_variable_length;
 public:
-    Header_Bloque(/* args */);
-    ~Header_Bloque();
+    headerSector(/* args */);
+    ~headerSector();
 
     //--------------------GET-------------------
     //general
