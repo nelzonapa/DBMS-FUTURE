@@ -3,14 +3,13 @@
 
 #include "permiso.cpp"
 #include "rol.cpp"
-#include "../Main_Memory/BufferManager/BufferManager.cpp"
+// #include "../Main_Memory/BufferManager/BufferManager.cpp"
 
 class PermisoRol {
 private:
     int id;
     Permiso permiso;
     Rol rol;
-    BufferManager bufferManager;
 public:
 
     PermisoRol();
@@ -30,7 +29,6 @@ public:
     string getNamePermiso();
     string getNameRol();
 
-    void ejecutarBufferManager();
 };
 
 #endif

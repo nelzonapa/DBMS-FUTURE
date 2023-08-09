@@ -2,6 +2,15 @@
 #include "Programa.h"
 #include "Programa.cpp"
 
+void mostrarTablaMetadata();
+void menu_program(Programa &programa);
+
+int main(){
+    Programa *ptr_programa=new Programa();
+    Pagina *ptr_pagina;
+    menu_program(*ptr_programa);
+}
+
 void menu_program(Programa &programa){
     cout<<"Bienvenido al nuevo DBMS Future"<<endl;
     bool x=false;//para detectar si sale del programa
@@ -42,8 +51,6 @@ void menu_program(Programa &programa){
     return;
 }
 
-int main(){
-    Programa *ptr_programa=new Programa();
-    Pagina *ptr_pagina;
-    menu_program(*ptr_programa);
+void mostrarTablaMetadata(){
+    
 }

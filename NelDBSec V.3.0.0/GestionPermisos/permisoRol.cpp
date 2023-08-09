@@ -40,8 +40,3 @@ string PermisoRol::getNamePermiso(){
 string PermisoRol::getNameRol(){
     return this->rol.getNombreRol();
 }
-
-
-void PermisoRol::ejecutarBufferManager(){
-    // this->bufferManager
-}

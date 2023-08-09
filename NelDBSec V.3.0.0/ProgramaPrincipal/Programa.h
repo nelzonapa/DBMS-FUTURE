@@ -1,8 +1,8 @@
 #ifndef PROGRAMA_H
 #define PROGRAMA_H
 
-#include "Main_Memory/BufferManager/BufferManager.h"
-#include "Main_Memory/BufferManager/BufferManager.cpp"
+// #include "Main_Memory/BufferManager/BufferManager.h"
+#include "../Main_Memory/BufferManager/BufferManager.cpp"
 
 
 class Programa

@@ -31,7 +31,8 @@ public:
 
     //others
     void ejecutarPrograma();
-
+    void menu_program(Programa &programa);
+    void mostrarTablaMetadata();
 };
 
 
