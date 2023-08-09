@@ -22,11 +22,11 @@ Pagina& Programa::obtenerPagina(int id_pagina){
     - Buffer manager: Agrega dato a TablaMetadta y agrega la página a Buffer Pool
     - Retorna la página al Programa
     */
-    (this->buffManagerPrograma).agregarPagina_BuffPool_tablaMetadata(id_pagina);
+    (this->buffManagerPrograma).agregarPaginaTablaMetadata(id_pagina);
     cout<<"..-..rr"<<endl;
     // (*this->paginaRecibir)=(this->buffManagerPrograma).get_pagina_retornar();
     cout<<"Pagina recibida, mostrando estado de la tabla de metadata"<<endl;
-    (this->buffManagerPrograma).mostrar_tabla_metadata();
+    (this->buffManagerPrograma).mostrarTablaMetadata();
     // cout<<"Mostrando pagina recibida..."<<endl;
     // (*this->paginaRecibir).print_info_pagina();
     (this->paginaRecibir)=(this->buffManagerPrograma).get_pagina_retornar();

@@ -34,14 +34,21 @@ public:
     BufferManager();
     ~BufferManager();
 
+    //SETTERS
     void set_num_frames(int input);
 
     Pagina& get_pagina_retornar();
-
-    void agregarPagina_BuffPool_tablaMetadata(int id_pag);
     
-    void mostrar_tabla_metadata();
+    //BufferPool
+    void agregarPaginaBufferPool(int idPag);
+    void mostrarBufferPool();
 
+    //Metadata
+    void agregarPaginaTablaMetadata(int idPag);
+    void mostrarTablaMetadata();
+
+    //Obtener del Disk Manager
+    void obtenerPaginaDiskManager();
     
 };
 
