@@ -41,8 +41,16 @@ public:
     void crear_pistas(DiscoMagnetico &disco_magnetic, const string &final_route_plato);
     void crear_sectores(DiscoMagnetico &disco_magnetic, const string &final_route_plato);
 
-    /*escribir data*/
-    
+    /*------ data---------*/
+    void escribirFixedLengthData(string registro, string metadata);
+    void escribirVariableLengthData(string registro, string metadata);
+
+    string leerFixedLengthData(string metadata);
+    string leerVariableLengthData(string metadata);
+
+    void eliminarRegistro(string idRegistro,string metadata);
+    void actualizarRegistro(string idRegistro,string metadata);
+
 
 };
 

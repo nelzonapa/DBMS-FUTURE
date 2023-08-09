@@ -31,3 +31,8 @@ Pagina& Programa::obtenerPagina(int id_pagina){
     // (*this->paginaRecibir).print_info_pagina();
     (this->paginaRecibir)=(this->buffManagerPrograma).get_pagina_retornar();
 }
+
+
+void Programa::ingresarTablaDesdeArchivoCSV(string nombreArchivo){
+    this->buffManagerPrograma.ingresarDatosDesdeArchivoCSV(nombreArchivo);
+}

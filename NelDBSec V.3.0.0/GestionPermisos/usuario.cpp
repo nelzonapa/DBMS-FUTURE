@@ -60,13 +60,15 @@ void Usuario::menu_program(Programa &programa){
     bool x=false;//para detectar si sale del programa
     int op;
     int num_pagina;
+    string nombreArchivoCSV;
 
     while (x==false)
     {
         std::cout<<"\t---- Programa Ejecutando ----\n";
         std::cout<<"1. Obtener Pagina"<<endl;
         std::cout<<"2. Mostrar la tabla metadata"<<endl;
-        std::cout<<"3. Salir"<<endl;
+        std::cout<<"3. Ingresar Tabla desde Archivo csv"<<endl;
+        std::cout<<"4. Salir"<<endl;
         std::cout<<"Ingrese opcion: "<<endl;
         cin>>op;
         switch(op)
@@ -81,6 +83,11 @@ void Usuario::menu_program(Programa &programa){
                 mostrarTablaMetadata();
                 break;
             case 3:
+                cout<<"Para ingresar su tabla, ingrese el nombre del archivo: ...."<<endl;
+                cin>>nombreArchivoCSV;
+                ingresarTablaDesdeArchivo(nombreArchivoCSV);
+                break;
+            case 4:
                 x=true;
                 break;
 
@@ -98,4 +105,9 @@ void Usuario::menu_program(Programa &programa){
 void Usuario::mostrarTablaMetadata(){
     cout<<"Mostrando tabla"<<endl;
     // this->programa
+}
+
+void Usuario::ingresarTablaDesdeArchivo(string nombreArchivoCSV){
+    // cout<<"cargando archivo "+nombreArchivoCSV<<endl;
+    this->programa.ingresarTablaDesdeArchivoCSV(nombreArchivoCSV);
 }

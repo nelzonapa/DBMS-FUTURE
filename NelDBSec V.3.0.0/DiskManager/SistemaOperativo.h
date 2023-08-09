@@ -47,6 +47,9 @@ typedef unordered_map<string, pair<string,int>> MapaPares;
 
 class SistemaOperativo
 {
+private:
+    BrazoDisco brazoDiscoMagnetico;
+
 public:
     SistemaOperativo();
     ~SistemaOperativo();
@@ -112,10 +115,14 @@ public:
     void read_variable_length_data(int _id_record);
 
     //--------------WRITE FIXED LENGTH DATA-----------
-    void insert_fixed_length_data(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
+    void insertFixedLengthData(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
     
     //----------------------READ FIXED DATA-----------------
     // void read_fixed_length_data();
+
+    /*-------------- EJecución del Disk Manager ---------------*/
+    void ingresarTablaDesdeArchivoCSV(string nombreArchivo);
+
 };
 
 #endif

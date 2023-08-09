@@ -4,7 +4,7 @@ DiskManager::DiskManager(){}
 DiskManager::~DiskManager(){}
 
 void DiskManager::menu(){
-    cout<<"Usted se encuentra en el Sistema Operativo del DBMS Future (ADMIN)"<<endl;
+    cout<<"Usted se encuentra en el Disk Manager del DBMS Future (ADMIN)"<<endl;
     bool x=false;//para detectar si sale del programa
     int op;//detectar la opcion
     // Disco_Header *ptr;//puntero a un disco
@@ -711,7 +711,7 @@ void DiskManager::escribir_registro()
         //agregamos el TRUE de FIXED LENGTH
         (*ptr_vec_valores_ingresar).push_back("true");
 
-        sis_operativo.insert_fixed_length_data((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
+        sis_operativo.insertFixedLengthData((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
     }
 
     
@@ -729,5 +729,10 @@ int DiskManager::sacar_codigo_tabla(string _name_tabla){
         suma += static_cast<int>(c);
     }
     return suma/103;
+}
+
+// OBTENER BLOQUE PARA BUFFER MANAGER
+Pagina obtenerBloquePagina(int idPagina){
+
 }
 

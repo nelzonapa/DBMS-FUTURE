@@ -47,9 +47,9 @@ public:
     void agregarPaginaTablaMetadata(int idPag);
     void mostrarTablaMetadata();
 
-    //Obtener del Disk Manager
+    //----Disk Manager----
     void obtenerPaginaDiskManager();
-    
+    void ingresarDatosDesdeArchivoCSV(string nombreArchivo);
 };
 
 #endif

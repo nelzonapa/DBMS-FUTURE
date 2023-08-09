@@ -74,4 +74,11 @@ void BufferManager::mostrarTablaMetadata(){
 
 
 //Obtener del Disk Manager
-    void obtenerPaginaDiskManager();
+void BufferManager::obtenerPaginaDiskManager(){
+    // this->diskManager.
+}
+
+void BufferManager::ingresarDatosDesdeArchivoCSV(string nombreArchivo){
+    // this->diskManager.
+    cout<<"BuffManager..."<<endl;
+}

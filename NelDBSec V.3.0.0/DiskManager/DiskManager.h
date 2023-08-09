@@ -57,7 +57,11 @@ public:
     void escribir_registro();
     
     int sacar_codigo_tabla(string _name_tabla);
+
+    // OBTENER BLOQUE PARA BUFFER MANAGER
+    Pagina obtenerBloquePagina(int idPagina);
     
+    //
 };
 
 #endif 

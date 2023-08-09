@@ -1083,7 +1083,7 @@ void SistemaOperativo::read_variable_length_data(int _id_record){
 
 //----------------------WRITE FIXED DATA---------------------
 
-void SistemaOperativo::insert_fixed_length_data(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
+void SistemaOperativo::insertFixedLengthData(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
     SistemaOperativo brazo;
     Header_Bloque *ptr_header_bloque=new Header_Bloque();
     //primero necesitamos saber cuánto espacio ocuparemos
@@ -1096,6 +1096,11 @@ void SistemaOperativo::insert_fixed_length_data(MapaPares &_map_atributos,vector
 //----------------------READ FIXED DATA-----------------
 
 
+//--------------- WriteData ------------------
+void SistemaOperativo::ingresarTablaDesdeArchivoCSV(string nombreArchivo){
+    this->brazoDiscoMagnetico;
+    
+}
 
 
 

@@ -17,6 +17,9 @@ public:
     void setPtrPaginaRecibir(Pagina &pagina);
     
     Pagina& obtenerPagina(int id_pagina);
+
+    void ingresarTablaDesdeArchivoCSV(string nombreArchivo);
+    
 };
 
 
