@@ -18,21 +18,6 @@ void BufferManager::set_num_frames(int input){
 }
 
 
-void BufferManager::apuntar_buffPool(){
-    BufferPool buffPool(this->num_frames);
-    (this->bufferPool)=buffPool;
-}
-
-void BufferManager::apuntar_tablaMetadata(){
-    TablaMetadata tablaMetadata(this->num_frames);
-    (this->tablaMetadata)=tablaMetadata;
-}
-
-void BufferManager::apuntar_diskManager(){
-    DiskManager diskManager;
-    (this->diskManager)=diskManager;
-}
-
 void BufferManager::agregarPagina_BuffPool_tablaMetadata(int id_pag){
     // (this->tablaMetadata).
     bool tabla_vacia=(this->tablaMetadata).tabla_vacia();

@@ -97,4 +97,5 @@ void Usuario::menu_program(Programa &programa){
 
 void Usuario::mostrarTablaMetadata(){
     cout<<"Mostrando tabla"<<endl;
+    // this->programa
 }
