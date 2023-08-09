@@ -40,12 +40,12 @@ int headerSector::getCantBytesUsadosSector()
     return cantBytesUsadosSector;
 }
 
-int headerSector::getCantBytesRestantesBloque()
+int headerSector::getCantBytesRestantesSector()
 {
     return cantBytesRestantesBloque;
 }
 
-int headerSector::getNumGeneralRecordsBloque()
+int headerSector::getNumGeneralRecordsSector()
 {
     return numGeneralRecordsBloque;
 }
@@ -116,12 +116,12 @@ void headerSector::setCantBytesUsadosSector(int cant)
     cantBytesUsadosSector = cant;
 }
 
-void headerSector::setCantBytesRestantesBloque(int cant)
+void headerSector::setCantBytesRestantesSector(int cant)
 {
     cantBytesRestantesBloque = cant;
 }
 
-void headerSector::setNumGeneralRecordsBloque(int num)
+void headerSector::setNumGeneralRecordsSector(int num)
 {
     numGeneralRecordsBloque = num;
 }

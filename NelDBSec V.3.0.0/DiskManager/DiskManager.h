@@ -45,14 +45,6 @@ public:
     void mostrar_info_de_bloque(int num_bloque);
     void mostrar_contenido_variable_length_bloque(int num_bloque);
 
-    //----------------- ESQUEMA DATA ------------------
-    void crear_esquema_tabla(string _name_archivo);//solo el nombre del archivo
-    void leer_esquema_tabla(string _name_tabla);
-    void mostrar_esquema_map(MapaPares& map_atributos,vector<string> &vector_ordenado_atributos);
-    MapaPares& get_esquema_tabla(string _name_tabla);
-    vector<string>& get_vector_atributos(string _name_tabla);
-    string decidir_tipo_dato(string &value);
-
     //----------------- WRITE FIXED OR VARIABLE LENGTH ------------------
     void escribir_registro();
     

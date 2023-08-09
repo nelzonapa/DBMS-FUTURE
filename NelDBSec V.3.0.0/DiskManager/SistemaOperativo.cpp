@@ -733,7 +733,7 @@ int SistemaOperativo::get_num_bloque_espacio_libre(int _space_necesitado){
     for (size_t i = 1; i <=num_bloques; i++)
     {
         (*ptr_header_bloque)=brazo.get_header_bloque(i);
-        int space_libre=(*ptr_header_bloque).get_cant_bytes_restantes_bloque();
+        int space_libre=(*ptr_header_bloque).getCantBytesRestantesSector();
         if (_space_necesitado<space_libre)
         {
             return i;
@@ -820,7 +820,7 @@ void SistemaOperativo::caminar_por_slots_tupla_variable_data_insertar_slot(Slot 
         headerSector *ptr_header_bloque=new headerSector();
         (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque);//obtenemos el header del bloque
 
-        int direccion_slot_nuevo=(*ptr_header_bloque).get_direc_end_fixed_bloque();
+        int direccion_slot_nuevo=(*ptr_header_bloque).getDirecEndFixedData();
         slot_ya_escrito.set_direc_sig_slot(direccion_slot_nuevo);
         slot_tupla_enviado.set_direc_sig_slot(0);
         //ahora si escribimos el slot
@@ -831,12 +831,12 @@ void SistemaOperativo::caminar_por_slots_tupla_variable_data_insertar_slot(Slot 
 
         int longitud_tupla_total=slot_tupla_enviado.get_size_length();
         //-------------ACTUALIZAMOS HEADER_BLOQUE -----------
-        (*ptr_header_bloque).set_cant_bytes_restantes_bloque((*ptr_header_bloque).get_cant_bytes_restantes_bloque()-(longitud_tupla_total+sizeof(Slot)));
-        (*ptr_header_bloque).set_cant_bytes_usados_bloque((*ptr_header_bloque).get_cant_bytes_usados_bloque()+(longitud_tupla_total+sizeof(Slot)));
-        (*ptr_header_bloque).set_direc_end_fixed_bloque((*ptr_header_bloque).get_direc_end_fixed_bloque()+(sizeof(Slot)));
-        (*ptr_header_bloque).set_direc_free_space_variable_bloque((*ptr_header_bloque).get_direc_free_space_variable_bloque()-longitud_tupla_total);
-        (*ptr_header_bloque).set_num_general_records_bloque((*ptr_header_bloque).get_num_general_records_bloque()+1);
-        (*ptr_header_bloque).set_num_records_variable_bloque((*ptr_header_bloque).get_num_records_variable_bloque()+1);
+        (*ptr_header_bloque).setCantBytesRestantesSector((*ptr_header_bloque).getCantBytesRestantesSector()-(longitud_tupla_total+sizeof(Slot)));
+        (*ptr_header_bloque).setCantBytesUsadosSector((*ptr_header_bloque).getCantBytesUsadosSector()+(longitud_tupla_total+sizeof(Slot)));
+        (*ptr_header_bloque).setDirecEndFixedData((*ptr_header_bloque).getDirecEndFixedData()+(sizeof(Slot)));
+        (*ptr_header_bloque).setDirecFreeSpaceVariableSector((*ptr_header_bloque).getDirecFreeSpaceVariableSector()-longitud_tupla_total);
+        (*ptr_header_bloque).setNumGeneralRecordsSector((*ptr_header_bloque).getNumGeneralRecordsSector()+1);
+        (*ptr_header_bloque).setNumRecordsVariableSector((*ptr_header_bloque).getNumRecordsVariableSector()+1);
         
         archivo_new_write.close();
     }
@@ -881,7 +881,7 @@ void SistemaOperativo::insert_variable_length_data(MapaPares &_map_atributos,vec
         string valor_atributo;
 
         //Ahora debemos ubicarnos donde nos indique el HEADER_DEL_BLOQUE:
-        int ubication_write_bin=(*ptr_header_bloque).get_direc_free_space_variable_bloque();
+        int ubication_write_bin=(*ptr_header_bloque).getDirecFreeSpaceVariableSector();
         int longitud_tupla_total=0;
 
         //-------------LOS ATRIBUTOS -----------
@@ -986,11 +986,11 @@ void SistemaOperativo::insert_variable_length_data(MapaPares &_map_atributos,vec
         slot_tupla.set_size_length(longitud_tupla_total);
         //Ahora vemos la dirección que guarda del siguiente SLOT_TUPLA:
         //Caso en el que puede llegar a ser el primer registro de tipo variable:
-        if ((*ptr_header_bloque).get_num_records_variable_bloque()==0)
+        if ((*ptr_header_bloque).getNumRecordsVariableSector()==0)
         {
             //ESCRIBIMOS EL SLOT_TUPLA
-            ubication_write_bin= (*ptr_header_bloque).get_direc_end_fixed_bloque();
-            (*ptr_header_bloque).set_direc_primer_record_variable_length(ubication_write_bin);//en si el primer slot
+            ubication_write_bin= (*ptr_header_bloque).getDirecEndFixedData();
+            (*ptr_header_bloque).setDirecFirstVariableRecord(ubication_write_bin);//en si el primer slot
             slot_atributo.set_direc_sig_slot(0);
 
             //escribimos el primer slot
@@ -998,12 +998,12 @@ void SistemaOperativo::insert_variable_length_data(MapaPares &_map_atributos,vec
             archivo.write(reinterpret_cast<const char *>(&slot_tupla), sizeof(Slot));
             
             //-------------ACTUALIZAR HEADER_BLOQUE -----------
-            (*ptr_header_bloque).set_cant_bytes_restantes_bloque((*ptr_header_bloque).get_cant_bytes_restantes_bloque()-(longitud_tupla_total+sizeof(Slot)));
-            (*ptr_header_bloque).set_cant_bytes_usados_bloque((*ptr_header_bloque).get_cant_bytes_usados_bloque()+(longitud_tupla_total+sizeof(Slot)));
-            (*ptr_header_bloque).set_direc_end_fixed_bloque((*ptr_header_bloque).get_direc_end_fixed_bloque()+(sizeof(Slot)));
-            (*ptr_header_bloque).set_direc_free_space_variable_bloque((*ptr_header_bloque).get_direc_free_space_variable_bloque()-longitud_tupla_total);
-            (*ptr_header_bloque).set_num_general_records_bloque((*ptr_header_bloque).get_num_general_records_bloque()+1);
-            (*ptr_header_bloque).set_num_records_variable_bloque((*ptr_header_bloque).get_num_records_variable_bloque()+1);
+            (*ptr_header_bloque).setCantBytesRestantesSector((*ptr_header_bloque).getCantBytesRestantesSector()-(longitud_tupla_total+sizeof(Slot)));
+            (*ptr_header_bloque).setCantBytesUsadosSector((*ptr_header_bloque).getCantBytesUsadosSector()+(longitud_tupla_total+sizeof(Slot)));
+            (*ptr_header_bloque).setDirecEndFixedData((*ptr_header_bloque).getDirecEndFixedData()+(sizeof(Slot)));
+            (*ptr_header_bloque).setDirecFreeSpaceVariableSector((*ptr_header_bloque).getDirecFreeSpaceVariableSector()-longitud_tupla_total);
+            (*ptr_header_bloque).setNumGeneralRecordsSector((*ptr_header_bloque).getNumGeneralRecordsSector()+1);
+            (*ptr_header_bloque).setNumRecordsVariableSector((*ptr_header_bloque).getNumRecordsVariableSector()+1);
         }
         else    //caso de no ser el primer variable data
         {
@@ -1011,7 +1011,7 @@ void SistemaOperativo::insert_variable_length_data(MapaPares &_map_atributos,vec
             SistemaOperativo brazo;
             headerSector *ptr_header_bloque=new headerSector();
             (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//obtenemos el header del bloque
-            int direcFirstVariableRecord=ptr_header_bloque->get_direc_primer_record_variable_length();
+            int direcFirstVariableRecord=ptr_header_bloque->getDirecFirstVariableRecord();
 
             caminar_por_slots_tupla_variable_data_insertar_slot(slot_tupla,num_bloque_space,direcFirstVariableRecord);
         }
@@ -1070,7 +1070,7 @@ void SistemaOperativo::read_variable_length_data_per_block(int num_block){
     headerSector *ptr_header_bloque=new headerSector();
     (*ptr_header_bloque)=brazo.get_header_bloque(num_block);
 
-    int direccion_primer_slot=(*ptr_header_bloque).get_direc_primer_record_variable_length();
+    int direccion_primer_slot=(*ptr_header_bloque).getDirecFirstVariableRecord();
     caminar_por_slots_tupla_variable_data_imprimir(num_block,direccion_primer_slot);
 }
 
@@ -1096,9 +1096,404 @@ void SistemaOperativo::insertFixedLengthData(MapaPares &_map_atributos,vector<st
 //----------------------READ FIXED DATA-----------------
 
 
+//----------------- ESQUEMA DATA ------------------
+void SistemaOperativo::crear_esquema_tabla(string _name_archivo){
+    /*Quiero obtener el número o tamaño de cada
+    atributo*/
+    
+    //ABRIR EL ARCHIVO CSV
+    string route_archivo_leer=_name_archivo+".csv";
+    ifstream file_open(route_archivo_leer);
+    if (!file_open)
+    {
+        cout << "No se pudo abrir el archivo csv." << endl;
+    }
+    else{
+
+        string linea;
+        MapaPares map_atributos;//unordered_map<string, pair<string, int>>
+        vector<string> vector_ordenado_atributos;
+        // Leer la primera línea con los nombres de atributos
+        if (getline(file_open, linea))
+        {
+            istringstream iss(linea);
+            string _atributo;
+            while (getline(iss, _atributo, ',')) // después de cada coma ','
+            {
+                map_atributos[_atributo] = make_pair("", 0); // Inicializar con valores vacíos
+                vector_ordenado_atributos.push_back(_atributo); // Agregar el atributo al vector de orden
+            }
+        }
+
+        //PASAMOS A LEER LOS REGISTROS Teniendo en cuenta los ATRIBUTOS
+        int cont_size_max_strings;
+        
+        while (getline(file_open, linea))//mientras se tenga lineas para leer
+        {
+            istringstream iss(linea);//para leer parte por parte
+            string valor_atributo;
+            // string atributo_aux;
+
+            int i = 0;//contador
+            //leeremos toda la linea
+            while (getline(iss, valor_atributo, ','))
+            {
+                if (i < vector_ordenado_atributos.size())// 13 VECES
+                {
+                    //recogemos el atributo en el puesto i de las columnas de ATRIBUTOS
+                    string atributo_name = vector_ordenado_atributos[i];
+                    //first guarda el tipo del dato
+                    map_atributos[atributo_name].first=decidir_tipo_dato(valor_atributo);
+                    //Second guardará el tamaño o size
+                    //primero decidimos si el valor atributo es de tipo int, string, bool y ello
+                    if (map_atributos[atributo_name].first=="int")
+                    {
+                        map_atributos[atributo_name].second=4;
+                    }
+                    else if(map_atributos[atributo_name].first=="float"){
+                        map_atributos[atributo_name].second=8;
+                    }
+                    else if (map_atributos[atributo_name].first=="bool")
+                    {
+                        map_atributos[atributo_name].second=1;
+                    }
+                    else{
+                        // cout<<"s: "<<map_atributos[atributo_name].first;
+                        // const char* atributo=(map_atributos[atributo_name].first).c_str();
+                        // int size_atributo=std::strlen(atributo);
+                        map_atributos[atributo_name].second=strlen(valor_atributo.c_str());
+                        // cout<<"s: "<<size_atributo;
+                    }
+                                        
+                }
+                i++;
+            }
+        }
+        file_open.close();
+
+
+        //CREAR EL ESQUEMA DE LA TABLA TXT
+        string route_archivo_crear="DiskManager/Data/esquema_"+_name_archivo+".txt";
+        ofstream file_write(route_archivo_crear);
+        if (file_write.is_open()) 
+        {
+            file_write<<"NombreTabla"<<endl;
+            file_write<<_name_archivo<<endl;
+            file_write<<"Atributos"<<endl;
+
+            //Atributos puestos
+            for (int i = 0; i < vector_ordenado_atributos.size(); i++)
+            {
+                file_write<<vector_ordenado_atributos[i]+",";//saca el atributo
+            }
+            file_write<<endl;
+
+            //Ingresar los tipos
+            file_write<<"TiposData"<<endl;
+            for (int i = 0; i < vector_ordenado_atributos.size(); i++)
+            {
+                file_write<<map_atributos[vector_ordenado_atributos[i]].first + ",";
+            }
+            file_write<<endl;
+
+            file_write<<"SizeData"<<endl;
+            //Finalmente el tamaño MAX de cada uno
+            //en caso de strings le aumentamos 10 más
+            for (int i = 0; i < vector_ordenado_atributos.size(); i++)
+            {
+                file_write<<to_string(map_atributos[vector_ordenado_atributos[i]].second) + ",";
+            }
+            file_write<<endl;
+
+            file_write.close();
+
+            cout << "El archivo ESQUEMA se ha creado exitosamente." << endl;
+        }
+        else 
+        {
+            cout << "No se pudo abrir el archivo." << endl;
+        }
+    }
+}
+
+void SistemaOperativo::leer_esquema_tabla(string _name_tabla){
+    string route_archivo_leer="DiskManager/Data/esquema_"+_name_tabla+".txt";
+    ifstream file_open(route_archivo_leer);
+    if (!file_open)
+    {
+        cout << "No se pudo abrir el archivo csv leer esquema" << endl;
+    }
+    else
+    {
+        
+        //cout<<"Para almacenar por mientras"<<endl;
+        string linea;
+        string name_tabla;
+        MapaPares map_atributos;
+        vector<string> vector_ordenado_atributos;
+
+
+        // cout<<"Leer la primera línea con los nombres de atributos
+        while (getline(file_open,linea))
+        {
+            // cout<<"linea: "<<linea<<endl;
+            if (linea=="NombreTabla")
+            {
+                getline(file_open, linea);//leemos el nombre de la tabla
+                name_tabla=linea;
+            }
+            else if(linea=="Atributos")
+            {
+                getline(file_open, linea);
+                istringstream iss(linea);
+                string _atributo;
+                while (getline(iss,_atributo,',')) // después de cada espacio ' '
+                {
+                    map_atributos[_atributo] = make_pair("", 0); // Inicializar con valores vacíos
+                    vector_ordenado_atributos.push_back(_atributo); // Agregar el atributo al vector de orden
+                }  
+            }
+            else if(linea=="TiposData")
+            {
+                getline(file_open, linea);
+                istringstream iss(linea);
+                string _tipo_data;
+                
+                int i=0;
+                while (getline(iss,_tipo_data,','))
+                {
+                    string atributo_name=vector_ordenado_atributos[i];
+                    if (i<vector_ordenado_atributos.size())
+                    {
+                        map_atributos[atributo_name].first=_tipo_data;
+                    }
+                    i++;
+                }
+                
+            }
+            else if (linea=="SizeData")
+            {
+                getline(file_open, linea);
+                istringstream iss(linea);
+                string _size_data;
+                
+                int i=0;
+                while (getline(iss,_size_data,','))
+                {
+                    string atributo_name=vector_ordenado_atributos[i];
+                    if (i<vector_ordenado_atributos.size())
+                    {
+                        map_atributos[atributo_name].second=stoi(_size_data);
+                    }
+                    i++;
+                }
+            }
+            
+        }
+        mostrar_esquema_map(map_atributos,vector_ordenado_atributos);
+        // cout<<"Esquema leido correctamente"<<endl;
+        // if (map_atributos.empty())
+        // {
+        //     cout<<"Mapa vacio"<<endl;
+        // }
+        
+    }
+    
+    
+}
+
+MapaPares& SistemaOperativo::get_esquema_tabla(string _name_tabla){
+    string route_archivo_leer="DiskManager/Data/esquema_"+_name_tabla+".txt";
+    ifstream file_open(route_archivo_leer);
+    if (!file_open)
+    {
+        cout << "No se pudo abrir el archivo csv leer esquema" << endl;
+    }
+    else
+    {
+        
+        //cout<<"Para almacenar por mientras"<<endl;
+        string linea;
+        string name_tabla;
+        MapaPares *ptr_map_atributos=new MapaPares();
+        // MapaPares map_atributos;
+        vector<string> vector_ordenado_atributos;
+        // (*ptr_mapa)=map_atributos;
+
+
+        // cout<<"Leer la primera línea con los nombres de atributos
+        while (getline(file_open,linea))
+        {
+            // cout<<"linea: "<<linea<<endl;
+            if (linea=="NombreTabla")
+            {
+                getline(file_open, linea);//leemos el nombre de la tabla
+                name_tabla=linea;
+            }
+            else if(linea=="Atributos")
+            {
+                getline(file_open, linea);
+                istringstream iss(linea);
+                string _atributo;
+                // int cont_detector_first_atributo=1;
+                
+                while (getline(iss,_atributo,',')) // después de cada espacio ' '
+                {
+                    // if (cont_detector_first_atributo==1)
+                    // {
+                    //     if (tolower(_atributo)==)
+                    //     {
+                    //         /* code */
+                    //     }
+                        
+                    // }
+                    // cont_detector_first_atributo++;
+                    
+                    (*ptr_map_atributos)[_atributo] = make_pair("", 0); // Inicializar con valores vacíos
+                    vector_ordenado_atributos.push_back(_atributo); // Agregar el atributo al vector de orden
+                }  
+            }
+            else if(linea=="TiposData")
+            {
+                getline(file_open, linea);
+                istringstream iss(linea);
+                string _tipo_data;
+                
+                int i=0;
+                while (getline(iss,_tipo_data,','))
+                {
+                    string atributo_name=vector_ordenado_atributos[i];
+                    if (i<vector_ordenado_atributos.size())
+                    {
+                        (*ptr_map_atributos)[atributo_name].first=_tipo_data;
+                    }
+                    i++;
+                }
+                
+            }
+            else if (linea=="SizeData")
+            {
+                getline(file_open, linea);
+                istringstream iss(linea);
+                string _size_data;
+                
+                int i=0;
+                while (getline(iss,_size_data,','))
+                {
+                    string atributo_name=vector_ordenado_atributos[i];
+                    if (i<vector_ordenado_atributos.size())
+                    {
+                        (*ptr_map_atributos)[atributo_name].second=stoi(_size_data);
+                    }
+                    i++;
+                }
+            }
+            
+        }
+        return (*ptr_map_atributos);
+        
+    }
+    
+    
+}
+
+vector<string>& SistemaOperativo::get_vector_atributos(string _name_tabla){
+    
+    string route_archivo_leer="DiskManager/Data/esquema_"+_name_tabla+".txt";
+    ifstream file_open(route_archivo_leer);
+    if (!file_open)
+    {
+        cout << "No se pudo abrir el archivo csv leer esquema" << endl;
+    }
+    else
+    {
+        
+        //cout<<"Para almacenar por mientras"<<endl;
+        string linea;
+        string name_tabla;
+        vector<string> *ptr_vector_ordenado_atributos=new vector<string>();
+        MapaPares map_atributos;
+        // vector<string> vector_ordenado_atributos;
+        // (*ptr_vector)=vector_ordenado_atributos;
+
+
+        // cout<<"Leer la primera línea con los nombres de atributos
+        getline(file_open,linea);
+        getline(file_open,linea);
+        //pasamos a atributos
+        getline(file_open,linea);
+        if(linea=="Atributos")
+        {
+            getline(file_open, linea);
+            istringstream iss(linea);
+            string _atributo;
+            while (getline(iss,_atributo,',')) // después de cada espacio ' '
+            {
+                map_atributos[_atributo] = make_pair("", 0); // Inicializar con valores vacíos
+                (*ptr_vector_ordenado_atributos).push_back(_atributo); // Agregar el atributo al vector de orden
+            } 
+        }
+        file_open.close();
+        return (*ptr_vector_ordenado_atributos);
+    }
+}
+
+void SistemaOperativo::mostrar_esquema_map(MapaPares& map_atributos,vector<string> &vector_ordenado_atributos){
+    string guarda_atributo;
+    // Imprimir los atributos y sus valores en el orden correspondiente
+    for (size_t i = 0; i < vector_ordenado_atributos.size(); i++)
+    {
+        guarda_atributo = vector_ordenado_atributos[i];
+        std::cout<<"Atributo: "<<guarda_atributo<<std::endl;
+        std::cout<<"Valor 1: "<<map_atributos[guarda_atributo].first<<std::endl;
+        std::cout<<"Valor 2: "<<map_atributos[guarda_atributo].second<<std::endl;
+        std::cout<<std::endl;
+    }
+}
+
+string SistemaOperativo::decidir_tipo_dato(string &value)
+{
+    // Ver si es de tipo Int
+    bool isInteger = true;
+    for (size_t i = 0; i < value.size(); i++)
+    {
+        if (!isdigit(value[i]))
+        {
+            isInteger = false;
+            break;
+        }
+    }
+    if (isInteger)
+    {
+        return "int";
+    }
+
+    // Revisamos si es float
+    istringstream iss(value);
+    float num;
+    if (iss>>num>>ws && iss.eof())
+    {
+        return "float";
+    }
+
+    // En caso de tener un booleano
+    if (value == "true" || value == "false")
+    {
+        return "bool";
+    }
+
+    // Otros lo ponemos como string
+    return "string";
+}
+
+
 //--------------- WriteData ------------------
 void SistemaOperativo::ingresarTablaDesdeArchivoCSV(string nombreArchivo){
-    this->brazoDiscoMagnetico;
+    //Primero detectar o leer el esquema de tabla
+
+    // de acuerdo a esquema e ir ingresando
+    // this->brazoDiscoMagnetico;
+
 
 }
 

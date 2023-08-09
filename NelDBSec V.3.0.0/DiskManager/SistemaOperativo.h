@@ -120,6 +120,16 @@ public:
     //----------------------READ FIXED DATA-----------------
     // void read_fixed_length_data();
 
+
+    //----------------- ESQUEMA DATA ------------------
+    void crear_esquema_tabla(string _name_archivo);//solo el nombre del archivo
+    void leer_esquema_tabla(string _name_tabla);
+    void mostrar_esquema_map(MapaPares& map_atributos,vector<string> &vector_ordenado_atributos);
+    MapaPares& get_esquema_tabla(string _name_tabla);
+    vector<string>& get_vector_atributos(string _name_tabla);
+    string decidir_tipo_dato(string &value);
+
+
     /*-------------- EJecución del Disk Manager ---------------*/
     void ingresarTablaDesdeArchivoCSV(string nombreArchivo);
 

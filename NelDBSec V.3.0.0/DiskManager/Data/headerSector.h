@@ -38,8 +38,8 @@ public:
     
     int getPesoBytesSector();
     int getCantBytesUsadosSector();
-    int getCantBytesRestantesBloque();
-    int getNumGeneralRecordsBloque();
+    int getCantBytesRestantesSector();
+    int getNumGeneralRecordsSector();
 
     int getDirecDeleteSpacesFixedData();
     int getDirecEndFixedData();
@@ -59,8 +59,8 @@ public:
 
     void setPesoBytesSector(int peso);
     void setCantBytesUsadosSector(int cant);
-    void setCantBytesRestantesBloque(int cant);
-    void setNumGeneralRecordsBloque(int num);
+    void setCantBytesRestantesSector(int cant);
+    void setNumGeneralRecordsSector(int num);
     
     void setDirecDeleteSpacesFixedData(int direc);
     void setDirecEndFixedData(int direc);
