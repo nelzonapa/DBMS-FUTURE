@@ -23,14 +23,16 @@
 #include "Multilevel_Index_Disco/Disco_Header.cpp"
 
 
-#include "Data/headerSector.h"
+// #include "Data/headerSector.h"
 #include "Data/headerSector.cpp"
 
-#include "Data/Variable_length/Slot.h"
+// #include "Data/Variable_length/Slot.h"
 #include "Data/Variable_length/Slot.cpp"
 
-#include "../DiscoMagnetico/DiscoMagnetico.h"
+// #include "../DiscoMagnetico/DiscoMagnetico.h"
 #include "../DiscoMagnetico/DiscoMagnetico.cpp"
+
+#include "../DiscoMagnetico/BrazoDisco.cpp"
 
 #include <iostream>
 #include <fstream>

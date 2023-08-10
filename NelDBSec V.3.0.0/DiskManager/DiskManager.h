@@ -10,8 +10,8 @@
 // #include "../DiscoMagnetico/DiscoMagnetico.h"
 // #include "../DiscoMagnetico/DiscoMagnetico.cpp"
 
-#include "../DiscoMagnetico/BrazoDisco.h"
-#include "../DiscoMagnetico/BrazoDisco.cpp"
+// #include "../DiscoMagnetico/BrazoDisco.h"
+// #include "../DiscoMagnetico/BrazoDisco.cpp"
 
 #include <sstream>
 #include <unordered_map>
@@ -27,7 +27,7 @@ typedef unordered_map<string, pair<string,int>> MapaPares;
 class DiskManager
 {
 private:
-    /* data */
+    SistemaOperativo sistemaOperativo;
 public:
     DiskManager();
     ~DiskManager();
@@ -52,6 +52,10 @@ public:
 
     // OBTENER BLOQUE PARA BUFFER MANAGER
     Pagina obtenerBloquePagina(int idPagina);
+
+
+    //  Nuevos Registros Tablas
+    void agregarRegistrosNuevaTabla(string nombreArchivo);
     
     //
 };

@@ -1102,6 +1102,7 @@ void SistemaOperativo::crear_esquema_tabla(string _name_archivo){
     atributo*/
     
     //ABRIR EL ARCHIVO CSV
+    cout<<"name_archivo"<<_name_archivo<<endl;
     string route_archivo_leer=_name_archivo+".csv";
     ifstream file_open(route_archivo_leer);
     if (!file_open)
@@ -1127,8 +1128,9 @@ void SistemaOperativo::crear_esquema_tabla(string _name_archivo){
 
         //PASAMOS A LEER LOS REGISTROS Teniendo en cuenta los ATRIBUTOS
         int cont_size_max_strings;
+        int contRegistrosPrueba=0;
         
-        while (getline(file_open, linea))//mientras se tenga lineas para leer
+        while (contRegistrosPrueba!=10 && getline(file_open,linea))//leeremos los primeros 10
         {
             istringstream iss(linea);//para leer parte por parte
             string valor_atributo;
@@ -1168,6 +1170,7 @@ void SistemaOperativo::crear_esquema_tabla(string _name_archivo){
                 }
                 i++;
             }
+            contRegistrosPrueba++;
         }
         file_open.close();
 
@@ -1489,8 +1492,8 @@ string SistemaOperativo::decidir_tipo_dato(string &value)
 
 //--------------- WriteData ------------------
 void SistemaOperativo::ingresarTablaDesdeArchivoCSV(string nombreArchivo){
-    //Primero detectar o leer el esquema de tabla
-
+    //Primero creamos el esquema de la tabla a leer
+    crear_esquema_tabla(nombreArchivo);
     // de acuerdo a esquema e ir ingresando
     // this->brazoDiscoMagnetico;
 

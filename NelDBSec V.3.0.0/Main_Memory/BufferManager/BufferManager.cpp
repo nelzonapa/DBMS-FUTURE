@@ -79,6 +79,6 @@ void BufferManager::obtenerPaginaDiskManager(){
 }
 
 void BufferManager::ingresarDatosDesdeArchivoCSV(string nombreArchivo){
-    // this->diskManager.
-    cout<<"BuffManager..."<<endl;
+    this->diskManager.agregarRegistrosNuevaTabla(nombreArchivo);
+    // cout<<"BuffManager..."<<endl;
 }

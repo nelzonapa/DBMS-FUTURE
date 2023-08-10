@@ -341,7 +341,10 @@ int DiskManager::sacar_codigo_tabla(string _name_tabla){
 }
 
 // OBTENER BLOQUE PARA BUFFER MANAGER
-Pagina obtenerBloquePagina(int idPagina){
+Pagina DiskManager::obtenerBloquePagina(int idPagina){
 
 }
 
+void DiskManager::agregarRegistrosNuevaTabla(string nombreArchivo){
+    this->sistemaOperativo.ingresarTablaDesdeArchivoCSV(nombreArchivo);
+}
