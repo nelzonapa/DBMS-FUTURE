@@ -23,6 +23,8 @@ headerSector::headerSector(){
     this->numberBPlusTrees=0;
     this->directFirstBPlusTree=0;
     this->directEndBPlusTrees=0;
+
+    this->metadataSector=0;
 }
 
 headerSector::~headerSector(){}
@@ -105,7 +107,13 @@ int headerSector::getDirectEndBPlusTrees()
     return directEndBPlusTrees;
 }
 
-// Métodos de modificación (setters)
+int headerSector::getMetadataSector(){
+    return metadataSector;
+}
+
+
+
+//-------------- Métodos de modificación (setters)
 void headerSector::setPesoBytesSector(int peso)
 {
     pesoBytesSector = peso;
@@ -181,6 +189,12 @@ void headerSector::setDirectEndBPlusTrees(int direc)
     directEndBPlusTrees = direc;
 }
 
+void headerSector::setMetadataSector(int metadata){
+    this->metadataSector=metadata;
+}
+
+
+
 //--------------------Others-------------------
 
 std::istream &operator>>(std::istream &is, headerSector &header)
@@ -198,7 +212,18 @@ std::istream &operator>>(std::istream &is, headerSector &header)
         char comma;
 
         // Leer y asignar los valores uno por uno
-        ss >> header.pesoBytesSector >> comma >> header.cantBytesUsadosSector >> comma >> header.cantBytesRestantesBloque >> comma >> header.numGeneralRecordsBloque >> comma >> header.direcDeleteSpacesFixedData >> comma >> header.direcEndFixedData >> comma >> header.numRecordsFixedSector >> comma >> header.direcFirstFixedRecord >> comma >> header.direcDeleteSpacesVariableData >> comma >> header.numRecordsVariableSector >> comma >> header.direcFreeSpaceVariableSector >> comma >> header.direcFirstVariableRecord >> comma >> header.numberBPlusTrees >> comma >> header.directFirstBPlusTree >> comma >> header.directEndBPlusTrees;
+        ss >> header.pesoBytesSector >> comma >> header.cantBytesUsadosSector 
+            >> comma >> header.cantBytesRestantesBloque >> comma 
+            >> header.numGeneralRecordsBloque >> comma 
+            >> header.direcDeleteSpacesFixedData >> comma 
+            >> header.direcEndFixedData >> comma >> header.numRecordsFixedSector 
+            >> comma >> header.direcFirstFixedRecord >> comma 
+            >> header.direcDeleteSpacesVariableData >> comma 
+            >> header.numRecordsVariableSector >> comma 
+            >> header.direcFreeSpaceVariableSector >> comma 
+            >> header.direcFirstVariableRecord >> comma >> header.numberBPlusTrees 
+            >> comma >> header.directFirstBPlusTree >> comma 
+            >> header.directEndBPlusTrees>> comma >>header.metadataSector;
     }
 
     return is;
@@ -221,8 +246,8 @@ std::ostream &operator<<(std::ostream &os, const headerSector &header)
        << header.direcFirstVariableRecord << ","
        << header.numberBPlusTrees << ","
        << header.directFirstBPlusTree << ","
-       << header.directEndBPlusTrees << "#";
-
+       << header.directEndBPlusTrees << ","
+       << header.metadataSector << "#";
     return os;
 }
 
@@ -249,4 +274,5 @@ void headerSector::printInfoSectorHeader(){
     std::cout << "Number B+ Trees: " << numberBPlusTrees << ""<<endl;
     std::cout << "Direct First B+ Tree: " << directFirstBPlusTree << ""<<endl;
     std::cout << "Direct End B+ Trees: " << directEndBPlusTrees << ""<<endl;
+    std::cout << "metadataSector: " << metadataSector << ""<<endl;
 }   

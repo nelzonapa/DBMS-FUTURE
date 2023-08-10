@@ -102,10 +102,9 @@ void BrazoDisco::crearDiscoCuestionario(){
     cout<<"Informacion del disco llenada correctamente"<<endl;
     cout<<"Creando su disco"<<endl;
 
-    //Ahora llamamos a brazo
     crear_disco(*ptr_disco_magnetico);
     
-    // Abrir el archivo en modo de escritura
+    // Creamos archivo que contenga la información general del DISCO
     string name_disco="DiskManager/disco_"+to_string(ptr_disco_magnetico->get_id_disk_magnetic())+"_info.txt";
     std::ofstream archivo(name_disco);
 
@@ -124,9 +123,9 @@ void BrazoDisco::crearDiscoCuestionario(){
         // Cerrar el archivo
         archivo.close();
 
-        std::cout<<"Archivo creado y escrito exitosamente: "<<name_disco<<std::endl;
+        std::cout<<"Archivo Disco Info creado y escrito exitosamente: "<<name_disco<<std::endl;
     } else {
-        std::cout<<"Error al crear el archivo: "<<name_disco<<std::endl;
+        std::cout<<"Error al crear el archivo Disco Info: "<<name_disco<<std::endl;
     }
 
 }
@@ -339,22 +338,29 @@ void BrazoDisco::insertarRegistrosCSV(string &nameArchivo) {
     }
     else
     {
-        getline(archivoCSV,linea);//Saltamos atributos
-        while (getline(archivoCSV,linea))
+        bool existeDisco=comprobar_existencia_file("Disco_1");
+        if (existeDisco==true)
         {
-            istringstream ss(linea);
-            string dato;
-            while (getline(ss, dato, ',')) {
-                valoresIngresar.push_back(dato);
-                cout<<dato<<endl;
+            cout<<endl<<"Disco Enocntrado... "<<endl;
+            getline(archivoCSV,linea);//Saltamos atributos
+            while (getline(archivoCSV,linea))
+            {
+                istringstream ss(linea);
+                string dato;
+                while (getline(ss, dato, ',')) {
+                    valoresIngresar.push_back(dato);
+                    cout<<dato<<endl;
+                }
+                int numBloqueLibre=get_num_bloque_espacio_libre(sizeof(valoresIngresar));
+                string archivoSector="Sector_"+to_string(numBloqueLibre)+".txt";
+                headerSector headerSectorAux=getHeaderSector(numBloqueLibre);
+                int posicionEscribir=headerSectorAux.getDirecEndFixedData();
+                escribirVectorRegistroEnSector(valoresIngresar,archivoSector,posicionEscribir);
             }
-            bool existeDisco=comprobar_existencia_file("Disco_1");
-            cout<<"existe: "<<existeDisco;
-            // int numBloqueLibre=get_num_bloque_espacio_libre(sizeof(valoresIngresar));
-            // string archivoSector="Sector_"+to_string(numBloqueLibre)+".txt";
-            // headerSector headerSectorAux=getHeaderSector(numBloqueLibre);
-            // int posicionEscribir=headerSectorAux.getDirecEndFixedData();
-            // escribirVectorRegistroEnSector(valoresIngresar,archivoSector,posicionEscribir);
+        }
+        else{
+            cout<<"No existe un DISCO que usar"<<endl;
+            crearDiscoCuestionario();
         }
         archivoCSV.close();
     }

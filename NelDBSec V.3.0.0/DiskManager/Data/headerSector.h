@@ -32,6 +32,9 @@ private:
     int numberBPlusTrees;
     int directFirstBPlusTree;
     int directEndBPlusTrees;
+
+    //Metadata
+    int metadataSector;
     
 public:
     headerSector(/* args */);
@@ -57,6 +60,8 @@ public:
     int getNumberBPlusTrees();
     int getDirectFirstBPlusTree();
     int getDirectEndBPlusTrees();
+
+    int getMetadataSector();
     
     //--------------------SET-------------------
 
@@ -78,6 +83,8 @@ public:
     void setNumberBPlusTrees(int num);
     void setDirectFirstBPlusTree(int direc);
     void setDirectEndBPlusTrees(int direc);
+
+    void setMetadataSector(int metadata);
 
 
     //--------------------Others-------------------
