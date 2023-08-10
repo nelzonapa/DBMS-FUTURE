@@ -85,7 +85,7 @@ void Usuario::menu_program(Programa &programa){
                 break;
             case 3:
                 cout<<"Estado del BufferPool: ...."<<endl;
-                mostrarTablaMetadata();
+                mostrarBufferPool();
                 break;
             case 4:
                 cout<<"Para ingresar su tabla, ingrese el nombre del archivo: ...."<<endl;

@@ -24,7 +24,9 @@ Pagina& BufferManager::get_pagina_retornar(){
 
 // ------------------ BufferPool -----------------
 void BufferManager::agregarPaginaBufferPool(int idPag){}
-void BufferManager::mostrarBufferPool(){}
+void BufferManager::mostrarBufferPool(){
+    this->bufferPool.mostrarBufferPool();
+}
 
 
 //------------- Tabla Metadata ----------------
