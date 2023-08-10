@@ -1,8 +1,0 @@
-NombreTabla
-ratings
-Atributos
-userId,movieId,rating,timestamp,
-TiposData
-int,int,float,int,
-SizeData
-4,4,8,4,
