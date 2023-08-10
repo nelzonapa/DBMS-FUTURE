@@ -3,33 +3,54 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <string>
 
 using namespace std;
 
 class BPlusNodo {
 private:
-    // Vector de direcciones a nodos internos
+    // Vector de vecDirecciones a nodos internos
     //string: direccion_nodo_interno
-    std::vector<string> direccionesNodosInternos;
+    // direc siguiente hoja
+    int gradoBplusNodo;
+    std::vector<string> vecDirecciones;
+    // TRUE CUANDO ES HOJA, FALSE CUANDO ES NODO INTERNO
 
     // Vector de claves
     //string: keys
     std::vector<string> keys;
-
-    // Vector de direcciones a registros
-    //string: direccion_registro
-    std::vector<string> direccionesRegistros;
-
     // Booleano que indica si el nodo es hoja
     bool esHoja;
 
-    // Dirección del siguiente nodo hoja
-    //string: direccion_nodo_hoja
-    string direcSiguienteHoja;
-
 public:
-    BPlusNodo(int _grado, bool _esHoja, string _direcSiguienteNodoHoja);
+    BPlusNodo(int _grado);
+    BPlusNodo();
     ~BPlusNodo();
+
+    //set-metodos
+    void setEspacioVectorDirecciones(int tamanio);
+    void setEspacioVectorKeys(int tamanio);
+    void setEsHoja(bool input);
+    void setgrado(int input);
+    //get-metodos
+    int getGradoBplusNodo();
+    vector<string> getVecDirecciones();
+    vector<string> getKeys();
+    vector<string> Ordenar(vector<string> keys);
+    bool getEsHoja();
+
+    //Ingresar Datos a vectores:
+    bool ingresarElementVectorDirecciones(string elemento);
+    bool ingresarElementVectorKeys(string key);
+
+
+    //Sobrecargas
+    friend std::ostream& operator<<(std::ostream& os, const BPlusNodo& bPlusNodo);
+    friend std::istream& operator>>(std::istream& is, BPlusNodo& bPlusNodo);
+
+    //Otros
+    void printInfoBPlusNode();
 
 };
 
