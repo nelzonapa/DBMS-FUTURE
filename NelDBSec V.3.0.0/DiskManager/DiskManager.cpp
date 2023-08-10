@@ -86,131 +86,15 @@ void DiskManager::menu(){
 //------------DISK---------
 
 void DiskManager::crear_disco(){
-    cout<<"Creando disco..."<<endl;
-    DiscoMagnetico *ptr_disco_magnetico=new DiscoMagnetico();
-    //recolectaremos_información:
-    cout<<"Para proceder complete lo siguiente: "<<endl;
-    int id_disco,cantidad_platos,capacidad_sector, cant_sectores, cant_pistas,sectores_por_bloque;
-    
-    std::cout<<"Ingrese el ID de su disco: "<<endl;
-    cin>>id_disco;    //recibe el id del disco
-    ptr_disco_magnetico->set_id_disk_magnetic(id_disco);
-
-    std::cout<<"Ingrese la cantidad de PLATOS a tener: "<<endl;
-    cin>>cantidad_platos;    //recibe cantidad de platos, recordemos que cada plato tiene sus 2 superficies
-    ptr_disco_magnetico->set_num_platos(cantidad_platos);
-
-    ptr_disco_magnetico->set_num_superficies_por_plato(2);
-
-    std::cout<<"Ingrese la cantidad de PISTAS por Superficie a tener: "<<endl;
-    cin>>cant_pistas;       //recibe la cantidad de pistas a tener
-    ptr_disco_magnetico->set_num_pistas_por_superficie(cant_pistas);
-    
-    std::cout<<"Ingrese la cantidad de SECTORES por Pista a tener: "<<endl;
-    cin>>cant_sectores;     //recibe la cantidad de sectores a tener
-    ptr_disco_magnetico->set_num_sectores_por_pista(cant_sectores);
-
-    std::cout<<"Ingrese la cantidad de Sectores en un Bloque a tener: "<<endl;
-    cin>>sectores_por_bloque;     //recibe la cantidad de sectores a tener
-    ptr_disco_magnetico->set_num_sectores_en_bloque(sectores_por_bloque);
-
-    std::cout<<"Ingrese la capacidad del sector: "<<endl;
-    cin>>capacidad_sector;    //1024 -> 1 KB
-    ptr_disco_magnetico->set_capacidad_sector(capacidad_sector);
-
-    cout<<"Informacion del disco llenada correctamente"<<endl;
-    cout<<"Creando su disco"<<endl;
-
-    //Ahora llamamos a brazo
-    BrazoDisco brazo_disk;
-    brazo_disk.crear_disco(*ptr_disco_magnetico);
-    
-    // Abrir el archivo en modo de escritura
-    string name_disco="DiskManager/disco_"+to_string(ptr_disco_magnetico->get_id_disk_magnetic())+"_info.txt";
-    std::ofstream archivo(name_disco);
-
-    if (archivo.is_open()) {
-        string disco_name="Disco_"+to_string(ptr_disco_magnetico->get_id_disk_magnetic());
-        string final_route_disco="DiscoMagnetico/"+disco_name;
-        archivo<<final_route_disco<<endl;
-        archivo<<ptr_disco_magnetico->get_id_disk_magnetic()<<endl;
-        archivo<<ptr_disco_magnetico->get_num_platos()<<endl;
-        archivo<<ptr_disco_magnetico->get_num_superficies_por_plato()<<endl;
-        archivo<<ptr_disco_magnetico->get_num_pistas_por_superficie()<<endl;
-        archivo<<ptr_disco_magnetico->get_num_sectores_por_pista()<<endl;
-        archivo<<ptr_disco_magnetico->get_num_sectores_en_bloque()<<endl;
-        archivo<<ptr_disco_magnetico->get_capacidad_sector()<<endl;
-
-        // Cerrar el archivo
-        archivo.close();
-
-        std::cout<<"Archivo creado y escrito exitosamente: "<<name_disco<<std::endl;
-    } else {
-        std::cout<<"Error al crear el archivo: "<<name_disco<<std::endl;
-    }
-
+    this->sistemaOperativo.crear_disco();
 }
-
-
 void DiskManager::crear_multilevel_index_disco(){
-    int id_disco;
-    cout<<"Creando multilevel...\nIngrese el id del disco: "<<endl;
-    cin>>id_disco;
-    
-    Disco_Header *ptr_disk_header=new Disco_Header();
-
-    string nombreArchivo="DiskManager/disco_"+to_string(id_disco)+"_info.txt";
-    // Abrir el archivo en modo de lectura
-    std::ifstream archivo(nombreArchivo);
-
-    if (archivo.is_open()) 
-    {
-        std::string linea;
-
-        getline(archivo, linea);
-        ptr_disk_header->set_route_disk_magnetic(linea);
-
-        getline(archivo, linea);
-        ptr_disk_header->set_id_disk_magnetic(stoi(linea));
-
-        getline(archivo, linea);
-        ptr_disk_header->set_num_platos_total(stoi(linea));
-
-        getline(archivo, linea);
-        ptr_disk_header->set_num_superficies_total(stoi(linea)*2);
-        int cantidad_platos=stoi(linea);
-
-        getline(archivo, linea);
-        ptr_disk_header->set_num_pistas_total(cantidad_platos*2*stoi(linea));
-        int cant_pistas=stoi(linea);
-
-        getline(archivo, linea);
-        ptr_disk_header->set_num_sectores_total(cantidad_platos*2*cant_pistas*stoi(linea));
-        int cant_sectores=stoi(linea);
-
-        getline(archivo, linea);
-        ptr_disk_header->set_num_bloques_total(cantidad_platos*2*cant_pistas*cant_sectores*stoi(linea));
-        int cant_bloques=stoi(linea);
-
-        getline(archivo, linea);
-        ptr_disk_header->set_capacidad_total_magneticDisk(stoi(linea)*(ptr_disk_header->get_num_sectores_total()));
-        
-        SistemaOperativo SisOpera_aux;
-        SisOpera_aux.agregar_disco_index(*ptr_disk_header);
-        // Cerrar el archivo
-        archivo.close();
-    } 
-    else 
-    {
-        std::cout << "Error al abrir el archivo: " << nombreArchivo << std::endl;
-    }
+    this->sistemaOperativo.crear_multilevel_index_disco();
 }
-
 
 //----------------READ INFO----------------
 
 void DiskManager::print_multilevel_index_disco(){
-    
     cout<<"Ingrese el id del disco para mostrar su respectivo multilevel index: "<<endl;
     int id_disco;
     cin>>id_disco;
@@ -341,9 +225,9 @@ int DiskManager::sacar_codigo_tabla(string _name_tabla){
 }
 
 // OBTENER BLOQUE PARA BUFFER MANAGER
-Pagina DiskManager::obtenerBloquePagina(int idPagina){
+// Pagina DiskManager::obtenerBloquePagina(int idPagina){
 
-}
+// }
 
 // NUEVOS REGISTROS DESDE CSV
 void DiskManager::agregarRegistrosNuevaTabla(string nombreArchivo){

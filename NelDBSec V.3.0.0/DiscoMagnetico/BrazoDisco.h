@@ -35,6 +35,9 @@ public:
     bool Crear_leer_file_discos(const string& filePath, const string& word_buscar);
 
     //-------------------------cCREATE--------------------------
+    void crearDiscoCuestionario();
+    void crear_multilevel_index_disco();
+
     void crear_disco(DiscoMagnetico &disco_magnetic); 
     void crear_platos(DiscoMagnetico &disco_magnetic,const string &route_disco);
     void crear_superficies(DiscoMagnetico &disco_magnetic, const string &final_route_plato);

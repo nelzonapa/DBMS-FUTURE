@@ -6,7 +6,12 @@ SistemaOperativo::~SistemaOperativo(){}
 
 
 //-------------------------PARTE_CREATE--------------------------
-
+void SistemaOperativo::crear_disco(){
+    this->brazoDiscoMagnetico.crearDiscoCuestionario();
+}
+void SistemaOperativo::crear_multilevel_index_disco(){
+    this->brazoDiscoMagnetico.crear_multilevel_index_disco();
+}
 
 void SistemaOperativo::agregar_disco_index(Disco_Header &disco_header){
     //Escribe el header principal

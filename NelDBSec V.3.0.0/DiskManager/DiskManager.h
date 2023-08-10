@@ -1,7 +1,7 @@
 #ifndef DISKMANAGER_H
 #define DISKMANAGER_H
 
-#include "SistemaOperativo.h"
+// #include "SistemaOperativo.h"
 #include "SistemaOperativo.cpp"
 
 // #include "Disco_Header.h"
@@ -51,7 +51,7 @@ public:
     int sacar_codigo_tabla(string _name_tabla);
 
     // OBTENER BLOQUE PARA BUFFER MANAGER
-    Pagina obtenerBloquePagina(int idPagina);
+    // Pagina obtenerBloquePagina(int idPagina);
 
 
     //  Nuevos Registros Tablas

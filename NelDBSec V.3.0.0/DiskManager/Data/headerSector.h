@@ -2,6 +2,9 @@
 #define HEADERSECTOR_H
 
 #include <iostream>
+#include <cstring>
+#include <string>
+#include <sstream>
 using namespace std;
 
 class headerSector

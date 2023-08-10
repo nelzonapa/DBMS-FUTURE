@@ -57,6 +57,9 @@ public:
     ~SistemaOperativo();
 
     //-------------------------CREATE--------------------------
+    void crear_disco();
+    void crear_multilevel_index_disco();
+
     void agregar_disco_index(Disco_Header & disco_header);
     void agregar_platos_index(Disco_Header & disco_header,const string &route_disco_index);
     void agregar_superficies_index(Disco_Header & disco_header,const string &route_disco_index);
