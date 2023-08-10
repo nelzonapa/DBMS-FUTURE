@@ -1,0 +1,8 @@
+NombreTabla
+tags
+Atributos
+userId,movieId,tag,timestamp,
+TiposData
+int,int,string,int,
+SizeData
+4,4,5,4,
