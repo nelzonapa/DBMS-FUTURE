@@ -34,7 +34,7 @@ private:
     int directEndBPlusTrees;
 
     //Metadata
-    int metadataSector;
+    string metadataSector;
     
 public:
     headerSector(/* args */);
@@ -61,7 +61,7 @@ public:
     int getDirectFirstBPlusTree();
     int getDirectEndBPlusTrees();
 
-    int getMetadataSector();
+    string getMetadataSector();
     
     //--------------------SET-------------------
 
@@ -84,7 +84,7 @@ public:
     void setDirectFirstBPlusTree(int direc);
     void setDirectEndBPlusTrees(int direc);
 
-    void setMetadataSector(int metadata);
+    void setMetadataSector(string metadata);
 
 
     //--------------------Others-------------------

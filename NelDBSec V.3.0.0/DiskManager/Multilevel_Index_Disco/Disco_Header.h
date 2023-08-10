@@ -12,6 +12,12 @@ private:
     string route_disk_magnetic;
     int id_disk_magnetic;
 
+    int numPlatosPorDisco;
+    int numSuperficiesPorPlato;
+    int numPistasPorSuperficie;
+    int numSectoresPorPista;
+    int numBloquesPorSector;
+
     int num_platos_total;
     int num_superficies_total;
     int num_pistas_total;
@@ -25,11 +31,19 @@ private:
 public:
     Disco_Header();
     ~Disco_Header();
+    
     //Funciones:
 
     //----------------set()-----------------------
     void set_route_disk_magnetic(string route);
     void set_id_disk_magnetic(int _input);
+
+    void setNumPlatosPorDisco(int _input);
+    void setNumSuperficiesPorPlato(int _input);
+    void setNumPistasPorSuperficie(int _input);
+    void setNumSectoresPorPista(int _input);
+    void setNumBloquesPorSector(int _input);
+
 
     void set_num_platos_total(int _input);
     void set_num_superficies_total(int _input);
@@ -44,6 +58,12 @@ public:
     //--------------------get()---------------------
     string get_route_disk_magnetic();
     int get_id_disk_magnetic();
+
+    int getNumPlatosPorDisco();
+    int getNumSuperficiesPorPlato();
+    int getNumPistasPorSuperficie();
+    int getNumSectoresPorPista();
+    int getNumBloquesPorSector();
 
     int get_num_platos_total();
     int get_num_superficies_total();

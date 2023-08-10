@@ -24,7 +24,7 @@ headerSector::headerSector(){
     this->directFirstBPlusTree=0;
     this->directEndBPlusTrees=0;
 
-    this->metadataSector=0;
+    this->metadataSector="none";
 }
 
 headerSector::~headerSector(){}
@@ -107,7 +107,7 @@ int headerSector::getDirectEndBPlusTrees()
     return directEndBPlusTrees;
 }
 
-int headerSector::getMetadataSector(){
+string headerSector::getMetadataSector(){
     return metadataSector;
 }
 
@@ -189,7 +189,7 @@ void headerSector::setDirectEndBPlusTrees(int direc)
     directEndBPlusTrees = direc;
 }
 
-void headerSector::setMetadataSector(int metadata){
+void headerSector::setMetadataSector(string metadata){
     this->metadataSector=metadata;
 }
 

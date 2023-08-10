@@ -130,7 +130,6 @@ void BrazoDisco::crearDiscoCuestionario(){
 
 }
 
-
 void BrazoDisco::crear_multilevel_index_disco(){
     int id_disco;
     cout<<"Creando multilevel...\nIngrese el id del disco: "<<endl;
@@ -183,6 +182,191 @@ void BrazoDisco::crear_multilevel_index_disco(){
     {
         std::cout << "Error al abrir el archivo: " << nombreArchivo << std::endl;
     }
+}
+
+Disco_Header BrazoDisco::recuperarDiscoMagneticoInformacion(){
+    int id_disco;
+    cout<<"Insertando Header en sectores...\nIngrese el id del disco: "<<endl;
+    cin>>id_disco;
+    
+    Disco_Header discoHeader;
+
+    string nombreArchivo="DiskManager/disco_"+to_string(id_disco)+"_info.txt";
+    // Abrir el archivo en modo de lectura
+    std::ifstream archivo(nombreArchivo);
+
+    if (archivo.is_open()) 
+    {
+        std::string linea;
+
+        getline(archivo, linea);
+        discoHeader.set_route_disk_magnetic(linea);
+
+        getline(archivo, linea);
+        discoHeader.set_id_disk_magnetic(stoi(linea));
+
+        getline(archivo, linea);
+        discoHeader.setNumPlatosPorDisco(stoi(linea));
+        discoHeader.set_num_platos_total(stoi(linea));
+
+        getline(archivo, linea);
+        discoHeader.setNumSuperficiesPorPlato(stoi(linea));
+        discoHeader.set_num_superficies_total(stoi(linea)*2);
+        int cantidad_platos=stoi(linea);
+
+        getline(archivo, linea);
+        discoHeader.setNumPistasPorSuperficie(stoi(linea));
+        discoHeader.set_num_pistas_total(cantidad_platos*2*stoi(linea));
+        int cant_pistas=stoi(linea);
+
+        getline(archivo, linea);
+        discoHeader.setNumSectoresPorPista(stoi(linea));
+        discoHeader.set_num_sectores_total(cantidad_platos*2*cant_pistas*stoi(linea));
+        int cant_sectores=stoi(linea);
+
+        getline(archivo, linea);
+        discoHeader.setNumBloquesPorSector(stoi(linea));
+        discoHeader.set_num_bloques_total(cantidad_platos*2*cant_pistas*cant_sectores*stoi(linea));
+        int cant_bloques=stoi(linea);
+
+        getline(archivo, linea);
+        discoHeader.set_capacidad_total_magneticDisk(stoi(linea)*(discoHeader.get_num_sectores_total()));
+        archivo.close();
+        return discoHeader;
+    } 
+    else 
+    {
+        std::cout << "Error al abrir el archivo: " << nombreArchivo << std::endl;
+    }
+}
+
+void imprimirVector(vector<int> &metadata){
+    cout<<"gaaaaa"<<endl;
+    for (const int& valor : metadata) {
+        cout << valor << ", ";
+    }
+    cout << endl;
+}
+
+void buscarSectoresTXT(const std::string& directorio, const std::string& nombreArchivo, std::vector<std::string>& rutasEncontradas) {
+    DIR* dir = opendir(directorio.c_str());
+    if (dir == nullptr) {
+        std::cerr << "No se pudo abrir el directorio " << directorio << std::endl;
+        return;
+    }
+
+    struct dirent* entrada;
+    while ((entrada = readdir(dir)) != nullptr) {
+        if (entrada->d_type == DT_DIR) {
+            if (std::string(entrada->d_name) != "." && std::string(entrada->d_name) != "..") {
+                std::string subdir = directorio + "/" + entrada->d_name;
+                buscarSectoresTXT(subdir, nombreArchivo, rutasEncontradas);
+            }
+        } else if (entrada->d_type == DT_REG && std::string(entrada->d_name) == nombreArchivo) {
+            rutasEncontradas.push_back(directorio + "/" + entrada->d_name);
+        }
+    }
+    closedir(dir);
+}
+
+std::vector<int> extraerMetadata(const std::string& texto) {
+    std::vector<int> numeros;
+    int numActual = 0;
+    bool enNumero = false;
+
+    for (char c : texto) {
+        if (std::isdigit(c)) {
+            numActual = numActual * 10 + (c - '0');
+            enNumero = true;
+        } else {
+            if (enNumero) {
+                numeros.push_back(numActual);
+                numActual = 0;
+                enNumero = false;
+            }
+        }
+    }
+
+    if (enNumero) {
+        numeros.push_back(numActual);
+    }
+
+    return numeros;
+}
+
+string unirNumeros(vector<int>& numeros, char separador) {
+    string resultado;
+    bool primero = true;
+
+    for (int num : numeros) {
+        if (!primero) {
+            resultado += separador;
+        }
+        resultado += to_string(num);
+        primero = false;
+    }
+
+    return resultado;
+}
+
+void prepararYEscribirHeader(string ruta,Disco_Header& discoAux){
+    vector<int> metadata;
+    metadata=extraerMetadata(ruta);
+    string stringMetadata=unirNumeros(metadata,'|');
+    headerSector headSector;
+    headSector.setMetadataSector(stringMetadata);
+    int pesoSector=discoAux.get_capacidad_total_magneticDisk()/discoAux.get_num_sectores_total();
+    headSector.setPesoBytesSector(pesoSector);
+    int tamanioHead=160;
+    int restante= pesoSector-tamanioHead;//tamanioHead para el header
+    headSector.setCantBytesRestantesSector(restante);
+    headSector.setCantBytesUsadosSector(headSector.getCantBytesUsadosSector()+tamanioHead);
+    headSector.setDirecEndFixedData(tamanioHead);
+    // headSector.printInfoSectorHeader();
+
+    // ESCRIBIMOS
+    std::fstream archivo(ruta, std::ios::in | std::ios::out);
+    if (!archivo.is_open()) {
+        std::cerr << "No se pudo abrir el archivo " << ruta << std::endl;
+        return;
+    }
+    archivo.seekp(0);  // Mover el puntero de escritura al inicio
+    archivo << headSector;
+    archivo.close();
+
+}
+
+
+void BrazoDisco::escribirHeaderSectores(){
+    cout<<"Ingresando Headers de Sectores"<<endl;
+    Disco_Header discoAux=recuperarDiscoMagneticoInformacion();
+    discoAux.print_info_magnetic_disk();
+    
+    vector<string> rutasEncontradas;
+    int cantSectoresPorPista=discoAux.getNumSectoresPorPista();
+    for (int  i = 1; i <=cantSectoresPorPista; i++)
+    {
+        string idSector=to_string(i);
+        string nombreArchivoBuscado = "Sector_"+idSector+".txt";  // Cambia el nombre según el archivo que buscas
+        string directorioBase = "DiscoMagnetico/Disco_1";  // Cambia esto a la ruta de tu directorio base
+
+        buscarSectoresTXT(directorioBase, nombreArchivoBuscado, rutasEncontradas);
+
+        if (!rutasEncontradas.empty()) {
+            cout << "Archivos encontrados:" << endl;
+            for (const string& ruta : rutasEncontradas) 
+            {
+                cout << ruta << endl;
+                //Por cada ruta ingresaremos el header.
+                prepararYEscribirHeader(ruta, discoAux);
+            }
+        } 
+        else {
+            cout << "No se encontraron archivos con el nombre buscado." << std::endl;
+        }
+    }
+    
+
 }
 
 void BrazoDisco::crear_disco(DiscoMagnetico &disco_magnetic){
@@ -338,25 +522,27 @@ void BrazoDisco::insertarRegistrosCSV(string &nameArchivo) {
     }
     else
     {
-        bool existeDisco=comprobar_existencia_file("Disco_1");
+        string discoName="Disco_1";
+        bool existeDisco=Crear_leer_file_discos("DiskManager/Discos_almacenados.txt",discoName);
         if (existeDisco==true)
         {
-            cout<<endl<<"Disco Enocntrado... "<<endl;
-            getline(archivoCSV,linea);//Saltamos atributos
-            while (getline(archivoCSV,linea))
-            {
-                istringstream ss(linea);
-                string dato;
-                while (getline(ss, dato, ',')) {
-                    valoresIngresar.push_back(dato);
-                    cout<<dato<<endl;
-                }
-                int numBloqueLibre=get_num_bloque_espacio_libre(sizeof(valoresIngresar));
-                string archivoSector="Sector_"+to_string(numBloqueLibre)+".txt";
-                headerSector headerSectorAux=getHeaderSector(numBloqueLibre);
-                int posicionEscribir=headerSectorAux.getDirecEndFixedData();
-                escribirVectorRegistroEnSector(valoresIngresar,archivoSector,posicionEscribir);
-            }
+            cout<<endl<<"Disco Encontrado... "<<endl;
+            escribirHeaderSectores();
+            // getline(archivoCSV,linea);//Saltamos atributos
+            // while (getline(archivoCSV,linea))
+            // {
+            //     istringstream ss(linea);
+            //     string dato;
+            //     while (getline(ss, dato, ',')) {
+            //         valoresIngresar.push_back(dato);
+            //         cout<<dato<<endl;
+            //     }
+            //     int numBloqueLibre=get_num_bloque_espacio_libre(sizeof(valoresIngresar));
+            //     string archivoSector="Sector_"+to_string(numBloqueLibre)+".txt";
+            //     headerSector headerSectorAux=getHeaderSector(numBloqueLibre);
+            //     int posicionEscribir=headerSectorAux.getDirecEndFixedData();
+            //     escribirVectorRegistroEnSector(valoresIngresar,archivoSector,posicionEscribir);
+            // }
         }
         else{
             cout<<"No existe un DISCO que usar"<<endl;
@@ -372,8 +558,8 @@ void BrazoDisco::escribirVectorRegistroEnSector( vector<string> &valores,  strin
 
     if (!archivoSalida.is_open()) {
         cerr << "No se pudo abrir el archivo " << archivo << endl;
-        bool discoCreado;
-        crearDiscoCuestionario();
+        // bool discoCreado;
+        // crearDiscoCuestionario();
         return;
     }
     else
@@ -429,7 +615,7 @@ Disco_Header& BrazoDisco::get_disco_magnetic_info(){
     return (*ptr_disco_magnetico);
 }
 
-headerSector& BrazoDisco::getHeaderSector(int _num_bloque){
+headerSector BrazoDisco::getHeaderSector(int _num_bloque){
     int ubication_read=0;
     string route_sector="DiskManager/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
 
