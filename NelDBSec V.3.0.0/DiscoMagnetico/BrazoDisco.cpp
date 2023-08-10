@@ -227,13 +227,17 @@ void BrazoDisco::insertarRegistrosCSV(string &nameArchivo) {
                 valoresIngresar.push_back(dato);
                 cout<<dato<<endl;
             }
-            // escribirVectorRegistroEnSector(valoresIngresar,"sector_1.txt");
+            int numBloqueLibre=get_num_bloque_espacio_libre(sizeof(valoresIngresar));
+            string archivoSector="Sector_"+to_string(numBloqueLibre)+".txt";
+            headerSector headerSectorAux=getHeaderSector(numBloqueLibre);
+            int posicionEscribir=headerSectorAux.getDirecEndFixedData();
+            escribirVectorRegistroEnSector(valoresIngresar,archivoSector,posicionEscribir);
         }
         archivoCSV.close();
     }
 }
 
-void BrazoDisco::escribirVectorRegistroEnSector( vector<string> &valores,  string &archivo) {
+void BrazoDisco::escribirVectorRegistroEnSector( vector<string> &valores,  string &archivo, int posicionWrite) {
     ofstream archivoSalida(archivo, ios::out | ios::app);
 
     if (!archivoSalida.is_open()) {
@@ -241,7 +245,7 @@ void BrazoDisco::escribirVectorRegistroEnSector( vector<string> &valores,  strin
         return;
     }
 
-    archivoSalida.seekp(20); // Mover el puntero de escritura a la posición 20
+    archivoSalida.seekp(posicionWrite); // Mover el puntero de escritura a la posición 20
 
     for ( string &valor : valores) {
         archivoSalida << valor << ",";
@@ -291,26 +295,26 @@ Disco_Header& BrazoDisco::get_disco_magnetic_info(){
     return (*ptr_disco_magnetico);
 }
 
-headerSector& BrazoDisco::get_header_bloque(int _num_bloque){
-    int ubication_read_bin=0;
+headerSector& BrazoDisco::getHeaderSector(int _num_bloque){
+    int ubication_read=0;
     string route_sector="DiskManager/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
 
-    ifstream archivo(route_sector, ios::binary);
-    archivo.seekg(ubication_read_bin);
+    ifstream archivo(route_sector);
+    archivo.seekg(ubication_read);
 
     //Estilo de lectura, puede ser FIXED AND VARIABLE LENGTH
-    headerSector *ptr_header_bloque=new headerSector();
+    headerSector headerAux;
     if (archivo.is_open()) 
     {
-        archivo.read(reinterpret_cast<char*>(&(*ptr_header_bloque)), sizeof(headerSector));
-        // cout<<"Datos leidos del archivo: "<<route_sector<<endl;
+        archivo>>headerAux;//aprovechamos sobrecarga
     } 
     else 
     {
         cout<<"Error al abrir el archivo binario para get header bloque."<<route_sector<<endl;
+        
     }
     archivo.close();
-    return (*ptr_header_bloque);
+    return headerAux;
 }
 
 int BrazoDisco::get_num_bloque_espacio_libre(int _space_necesitado){
@@ -318,13 +322,13 @@ int BrazoDisco::get_num_bloque_espacio_libre(int _space_necesitado){
     headerSector *ptr_header_bloque=new headerSector();
 
     //Primero quiero saber cuántos bloques hay
-    SistemaOperativo brazo;
+    
     Disco_Header *ptr_disco_magnetico=new Disco_Header();
-    (*ptr_disco_magnetico)=brazo.get_disco_magnetic_info();
+    (*ptr_disco_magnetico)=get_disco_magnetic_info();
     int num_bloques=(*ptr_disco_magnetico).get_num_bloques_total();
     for (size_t i = 1; i <=num_bloques; i++)
     {
-        (*ptr_header_bloque)=brazo.get_header_bloque(i);
+        (*ptr_header_bloque)=getHeaderSector(i);
         int space_libre=(*ptr_header_bloque).getCantBytesRestantesSector();
         if (_space_necesitado<space_libre)
         {
@@ -392,9 +396,9 @@ int BrazoDisco::calcular_espacio_necesario(MapaPares &_map_atributos,vector<stri
 
 //--------------WRITE VARIABLE DATA-----------
 void BrazoDisco::caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_tupla_enviado, int num_bloque, int direc_slot_escrito){
-    // SistemaOperativo brazo;
+    // 
     // headerSector *ptr_header_bloque=new headerSector();
-    // (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque);//obtenemos info del header del bloque
+    // (*ptr_header_bloque)=getHeaderSector(num_bloque);//obtenemos info del header del bloque
 
     Slot slot_ya_escrito;//slot auxiliar
     string route_bloque="DiskManager/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(num_bloque)+".bin";
@@ -406,9 +410,9 @@ void BrazoDisco::caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_
         caminar_por_slots_tupla_variable_data_insertar_slot(slot_tupla_enviado,num_bloque,slot_ya_escrito.get_direc_sig_slot());
     }
     else{
-        SistemaOperativo brazo;
+        
         headerSector *ptr_header_bloque=new headerSector();
-        (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque);//obtenemos el header del bloque
+        (*ptr_header_bloque)=getHeaderSector(num_bloque);//obtenemos el header del bloque
 
         int direccion_slot_nuevo=(*ptr_header_bloque).getDirecEndFixedData();
         slot_ya_escrito.set_direc_sig_slot(direccion_slot_nuevo);
@@ -435,17 +439,17 @@ void BrazoDisco::caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_
 }
 
 void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar){
-    SistemaOperativo brazo;
+    
     headerSector *ptr_header_bloque=new headerSector();
-    int espacio_ocuparemos=brazo.calcular_espacio_necesario(_map_atributos,_vec_atributos,_vec_valores_ingresar);
+    int espacio_ocuparemos=calcular_espacio_necesario(_map_atributos,_vec_atributos,_vec_valores_ingresar);
     //AHORA
     // cout<<"obtenemos el bloque con espacio libre"<<endl;
     cout<<"espacio a ocupar: "<<espacio_ocuparemos<<endl;
-    int num_bloque_space=brazo.get_num_bloque_espacio_libre(espacio_ocuparemos);
+    int num_bloque_space=get_num_bloque_espacio_libre(espacio_ocuparemos);
     cout<<"bloque donde se escribira: "<<num_bloque_space<<endl;
 
     //YA TENEMOS EL HEADER DEL BLOQUE
-    (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);
+    (*ptr_header_bloque)=getHeaderSector(num_bloque_space);
 
     /*
     Cómo ya sabemos a qué bloque ingresar, procedemos a ingresar el dato en ese bloque:
@@ -598,9 +602,9 @@ void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<st
         else    //caso de no ser el primer variable data
         {
             //En este caso el slot tupla que queremos ingresar es el H2
-            SistemaOperativo brazo;
+            
             headerSector *ptr_header_bloque=new headerSector();
-            (*ptr_header_bloque)=brazo.get_header_bloque(num_bloque_space);//obtenemos el header del bloque
+            (*ptr_header_bloque)=getHeaderSector(num_bloque_space);//obtenemos el header del bloque
             int direcFirstVariableRecord=ptr_header_bloque->getDirecFirstVariableRecord();
 
             caminar_por_slots_tupla_variable_data_insertar_slot(slot_tupla,num_bloque_space,direcFirstVariableRecord);
@@ -656,9 +660,9 @@ void BrazoDisco::caminar_por_slots_tupla_variable_data_imprimir(int num_bloque,i
 }
 
 void BrazoDisco::read_variable_length_data_per_block(int num_block){
-    SistemaOperativo brazo;
+    
     headerSector *ptr_header_bloque=new headerSector();
-    (*ptr_header_bloque)=brazo.get_header_bloque(num_block);
+    (*ptr_header_bloque)=getHeaderSector(num_block);
 
     int direccion_primer_slot=(*ptr_header_bloque).getDirecFirstVariableRecord();
     caminar_por_slots_tupla_variable_data_imprimir(num_block,direccion_primer_slot);
@@ -666,7 +670,7 @@ void BrazoDisco::read_variable_length_data_per_block(int num_block){
 
 void BrazoDisco::read_variable_length_data(int _id_record){
     // int ubication_read;
-    // SistemaOperativo brazo;
+    // 
     // headerSector *ptr_header_bloque=new headerSector();
 
 }
@@ -679,7 +683,7 @@ void BrazoDisco::insertFixedLengthData(vector<string> &_vec_valores_ingresar){
     int espacio_ocuparemos;
     //obtenemos el bloque con espacio libre
     int num_bloque_space=get_num_bloque_espacio_libre(espacio_ocuparemos);
-    (*ptr_header_bloque)=get_header_bloque(num_bloque_space); //necesitamos algun bloque
+    (*ptr_header_bloque)=getHeaderSector(num_bloque_space); //necesitamos algun bloque
 }
 
 //----------------------READ FIXED DATA-----------------

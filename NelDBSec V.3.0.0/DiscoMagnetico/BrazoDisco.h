@@ -51,12 +51,14 @@ public:
     void eliminarRegistro(string idRegistro,string metadata);
     void actualizarRegistro(string idRegistro,string metadata);
 
+    //Inserting
     void insertarRegistrosCSV(string &nameArchivo);
-    void escribirVectorRegistroEnSector( vector<string> &valores, string &archivo);
+    void escribirVectorRegistroEnSector( vector<string> &valores, string &archivo,int posicionWrite);
 
+    // Others
     void read_header_bloque(int _num_bloque);
     Disco_Header& get_disco_magnetic_info();
-    headerSector& get_header_bloque(int _num_bloque);
+    headerSector& getHeaderSector(int _num_bloque);
     int get_num_bloque_espacio_libre(int _space_necesitado);
 
     int calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar);

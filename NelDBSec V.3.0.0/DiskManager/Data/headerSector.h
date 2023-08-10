@@ -78,6 +78,8 @@ public:
 
 
     //--------------------Others-------------------
+    friend std::istream &operator>>(std::istream &is, headerSector &header);
+    friend std::ostream &operator<<(std::ostream &os, const headerSector &header);
     void printInfoSectorHeader();
 };
 

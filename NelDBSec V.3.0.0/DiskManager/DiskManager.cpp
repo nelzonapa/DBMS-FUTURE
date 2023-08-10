@@ -210,35 +210,35 @@ void DiskManager::crear_multilevel_index_disco(){
 //----------------READ INFO----------------
 
 void DiskManager::print_multilevel_index_disco(){
-    SistemaOperativo sis_operativo;
+    
     cout<<"Ingrese el id del disco para mostrar su respectivo multilevel index: "<<endl;
     int id_disco;
     cin>>id_disco;
-    sis_operativo.print_disco_index(id_disco);
-    sis_operativo.print_plato_index(id_disco);
-    sis_operativo.print_superficie_index(id_disco);
-    sis_operativo.print_pista_index(id_disco);
-    sis_operativo.print_sector_index(id_disco);
-    sis_operativo.print_bloque_index(id_disco);
+    this->sistemaOperativo.print_disco_index(id_disco);
+    this->sistemaOperativo.print_plato_index(id_disco);
+    this->sistemaOperativo.print_superficie_index(id_disco);
+    this->sistemaOperativo.print_pista_index(id_disco);
+    this->sistemaOperativo.print_sector_index(id_disco);
+    this->sistemaOperativo.print_bloque_index(id_disco);
 }
 
 void DiskManager::mostrar_informacion_disco(int id_disco){
-    SistemaOperativo sis_operativo;
+    
     Disco_Header *ptr_disc_header=new Disco_Header();
-    (*ptr_disc_header)=sis_operativo.get_disco_header(id_disco);
+    (*ptr_disc_header)=this->sistemaOperativo.get_disco_header(id_disco);
     ptr_disc_header->print_info_magnetic_disk();
 }
 
 //IN PROCESS
 void DiskManager::mostrar_info_de_bloque(int num_bloque){
-    SistemaOperativo sis_operat;
-    sis_operat.read_header_bloque(num_bloque);
+    
+    // this->sistemaOperativo.read_header_bloque(num_bloque);
 }
 
 //IN PROCESS
 void DiskManager::mostrar_contenido_variable_length_bloque(int num_bloque){
-    SistemaOperativo sis_operat;
-    sis_operat.read_variable_length_data_per_block(num_bloque);
+    
+    // this->sistemaOperativo.read_variable_length_data_per_block(num_bloque);
 }
 
 
@@ -295,7 +295,7 @@ void DiskManager::escribir_registro()
             break;//se detiene todo
         }
     }
-    SistemaOperativo sis_operativo;
+    
     if (bool_fixed_length_data==false && bool_variable_length_data==false)
     {
         cout<<"Tipo de dato detectado: VARIABLE_LENGTH_DATA"<<endl;
@@ -309,7 +309,7 @@ void DiskManager::escribir_registro()
         //ahora el nullbitmap solo porque es de VARIABLE LENGTH
         (*ptr_vec_valores_ingresar).push_back(nullbitmap);
 
-        sis_operativo.insert_variable_length_data((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
+        // this->sistemaOperativo.insert_variable_length_data((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
     }
     else if(bool_fixed_length_data==true && bool_variable_length_data==true){
         cout<<"Tipo de dato detectado: FIXED_LENGTH_DATA"<<endl;
@@ -320,7 +320,7 @@ void DiskManager::escribir_registro()
         //agregamos el TRUE de FIXED LENGTH
         (*ptr_vec_valores_ingresar).push_back("true");
 
-        // sis_operativo.insertFixedLengthData((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
+        // this->sistemaOperativo.insertFixedLengthData((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
     }
 
     

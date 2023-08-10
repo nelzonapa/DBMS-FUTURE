@@ -183,6 +183,49 @@ void headerSector::setDirectEndBPlusTrees(int direc)
 
 //--------------------Others-------------------
 
+std::istream &operator>>(std::istream &is, headerSector &header)
+{
+    std::string line;
+    std::getline(is, line); // Leer la línea completa
+
+    // Eliminar el "#" inicial y final
+    if (line.front() == '#' && line.back() == '#')
+    {
+        line = line.substr(1, line.size() - 2);
+
+        // Usar un stringstream para dividir la línea en partes usando comas
+        std::istringstream ss(line);
+        char comma;
+
+        // Leer y asignar los valores uno por uno
+        ss >> header.pesoBytesSector >> comma >> header.cantBytesUsadosSector >> comma >> header.cantBytesRestantesBloque >> comma >> header.numGeneralRecordsBloque >> comma >> header.direcDeleteSpacesFixedData >> comma >> header.direcEndFixedData >> comma >> header.numRecordsFixedSector >> comma >> header.direcFirstFixedRecord >> comma >> header.direcDeleteSpacesVariableData >> comma >> header.numRecordsVariableSector >> comma >> header.direcFreeSpaceVariableSector >> comma >> header.direcFirstVariableRecord >> comma >> header.numberBPlusTrees >> comma >> header.directFirstBPlusTree >> comma >> header.directEndBPlusTrees;
+    }
+
+    return is;
+}
+
+// Sobrecarga del operador de escritura <<
+std::ostream &operator<<(std::ostream &os, const headerSector &header)
+{
+    os << "#" << header.pesoBytesSector << ","
+       << header.cantBytesUsadosSector << ","
+       << header.cantBytesRestantesBloque << ","
+       << header.numGeneralRecordsBloque << ","
+       << header.direcDeleteSpacesFixedData << ","
+       << header.direcEndFixedData << ","
+       << header.numRecordsFixedSector << ","
+       << header.direcFirstFixedRecord << ","
+       << header.direcDeleteSpacesVariableData << ","
+       << header.numRecordsVariableSector << ","
+       << header.direcFreeSpaceVariableSector << ","
+       << header.direcFirstVariableRecord << ","
+       << header.numberBPlusTrees << ","
+       << header.directFirstBPlusTree << ","
+       << header.directEndBPlusTrees << "#";
+
+    return os;
+}
+
 void headerSector::printInfoSectorHeader(){
     std::cout << "General info del sector: "<<endl;
     std::cout << "Peso Bytes Sector: " << pesoBytesSector << ""<<endl;
