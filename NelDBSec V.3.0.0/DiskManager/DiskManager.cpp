@@ -320,7 +320,7 @@ void DiskManager::escribir_registro()
         //agregamos el TRUE de FIXED LENGTH
         (*ptr_vec_valores_ingresar).push_back("true");
 
-        sis_operativo.insertFixedLengthData((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
+        // sis_operativo.insertFixedLengthData((*ptr_map_atributos),(*ptr_vec_atributos),(*ptr_vec_valores_ingresar));
     }
 
     
@@ -345,6 +345,7 @@ Pagina DiskManager::obtenerBloquePagina(int idPagina){
 
 }
 
+// NUEVOS REGISTROS DESDE CSV
 void DiskManager::agregarRegistrosNuevaTabla(string nombreArchivo){
     this->sistemaOperativo.ingresarTablaDesdeArchivoCSV(nombreArchivo);
 }

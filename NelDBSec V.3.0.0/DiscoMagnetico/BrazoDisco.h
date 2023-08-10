@@ -51,6 +51,25 @@ public:
     void eliminarRegistro(string idRegistro,string metadata);
     void actualizarRegistro(string idRegistro,string metadata);
 
+    void insertarRegistrosCSV(string &nameArchivo);
+    void escribirVectorRegistroEnSector( vector<string> &valores, string &archivo);
+
+    void read_header_bloque(int _num_bloque);
+    Disco_Header& get_disco_magnetic_info();
+    headerSector& get_header_bloque(int _num_bloque);
+    int get_num_bloque_espacio_libre(int _space_necesitado);
+
+    int calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar);
+    void caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_tupla_enviado, int num_bloque, int direc_slot_escrito);
+    void insert_variable_length_data(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar);
+
+    //----------------------READ VARIABLE DATA-----------------
+    void leer_slot_tupla_atributos(Slot &slot,int num_bloque);
+    void caminar_por_slots_tupla_variable_data_imprimir(int num_bloque,int direc_slot_escrito);
+    void read_variable_length_data_per_block(int num_block);
+    void read_variable_length_data(int _id_record);
+    void insertFixedLengthData(vector<string> &_vec_valores_ingresar);
+
 
 };
 

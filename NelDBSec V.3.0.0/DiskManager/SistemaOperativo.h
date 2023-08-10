@@ -93,36 +93,6 @@ public:
     void print_sector_index(int num_id_disco);
     void print_bloque_index(int num_id_disco);
 
-
-    /*-----------------------------------SECOND PART----------------------------------------*/
-
-
-    //-------------------------Read Otros-------------------------
-    void read_header_bloque(int _num_bloque);
-
-    //-----------------------GET---------------------------
-    Disco_Header& get_disco_magnetic_info();
-    headerSector& get_header_bloque(int num_bloque);
-    int get_num_bloque_espacio_libre(int _space_necesitado);
-    int calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar);
-
-    //--------------WRITE VARIABLE DATA-----------
-    void caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_tupla_enviado, int num_bloque, int direc_slot_escrito);
-    void insert_variable_length_data(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
-    
-    //----------------------READ VARIABLE DATA-----------------
-    void leer_slot_tupla_atributos(Slot &slot,int num_bloque);
-    void caminar_por_slots_tupla_variable_data_imprimir(int num_bloque,int direc_slot_escrito);
-    void read_variable_length_data_per_block(int num_block);
-    void read_variable_length_data(int _id_record);
-
-    //--------------WRITE FIXED LENGTH DATA-----------
-    void insertFixedLengthData(MapaPares &ptr_map_atributos,vector<string> &ptr_vec_atributos,vector<string> &ptr_vec_valores_ingresar);
-    
-    //----------------------READ FIXED DATA-----------------
-    // void read_fixed_length_data();
-
-
     //----------------- ESQUEMA DATA ------------------
     void crear_esquema_tabla(string _name_archivo);//solo el nombre del archivo
     void leer_esquema_tabla(string _name_tabla);
@@ -132,7 +102,7 @@ public:
     string decidir_tipo_dato(string &value);
 
 
-    /*-------------- EJecución del Disk Manager ---------------*/
+    /*-------------- WriteData ---------------*/
     void ingresarTablaDesdeArchivoCSV(string nombreArchivo);
 
 };
