@@ -33,6 +33,7 @@ public:
     void ejecutarPrograma();
     void menu_program(Programa &programa);
     void mostrarTablaMetadata();
+    void mostrarBufferPool();
     void ingresarTablaDesdeArchivo(string nombreArchivoCSV);
 };
 

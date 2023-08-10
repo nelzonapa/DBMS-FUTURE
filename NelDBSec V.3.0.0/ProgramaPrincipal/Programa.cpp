@@ -36,3 +36,10 @@ Pagina& Programa::obtenerPagina(int id_pagina){
 void Programa::ingresarTablaDesdeArchivoCSV(string nombreArchivo){
     this->buffManagerPrograma.ingresarDatosDesdeArchivoCSV(nombreArchivo);
 }
+
+void Programa::mostrarTablaMetadata(){
+    this->buffManagerPrograma.mostrarTablaMetadata();
+}
+void Programa::mostrarBufferPool(){
+    this->buffManagerPrograma.mostrarBufferPool();
+}

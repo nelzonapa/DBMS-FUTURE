@@ -19,6 +19,9 @@ public:
     Pagina& obtenerPagina(int id_pagina);
 
     void ingresarTablaDesdeArchivoCSV(string nombreArchivo);
+
+    void mostrarTablaMetadata();
+    void mostrarBufferPool();
     
 };
 

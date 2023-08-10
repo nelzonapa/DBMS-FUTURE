@@ -67,8 +67,9 @@ void Usuario::menu_program(Programa &programa){
         std::cout<<"\t---- Programa Ejecutando ----\n";
         std::cout<<"1. Obtener Pagina"<<endl;
         std::cout<<"2. Mostrar la tabla metadata"<<endl;
-        std::cout<<"3. Ingresar Tabla desde Archivo csv"<<endl;
-        std::cout<<"4. Salir"<<endl;
+        std::cout<<"3. Mostrar BufferPool"<<endl;
+        std::cout<<"4. Ingresar Tabla desde Archivo csv"<<endl;
+        std::cout<<"5. Salir"<<endl;
         std::cout<<"Ingrese opcion: "<<endl;
         cin>>op;
         switch(op)
@@ -83,11 +84,15 @@ void Usuario::menu_program(Programa &programa){
                 mostrarTablaMetadata();
                 break;
             case 3:
+                cout<<"Estado del BufferPool: ...."<<endl;
+                mostrarTablaMetadata();
+                break;
+            case 4:
                 cout<<"Para ingresar su tabla, ingrese el nombre del archivo: ...."<<endl;
                 cin>>nombreArchivoCSV;
                 ingresarTablaDesdeArchivo(nombreArchivoCSV);
                 break;
-            case 4:
+            case 5:
                 x=true;
                 break;
 
@@ -103,8 +108,11 @@ void Usuario::menu_program(Programa &programa){
 }
 
 void Usuario::mostrarTablaMetadata(){
-    cout<<"Mostrando tabla"<<endl;
-    // this->programa
+    this->programa.mostrarTablaMetadata();
+}
+
+void Usuario::mostrarBufferPool(){
+    this->programa.mostrarBufferPool();
 }
 
 void Usuario::ingresarTablaDesdeArchivo(string nombreArchivoCSV){
