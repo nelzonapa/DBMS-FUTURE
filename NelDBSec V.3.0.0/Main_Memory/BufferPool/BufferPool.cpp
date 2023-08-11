@@ -63,7 +63,7 @@ void BufferPool::replace_pagina(Pagina &pagina,int id_pag){
 }
 
 void BufferPool::mostrarBufferPool(){
-    cout<<"gaaa"<<endl;
+    cout<<"En mantenimiento"<<endl;
     for (auto elemento : (this->MapFramesBufPool)) {
         int clave = elemento.first;
         Pagina pagina = elemento.second;
