@@ -511,20 +511,11 @@ void BrazoDisco::crear_sectores(DiscoMagnetico& disco_magnetic, const std::strin
 }
 
 
-void prepararYEscribirRegistros(string ruta,Disco_Header& discoAux){
+void BrazoDisco::prepararYEscribirRegistros(string ruta,Disco_Header& discoAux){
     //ruta ejemplo: DiscoMagnetico/Disco_1/Plato_1/Superficie_1/Pista_1/Sector_1.txt
-    vector<int> metadata;
-    metadata=extraerMetadata(ruta);
-    string stringMetadata=unirNumeros(metadata,'|');
-    headerSector headSector;
-    headSector.setMetadataSector(stringMetadata);
-    int pesoSector=discoAux.get_capacidad_total_magneticDisk()/discoAux.get_num_sectores_total();
-    headSector.setPesoBytesSector(pesoSector);
-    int tamanioHead=160;
-    int restante= pesoSector-tamanioHead;//tamanioHead para el header
-    headSector.setCantBytesRestantesSector(restante);
-    headSector.setCantBytesUsadosSector(headSector.getCantBytesUsadosSector()+tamanioHead);
-    headSector.setDirecEndFixedData(tamanioHead);
+    headerSector headerSectorAux=getHeaderSector(ruta);
+    // int posicionEscribir=headerSectorAux.getDirecEndFixedData();
+    // escribirVectorRegistroEnSector(valoresIngresar,rutaSector,posicionEscribir);
     // headSector.printInfoSectorHeader();
 
     // ESCRIBIMOS
@@ -533,8 +524,8 @@ void prepararYEscribirRegistros(string ruta,Disco_Header& discoAux){
         std::cerr << "No se pudo abrir el archivo " << ruta << std::endl;
         return;
     }
-    archivo.seekp(0);  // Mover el puntero de escritura al inicio
-    archivo << headSector;
+    archivo.seekp(160);  // Mover el puntero de escritura al inicio
+    archivo << headerSectorAux;
     archivo.close();
 
 }
@@ -691,26 +682,21 @@ Disco_Header& BrazoDisco::get_disco_magnetic_info(){
     return (*ptr_disco_magnetico);
 }
 
-headerSector BrazoDisco::getHeaderSector(int _num_bloque){
-    int ubication_read=0;
-    string route_sector="DiskManager/Disco/Platos/Superficies/Pistas/Sectores/Bloques/bloque_"+to_string(_num_bloque)+".bin";
-
-    ifstream archivo(route_sector);
-    archivo.seekg(ubication_read);
-
-    //Estilo de lectura, puede ser FIXED AND VARIABLE LENGTH
-    headerSector headerAux;
+headerSector BrazoDisco::getHeaderSector(string ruta){
+    ifstream archivo(ruta);
+    archivo.seekg(0);
+    headerSector headerSectorAux;
     if (archivo.is_open()) 
     {
-        archivo>>headerAux;//aprovechamos sobrecarga
+        archivo>>headerSectorAux;//aprovechamos sobrecarga
     } 
     else 
     {
-        cout<<"Error al abrir el archivo binario para get header bloque."<<route_sector<<endl;
+        cout<<"Error al abrir el archivo binario para get header bloque."<<ruta<<endl;
         
     }
     archivo.close();
-    return headerAux;
+    return headerSectorAux;
 }
 
 int BrazoDisco::get_num_bloque_espacio_libre(int _space_necesitado){
@@ -724,7 +710,7 @@ int BrazoDisco::get_num_bloque_espacio_libre(int _space_necesitado){
     int num_bloques=(*ptr_disco_magnetico).get_num_bloques_total();
     for (size_t i = 1; i <=num_bloques; i++)
     {
-        (*ptr_header_bloque)=getHeaderSector(i);
+        // (*ptr_header_bloque)=getHeaderSector(i);
         int space_libre=(*ptr_header_bloque).getCantBytesRestantesSector();
         if (_space_necesitado<space_libre)
         {
@@ -808,7 +794,7 @@ void BrazoDisco::caminar_por_slots_tupla_variable_data_insertar_slot(Slot &slot_
     else{
         
         headerSector *ptr_header_bloque=new headerSector();
-        (*ptr_header_bloque)=getHeaderSector(num_bloque);//obtenemos el header del bloque
+        // (*ptr_header_bloque)=getHeaderSector(num_bloque);//obtenemos el header del bloque
 
         int direccion_slot_nuevo=(*ptr_header_bloque).getDirecEndFixedData();
         slot_ya_escrito.set_direc_sig_slot(direccion_slot_nuevo);
@@ -845,7 +831,7 @@ void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<st
     cout<<"bloque donde se escribira: "<<num_bloque_space<<endl;
 
     //YA TENEMOS EL HEADER DEL BLOQUE
-    (*ptr_header_bloque)=getHeaderSector(num_bloque_space);
+    // (*ptr_header_bloque)=getHeaderSector(num_bloque_space);
 
     /*
     Cómo ya sabemos a qué bloque ingresar, procedemos a ingresar el dato en ese bloque:
@@ -1000,7 +986,7 @@ void BrazoDisco::insert_variable_length_data(MapaPares &_map_atributos,vector<st
             //En este caso el slot tupla que queremos ingresar es el H2
             
             headerSector *ptr_header_bloque=new headerSector();
-            (*ptr_header_bloque)=getHeaderSector(num_bloque_space);//obtenemos el header del bloque
+            // (*ptr_header_bloque)=getHeaderSector(num_bloque_space);//obtenemos el header del bloque
             int direcFirstVariableRecord=ptr_header_bloque->getDirecFirstVariableRecord();
 
             caminar_por_slots_tupla_variable_data_insertar_slot(slot_tupla,num_bloque_space,direcFirstVariableRecord);
@@ -1058,7 +1044,7 @@ void BrazoDisco::caminar_por_slots_tupla_variable_data_imprimir(int num_bloque,i
 void BrazoDisco::read_variable_length_data_per_block(int num_block){
     
     headerSector *ptr_header_bloque=new headerSector();
-    (*ptr_header_bloque)=getHeaderSector(num_block);
+    // (*ptr_header_bloque)=getHeaderSector(num_block);
 
     int direccion_primer_slot=(*ptr_header_bloque).getDirecFirstVariableRecord();
     caminar_por_slots_tupla_variable_data_imprimir(num_block,direccion_primer_slot);
@@ -1079,7 +1065,7 @@ void BrazoDisco::insertFixedLengthData(vector<string> &_vec_valores_ingresar){
     int espacio_ocuparemos;
     //obtenemos el bloque con espacio libre
     int num_bloque_space=get_num_bloque_espacio_libre(espacio_ocuparemos);
-    (*ptr_header_bloque)=getHeaderSector(num_bloque_space); //necesitamos algun bloque
+    // (*ptr_header_bloque)=getHeaderSector(num_bloque_space); //necesitamos algun bloque
 }
 
 //----------------------READ FIXED DATA-----------------

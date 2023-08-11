@@ -39,6 +39,7 @@ public:
     void crearDiscoCuestionario();
     void crear_multilevel_index_disco();
 
+    void prepararYEscribirRegistros(string ruta,Disco_Header& discoAux);
 
     void crear_disco(DiscoMagnetico &disco_magnetic); 
     void crear_platos(DiscoMagnetico &disco_magnetic,const string &route_disco);
@@ -65,7 +66,7 @@ public:
     // Others
     void read_header_bloque(int _num_bloque);
     Disco_Header& get_disco_magnetic_info();
-    headerSector getHeaderSector(int _num_bloque);
+    headerSector getHeaderSector(string ruta);
     int get_num_bloque_espacio_libre(int _space_necesitado);
 
     int calcular_espacio_necesario(MapaPares &_map_atributos,vector<string> &_vec_atributos,vector<string> &_vec_valores_ingresar);
