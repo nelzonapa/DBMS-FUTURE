@@ -511,22 +511,25 @@ void BrazoDisco::crear_sectores(DiscoMagnetico& disco_magnetic, const std::strin
 }
 
 
-void BrazoDisco::prepararYEscribirRegistros(string ruta,Disco_Header& discoAux){
+void BrazoDisco::prepararYEscribirRegistros(string ruta,Disco_Header& discoAux,vector<string> &valoresIngresar){
     //ruta ejemplo: DiscoMagnetico/Disco_1/Plato_1/Superficie_1/Pista_1/Sector_1.txt
-    headerSector headerSectorAux=getHeaderSector(ruta);
+    // headerSector headerSectorAux=getHeaderSector(ruta);
     // int posicionEscribir=headerSectorAux.getDirecEndFixedData();
-    // escribirVectorRegistroEnSector(valoresIngresar,rutaSector,posicionEscribir);
+    string idString=valoresIngresar[1];
+    cout<<idString<<endl;
+    int idNum=std::stoi(idString);
+    escribirVectorRegistroEnSector(valoresIngresar,ruta,idNum*160);
     // headSector.printInfoSectorHeader();
 
     // ESCRIBIMOS
-    std::fstream archivo(ruta, std::ios::in | std::ios::out);
-    if (!archivo.is_open()) {
-        std::cerr << "No se pudo abrir el archivo " << ruta << std::endl;
-        return;
-    }
-    archivo.seekp(160);  // Mover el puntero de escritura al inicio
-    archivo << headerSectorAux;
-    archivo.close();
+    // std::fstream archivo(ruta, std::ios::in | std::ios::out);
+    // if (!archivo.is_open()) {
+    //     std::cerr << "No se pudo abrir el archivo " << ruta << std::endl;
+    //     return;
+    // }
+    // archivo.seekp(160);  // Mover el puntero de escritura al inicio
+    // archivo << headerSectorAux;
+    // archivo.close();
 
 }
 
@@ -541,12 +544,16 @@ void BrazoDisco::insertarRegistrosCSV(string &nameArchivo) {
     }
     else
     {
+        int id=1;
         string discoName="Disco_1";
         bool existeDisco=Crear_leer_file_discos("DiskManager/Discos_almacenados.txt",discoName);
         if (existeDisco==true)
         {
             cout<<endl<<"Disco Encontrado... "<<endl;
-            escribirHeaderSectores();
+            if (id==1)
+            {
+                escribirHeaderSectores();
+            }    
             /*
             Para leer datos, inicializaremos el B+
             1. Leo header del bloque:
@@ -566,50 +573,52 @@ void BrazoDisco::insertarRegistrosCSV(string &nameArchivo) {
                 que tendrá las coincidencias de ID usuario
             
             */
-            getline(archivoCSV,linea);//Saltamos atributos
-            while (getline(archivoCSV,linea))
-            {
-                istringstream ss(linea);
-                string dato;
-                valoresIngresar.push_back("$");
-                while (getline(ss, dato, ',')) {
-                    valoresIngresar.push_back(dato);
-                    cout<<dato<<endl;
-                }
-                valoresIngresar.push_back("$");
-                // int numBloqueLibre=get_num_bloque_espacio_libre(sizeof(valoresIngresar));
-                // string rutaSector="Sector_"+to_string(numBloqueLibre)+".txt";
-                // headerSector headerSectorAux=getHeaderSector(numBloqueLibre);
-                // int posicionEscribir=headerSectorAux.getDirecEndFixedData();
-                // escribirVectorRegistroEnSector(valoresIngresar,rutaSector,posicionEscribir);
+            // getline(archivoCSV,linea);//Saltamos atributos
+            // while (getline(archivoCSV,linea))
+            // {
+            //     istringstream ss(linea);
+            //     string dato;
+            //     valoresIngresar.push_back("$");
+            //     valoresIngresar.push_back(to_string(id));
+            //     valoresIngresar.push_back(",");
+            //     while (getline(ss, dato, ',')) {
+            //         valoresIngresar.push_back(dato);
+            //         cout<<dato<<endl;
+            //     }
+            //     valoresIngresar.push_back("$");
+            //     // int numBloqueLibre=get_num_bloque_espacio_libre(sizeof(valoresIngresar));
+            //     // string rutaSector="Sector_"+to_string(numBloqueLibre)+".txt";
+            //     // headerSector headerSectorAux=getHeaderSector(numBloqueLibre);
+            //     // int posicionEscribir=headerSectorAux.getDirecEndFixedData();
+            //     // escribirVectorRegistroEnSector(valoresIngresar,rutaSector,posicionEscribir);
 
-                Disco_Header discoAux=recuperarDiscoMagneticoInformacion();
-                vector<string> rutasEncontradas;
-                int cantSectoresPorPista=discoAux.getNumSectoresPorPista();
-                for (int  i = 1; i <=cantSectoresPorPista; i++)
-                {
-                    string idSector=to_string(i);
-                    string nombreArchivoBuscado = "Sector_"+idSector+".txt";  // Cambia el nombre según el archivo que buscas
-                    string directorioBase = "DiscoMagnetico/Disco_1";  // Cambia esto a la ruta de tu directorio base
+            //     Disco_Header discoAux=recuperarDiscoMagneticoInformacion();
+            //     vector<string> rutasEncontradas;
+            //     int cantSectoresPorPista=discoAux.getNumSectoresPorPista();
+            //     for (int  i = 1; i <=cantSectoresPorPista; i++)
+            //     {
+            //         string idSector=to_string(i);
+            //         string nombreArchivoBuscado = "Sector_"+idSector+".txt";  // Cambia el nombre según el archivo que buscas
+            //         string directorioBase = "DiscoMagnetico/Disco_1";  // Cambia esto a la ruta de tu directorio base
 
-                    buscarSectoresTXT(directorioBase, nombreArchivoBuscado, rutasEncontradas);
+            //         buscarSectoresTXT(directorioBase, nombreArchivoBuscado, rutasEncontradas);
 
-                    if (!rutasEncontradas.empty()) {
-                        cout << "Archivos encontrados:" << endl;
-                        for (const string& ruta : rutasEncontradas) 
-                        {
-                            cout<<ruta<<endl;
-                            //Por cada ruta ingresaremos el header.
-                            prepararYEscribirRegistros(ruta, discoAux);
-                        }
-                    } 
-                    else {
-                        cout << "No se encontraron archivos con el nombre buscado." << std::endl;
-                    }
-                }
-
+            //         if (!rutasEncontradas.empty()) {
+            //             cout << "Archivos encontrados:" << endl;
+            //             for (const string& ruta : rutasEncontradas) 
+            //             {
+            //                 cout<<ruta<<endl;
+            //                 //Por cada ruta ingresaremos el header.
+            //                 prepararYEscribirRegistros(ruta, discoAux,valoresIngresar);
+            //             }
+            //         } 
+            //         else {
+            //             cout << "No se encontraron archivos con el nombre buscado." << std::endl;
+            //         }
+            //     }
+            //     id++;
                 
-            }
+            // }
         }
         else{
             cout<<"No existe un DISCO que usar"<<endl;
@@ -622,7 +631,6 @@ void BrazoDisco::insertarRegistrosCSV(string &nameArchivo) {
 
 void BrazoDisco::escribirVectorRegistroEnSector( vector<string> &valores,  string &archivo, int posicionWrite) {
     ofstream archivoSalida(archivo, ios::out | ios::app);
-
     if (!archivoSalida.is_open()) {
         cerr << "No se pudo abrir el archivo " << archivo << endl;
         // bool discoCreado;

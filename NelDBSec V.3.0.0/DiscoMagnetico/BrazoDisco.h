@@ -39,7 +39,7 @@ public:
     void crearDiscoCuestionario();
     void crear_multilevel_index_disco();
 
-    void prepararYEscribirRegistros(string ruta,Disco_Header& discoAux);
+    void prepararYEscribirRegistros(string ruta,Disco_Header& discoAux,vector<string> &valores);
 
     void crear_disco(DiscoMagnetico &disco_magnetic); 
     void crear_platos(DiscoMagnetico &disco_magnetic,const string &route_disco);
