@@ -5,4 +5,4 @@ userId,movieId,tag,timestamp,
 TiposData
 int,int,string,int,
 SizeData
-4,4,5,4,
+10,10,20,10,
